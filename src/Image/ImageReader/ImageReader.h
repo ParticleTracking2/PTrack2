@@ -5,13 +5,17 @@
  *      Author: juanin
  */
 #include "../Image.h"
+#include <iostream>
+#include <string>
+using namespace std;
 
 #ifndef IMAGEREADER
 #define IMAGEREADER
 
 class ImageReader {
 public:
-	ImageReader();
+	static string name();
+
 	virtual ~ImageReader();
 
 	virtual Image *decodeImage();

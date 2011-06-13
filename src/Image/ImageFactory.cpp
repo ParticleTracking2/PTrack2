@@ -37,8 +37,13 @@ Image *ImageFactory::makeImgFromFile(ImageTypes type){
 				ret = reader->decodeImage();
 				break;
 		}
+		delete reader;
 		return ret;
 	}
+
+string ImageFactory::name(){
+	return "ImageFactory";
+}
 
 ImageFactory* ImageFactory::myInstance = 0;
 

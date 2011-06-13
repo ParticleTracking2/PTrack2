@@ -6,18 +6,16 @@
  */
 
 #include "ImageReader.h"
-#include <iostream>
-using namespace std;
 
-ImageReader::ImageReader(){
-	// TODO Auto-generated constructor stub
-	cout << ">> Constructing " << "Generic" << endl;
+string ImageReader::name(){
+	return "Generic ImageReader";
 }
+
 ImageReader::~ImageReader(){
 
 }
 
 Image *ImageReader::decodeImage(){
-	cout << ">> Decoding " << "Generic" << endl;
+	cout << ">> Decoding " << name() << endl;
 	return new Image();
 }

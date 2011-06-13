@@ -12,6 +12,8 @@ RM := rm -rf
 -include src/Image/ImageReader/subdir.mk
 -include src/Image/subdir.mk
 -include src/subdir.mk
+-include src/Algorithm/subdir.mk
+-include src/Algorithm/AlgorithmStepHandler/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)

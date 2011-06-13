@@ -10,6 +10,10 @@ string TIFFImageReader::name(){
 	return "TIFF";
 }
 
+TIFFImageReader::TIFFImageReader(){
+	cout << ">> Constructing " << name() << endl;
+}
+
 TIFFImageReader::~TIFFImageReader(){
 	// TODO Auto-generated destructor stub
 	cout << ">> Destructing " << name() << endl;

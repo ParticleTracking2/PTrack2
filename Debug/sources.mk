@@ -26,4 +26,6 @@ SUBDIRS := \
 src/Image/ImageReader \
 src/Image \
 src \
+src/Algorithm \
+src/Algorithm/AlgorithmStepHandler \
 

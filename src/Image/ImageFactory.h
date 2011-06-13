@@ -5,6 +5,8 @@
  *      Author: juanin
  */
 #include "Image.h"
+#include <string>
+using namespace std;
 
 #ifndef IMAGEFACTORY
 #define IMAGEFACTORY
@@ -16,18 +18,16 @@ enum ImageTypes{
 };
 
 class ImageFactory {
-
 private:
 	static ImageFactory *myInstance;
 
 protected:
 	ImageFactory();
-
 	virtual ~ImageFactory();
 
 public:
+	static string name();
 	Image *makeImgFromFile(ImageTypes file);
-
 	static ImageFactory *getInstance();
 };
 

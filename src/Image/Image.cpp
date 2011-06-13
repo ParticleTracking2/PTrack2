@@ -7,6 +7,10 @@
 
 #include "Image.h"
 
+string Image::name(){
+	return "Image";
+}
+
 Image::Image() {
 	// TODO Auto-generated constructor stub
 }

@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include "Image/ImageFactory.h"
+#include "Algorithm/Chi2Algorithm.h"
 
 using namespace std;
 
@@ -17,6 +18,9 @@ int main() {
 	_if->makeImgFromFile(JPG);
 	_if->makeImgFromFile(PNG);
 	_if->makeImgFromFile(TIFF);
+
+	void *pointer = new Chi2Algorithm();
+	((Chi2Algorithm*)pointer)->run();
 
 	return 0;
 }

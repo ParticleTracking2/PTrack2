@@ -9,14 +9,15 @@
 string PNGImageReader::name(){
 	return "PNG";
 }
+PNGImageReader::PNGImageReader(){
+	cout << ">> Constructing " << name() << endl;
+}
 
 PNGImageReader::~PNGImageReader(){
-	// TODO Auto-generated destructor stub
 	cout << ">> Destructing " << name() << endl;
 }
 
 Image *PNGImageReader::decodeImage(){
-	// TODO Auto-generated stub
 	cout << ">> Decoding " << name() << endl;
 	return new Image();
 }
