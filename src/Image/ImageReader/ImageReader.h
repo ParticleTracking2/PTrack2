@@ -15,9 +15,6 @@ using namespace std;
 class ImageReader {
 public:
 	static string name();
-
-	virtual ~ImageReader();
-
 	virtual Image *decodeImage();
 };
 

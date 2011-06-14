@@ -24,15 +24,15 @@ Image *ImageFactory::makeImgFromFile(ImageTypes type){
 		ImageReader *reader;
 
 		switch(type){
-			case JPG :
+			case IMAGE_JPG :
 				reader = new JPGImageReader();
 				ret = reader->decodeImage();
 				break;
-			case PNG:
+			case IMAGE_PNG:
 				reader = new PNGImageReader();
 				ret = reader->decodeImage();
 				break;
-			case TIFF:
+			case IMAGE_TIFF:
 				reader = new TIFFImageReader();
 				ret = reader->decodeImage();
 				break;

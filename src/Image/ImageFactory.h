@@ -12,16 +12,14 @@ using namespace std;
 #define IMAGEFACTORY
 
 enum ImageTypes{
-	JPG=0,
-	PNG=1,
-	TIFF=2
+	IMAGE_JPG=0,
+	IMAGE_PNG=1,
+	IMAGE_TIFF=2
 };
 
 class ImageFactory {
 private:
 	static ImageFactory *myInstance;
-
-protected:
 	ImageFactory();
 	virtual ~ImageFactory();
 

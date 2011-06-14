@@ -14,16 +14,10 @@ string Algorithm::name(){
 	return "Generic Algorithm";
 }
 
-Algorithm::Algorithm() {
-	// TODO Auto-generated constructor stub
-
-}
-
-Algorithm::~Algorithm() {
-	// TODO Auto-generated destructor stub
-}
-
 void Algorithm::run(){
-	cout << "Running Algorithm" << endl;
+	cout << name() << "::Running Algorithm" << endl;
+}
 
+void Algorithm::setInitialValues(ParameterContainer *pc){
+	cout << name() << "::Setting Values" << endl;
 }

@@ -11,10 +11,6 @@ string ImageReader::name(){
 	return "Generic ImageReader";
 }
 
-ImageReader::~ImageReader(){
-
-}
-
 Image *ImageReader::decodeImage(){
 	cout << ">> Decoding " << name() << endl;
 	return new Image();

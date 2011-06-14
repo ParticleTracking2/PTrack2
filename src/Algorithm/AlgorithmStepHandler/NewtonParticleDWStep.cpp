@@ -22,5 +22,6 @@ string NewtonParticleDWStep::name(){
 
 void NewtonParticleDWStep::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }

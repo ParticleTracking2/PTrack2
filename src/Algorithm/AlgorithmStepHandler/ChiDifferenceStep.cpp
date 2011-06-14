@@ -22,5 +22,6 @@ string ChiDifferenceStep::name(){
 
 void ChiDifferenceStep::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }

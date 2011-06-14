@@ -13,11 +13,14 @@ string Chi2Algorithm::name(){
 
 Chi2Algorithm::Chi2Algorithm() {
 	// TODO Auto-generated constructor stub
-
 }
 
 Chi2Algorithm::~Chi2Algorithm() {
 	// TODO Auto-generated destructor stub
+}
+
+void Chi2Algorithm::setInitialValues(ParameterContainer *pc){
+	pc_chi = pc;
 }
 
 void Chi2Algorithm::run(){

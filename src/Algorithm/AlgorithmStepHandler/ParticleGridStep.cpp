@@ -22,5 +22,6 @@ string ParticleGridStep::name(){
 
 void ParticleGridStep::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }

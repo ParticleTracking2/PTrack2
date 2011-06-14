@@ -22,5 +22,6 @@ string Chi2Step::name(){
 
 void Chi2Step::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }

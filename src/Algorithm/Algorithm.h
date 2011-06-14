@@ -14,6 +14,8 @@
 #include "AlgorithmStepHandler/NewtonParticleDWStep.h"
 #include "AlgorithmStepHandler/NormalizeStep.h"
 #include "AlgorithmStepHandler/ParticleGridStep.h"
+#include "../Container/ParameterContainer.h"
+#include "../Container/Container.h"
 
 #include <iostream>
 #include <string>
@@ -25,9 +27,8 @@ using namespace std;
 class Algorithm {
 public:
 	static string name();
-	Algorithm();
-	virtual ~Algorithm();
 	virtual void run();
+	virtual void setInitialValues(ParameterContainer *pc);
 };
 
 #endif

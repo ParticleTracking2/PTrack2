@@ -16,9 +16,6 @@ protected:
 	AlgorithmStepHandler *next;
 public:
 	static string name();
-	AlgorithmStepHandler();
-	virtual ~AlgorithmStepHandler();
-
 	void setNext(AlgorithmStepHandler *nxt);
 	void add(AlgorithmStepHandler *nxt);
 	virtual void handleData();

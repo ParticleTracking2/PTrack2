@@ -22,5 +22,6 @@ string CUFFTStep::name(){
 
 void CUFFTStep::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }

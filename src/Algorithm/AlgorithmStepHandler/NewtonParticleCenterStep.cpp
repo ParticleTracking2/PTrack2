@@ -22,5 +22,6 @@ string NewtonParticleCenterStep::name(){
 
 void NewtonParticleCenterStep::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }

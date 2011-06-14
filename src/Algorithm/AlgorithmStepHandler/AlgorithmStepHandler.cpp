@@ -11,15 +11,6 @@ string AlgorithmStepHandler::name(){
 	return "AlgorithmStepHandler";
 }
 
-AlgorithmStepHandler::AlgorithmStepHandler() {
-	// TODO Auto-generated constructor stub
-	next = 0;
-}
-
-AlgorithmStepHandler::~AlgorithmStepHandler() {
-	// TODO Auto-generated destructor stub
-}
-
 void AlgorithmStepHandler::setNext(AlgorithmStepHandler *nxt){
 	next = nxt;
 }
@@ -33,5 +24,6 @@ void AlgorithmStepHandler::add(AlgorithmStepHandler *nxt){
 
 void AlgorithmStepHandler::handleData(){
 	cout << name() << " Data" << endl;
-	next->handleData();
+	if(next)
+		next->handleData();
 }
