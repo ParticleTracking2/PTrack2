@@ -24,6 +24,9 @@ int main(int argc, char* argv[]) {
 	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	proc->setArgs(argc, argv);
 
+	Image *img = new Image(300, 300);
+	delete img;
+
 	ImageFactory *_if = ImageFactory::getInstance();
 	_if->makeImgFromFile(IMAGE_JPG);
 	_if->makeImgFromFile(IMAGE_PNG);
