@@ -7,19 +7,27 @@
 
 #include "NewtonParticleDWStep.h"
 
+string NewtonParticleDWStep::name(){
+	return "NewtonParticleDW Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 NewtonParticleDWStep::NewtonParticleDWStep() {
 	// TODO Auto-generated constructor stub
-
 }
 
 NewtonParticleDWStep::~NewtonParticleDWStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string NewtonParticleDWStep::name(){
-	return "NewtonParticleDW Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void NewtonParticleDWStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

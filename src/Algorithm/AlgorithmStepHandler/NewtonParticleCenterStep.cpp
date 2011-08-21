@@ -7,19 +7,27 @@
 
 #include "NewtonParticleCenterStep.h"
 
+string NewtonParticleCenterStep::name(){
+	return "NewtonParticleCenter Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 NewtonParticleCenterStep::NewtonParticleCenterStep() {
 	// TODO Auto-generated constructor stub
-
 }
 
 NewtonParticleCenterStep::~NewtonParticleCenterStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string NewtonParticleCenterStep::name(){
-	return "NewtonParticleCenter Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void NewtonParticleCenterStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

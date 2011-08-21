@@ -7,19 +7,27 @@
 
 #include "FFTWStep.h"
 
+string FFTWStep::name(){
+	return "FFTW Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 FFTWStep::FFTWStep() {
 	// TODO Auto-generated constructor stub
-
 }
 
 FFTWStep::~FFTWStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string FFTWStep::name(){
-	return "FFTW Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void FFTWStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

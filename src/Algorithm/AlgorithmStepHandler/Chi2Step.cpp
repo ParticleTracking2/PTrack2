@@ -7,19 +7,27 @@
 
 #include "Chi2Step.h"
 
+string Chi2Step::name(){
+	return "Chi2 Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 Chi2Step::Chi2Step() {
-	// TODO Auto-generated constructor stub
-
+	cout << "Constructing " << name() << endl;
 }
 
 Chi2Step::~Chi2Step() {
 	// TODO Auto-generated destructor stub
 }
 
-string Chi2Step::name(){
-	return "Chi2 Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void Chi2Step::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

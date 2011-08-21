@@ -9,7 +9,7 @@
 #ifndef CUFFTSTEP
 #define CUFFTSTEP
 
-class CUFFTStep: public AlgorithmStepHandler {
+class CUFFTStep: public AlgorithmStepHandler{
 public:
 	CUFFTStep();
 	virtual ~CUFFTStep();

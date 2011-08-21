@@ -24,7 +24,7 @@ void Chi2Algorithm::setInitialValues(ParameterContainer *pc){
 }
 
 void Chi2Algorithm::run(){
-	cout << "Running " << name() << endl;
+	cout << "Constructing " << name() << endl;
 
 	AlgorithmStepHandler ash;
 
@@ -38,5 +38,6 @@ void Chi2Algorithm::run(){
 	ash.add(new NormalizeStep());
 	ash.add(new ParticleGridStep());
 
+	cout << "Running " << name() << endl;
 	ash.handleData();
 }

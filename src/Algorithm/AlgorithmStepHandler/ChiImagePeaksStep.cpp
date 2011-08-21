@@ -7,6 +7,14 @@
 
 #include "ChiImagePeaksStep.h"
 
+string ChiImagePeaksStep::name(){
+	return "ChiImagePeaks Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 ChiImagePeaksStep::ChiImagePeaksStep() {
 	// TODO Auto-generated constructor stub
 
@@ -16,10 +24,11 @@ ChiImagePeaksStep::~ChiImagePeaksStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string ChiImagePeaksStep::name(){
-	return "ChiImagePeaks Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void ChiImagePeaksStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

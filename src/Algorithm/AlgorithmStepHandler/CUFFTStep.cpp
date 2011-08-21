@@ -7,19 +7,27 @@
 
 #include "CUFFTStep.h"
 
+string CUFFTStep::name(){
+	return "CUFFT Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 CUFFTStep::CUFFTStep() {
 	// TODO Auto-generated constructor stub
-
 }
 
 CUFFTStep::~CUFFTStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string CUFFTStep::name(){
-	return "CUFFT Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void CUFFTStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

@@ -7,19 +7,27 @@
 
 #include "ParticleGridStep.h"
 
+string ParticleGridStep::name(){
+	return "ParticleGridStep";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 ParticleGridStep::ParticleGridStep() {
 	// TODO Auto-generated constructor stub
-
 }
 
 ParticleGridStep::~ParticleGridStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string ParticleGridStep::name(){
-	return "ParticleGridStep";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void ParticleGridStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

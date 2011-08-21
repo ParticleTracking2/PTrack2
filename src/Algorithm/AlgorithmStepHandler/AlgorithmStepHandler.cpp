@@ -10,7 +10,19 @@
 string AlgorithmStepHandler::name(){
 	return "AlgorithmStepHandler";
 }
-
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
+AlgorithmStepHandler::AlgorithmStepHandler(){
+	this->next = 0;
+}
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void AlgorithmStepHandler::setNext(AlgorithmStepHandler *nxt){
 	next = nxt;
 }

@@ -7,19 +7,27 @@
 
 #include "ChiDifferenceStep.h"
 
+string ChiDifferenceStep::name(){
+	return "ChiDifference Step";
+}
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 ChiDifferenceStep::ChiDifferenceStep() {
 	// TODO Auto-generated constructor stub
-
 }
 
 ChiDifferenceStep::~ChiDifferenceStep() {
 	// TODO Auto-generated destructor stub
 }
 
-string ChiDifferenceStep::name(){
-	return "ChiDifference Step";
-}
-
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 void ChiDifferenceStep::handleData(){
 	cout << name() << " Data" << endl;
 	if(next)

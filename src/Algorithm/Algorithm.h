@@ -27,6 +27,7 @@ using namespace std;
 class Algorithm {
 public:
 	static string name();
+	virtual ~Algorithm(){ }
 	virtual void run();
 	virtual void setInitialValues(ParameterContainer *pc);
 };
