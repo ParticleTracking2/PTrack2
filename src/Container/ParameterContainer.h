@@ -6,6 +6,7 @@
  */
 #include <map>
 #include <string>
+#include <vector>
 #include "Container.h"
 using namespace std;
 
@@ -13,15 +14,20 @@ using namespace std;
 #define PARAMETERCONTAINER
 
 class ParameterContainer {
+private:
 	map<string, Container*> my_data;
+	vector <string> keys;
 public:
 	ParameterContainer();
 	virtual ~ParameterContainer();
 
 	void addParam(string key, Container* data);
+	void setParam(string key, Container* data);
+	vector <string> getKeys();
 	Container* popParam(string key);
 	Container* getParam(string key);
-	void setParam(string key, Container* data);
+	void* getData(string key);
+	void** getData2(string key);
 };
 
 #endif
