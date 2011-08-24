@@ -9,7 +9,6 @@
 
 Container::Container() {
 	// TODO Auto-generated constructor stub
-
 }
 
 Container::Container(void* data){

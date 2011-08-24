@@ -24,6 +24,8 @@ int main(int argc, char* argv[]) {
 	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	proc->setArgs(argc, argv);
 
+	cout << "Values: " << proc->getArgAsDouble("-d") << endl;
+	cout << "Values: " << proc->getArgAsInt("-w") << endl;
 	Image *img = new Image(300, 300);
 	delete img;
 

@@ -5,6 +5,8 @@
  *      Author: juanin
  */
 #include <iostream>
+#include <stdlib.h>
+#include <sstream>
 #include <string>
 #include <vector>
 #include "Container/ParameterContainer.h"
@@ -34,6 +36,26 @@ public:
 	 * de los argumentos ingresados al momento de ejecutar el programa.
 	 */
 	void setArgs(int argcount, char* argvalues[]);
+	/**
+	 * Obtiene todas las llaves validas ingresadas como argumentos
+	 */
+	vector <string> getKeys();
+	/**
+	 * Verifica que una llave exista dentro de los argumentos
+	 */
+	bool hasKey(string key);
+	/**
+	 * Obtiene un argumento valido como entero
+	 */
+	int getArgAsInt(string key);
+	/**
+	 * Obtiene un argumento valido como double
+	 */
+	double getArgAsDouble(string key);
+	/**
+	 * Obtiene un argumento valido como string
+	 */
+	string getArgAsString(string key);
 };
 
 #endif
