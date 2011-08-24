@@ -19,8 +19,13 @@ TIFFImageReader::~TIFFImageReader(){
 	cout << ">> Destructing " << name() << endl;
 }
 
-Image *TIFFImageReader::decodeImage(){
+MyImage *TIFFImageReader::decodeImage(string file){
 	// TODO Auto-generated stub
 	cout << ">> Decoding " << name() << endl;
-	return new Image();
+
+	Magick::Image my_image;
+	my_image.read(file);
+	my_image.display();
+
+	return new MyImage();
 }

@@ -4,7 +4,7 @@
  *  Created on: 12-06-2011
  *      Author: juanin
  */
-#include "../Image.h"
+#include "../MyImage.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -15,7 +15,8 @@ using namespace std;
 class ImageReader {
 public:
 	static string name();
-	virtual Image *decodeImage();
+	virtual ~ImageReader() { };
+	virtual MyImage *decodeImage(string image);
 };
 
 #endif

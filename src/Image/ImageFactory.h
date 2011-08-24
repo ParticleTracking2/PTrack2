@@ -4,7 +4,7 @@
  *  Created on: 12-06-2011
  *      Author: juanin
  */
-#include "Image.h"
+#include "MyImage.h"
 #include <string>
 using namespace std;
 
@@ -14,7 +14,7 @@ using namespace std;
 enum ImageTypes{
 	IMAGE_JPG=0,
 	IMAGE_PNG=1,
-	IMAGE_TIFF=2
+	IMAGE_TIF=2
 };
 
 class ImageFactory {
@@ -25,7 +25,7 @@ private:
 
 public:
 	static string name();
-	Image *makeImgFromFile(ImageTypes file);
+	MyImage *makeImgFromFile(string file);
 	static ImageFactory *getInstance();
 };
 

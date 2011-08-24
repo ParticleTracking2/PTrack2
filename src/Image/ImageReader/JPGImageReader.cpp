@@ -18,7 +18,7 @@ JPGImageReader::~JPGImageReader(){
 	cout << ">> Destructing " << name() << endl;
 }
 
-Image *JPGImageReader::decodeImage(){
+MyImage *JPGImageReader::decodeImage(string file){
 	cout << ">> Decoding " << name() << endl;
-	return new Image();
+	return new MyImage();
 }

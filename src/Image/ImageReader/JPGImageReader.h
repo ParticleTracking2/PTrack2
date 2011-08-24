@@ -16,7 +16,7 @@ public:
 	JPGImageReader();
 	virtual ~JPGImageReader();
 
-	Image *decodeImage();
+	MyImage *decodeImage(string file);
 };
 
 #endif

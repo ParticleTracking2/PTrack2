@@ -17,7 +17,7 @@ PNGImageReader::~PNGImageReader(){
 	cout << ">> Destructing " << name() << endl;
 }
 
-Image *PNGImageReader::decodeImage(){
+MyImage *PNGImageReader::decodeImage(string file){
 	cout << ">> Decoding " << name() << endl;
-	return new Image();
+	return new MyImage();
 }

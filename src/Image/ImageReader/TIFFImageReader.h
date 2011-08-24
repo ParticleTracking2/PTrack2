@@ -5,6 +5,7 @@
  *      Author: juanin
  */
 #include "ImageReader.h"
+#include <Magick++.h>
 
 #ifndef TIFFIMAGEREADER
 #define TIFFIMAGEREADER
@@ -16,7 +17,7 @@ public:
 	TIFFImageReader();
 	virtual ~TIFFImageReader();
 
-	Image *decodeImage();
+	MyImage *decodeImage(string file);
 };
 
 #endif

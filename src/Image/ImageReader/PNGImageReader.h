@@ -16,7 +16,7 @@ public:
 	PNGImageReader();
 	virtual ~PNGImageReader();
 
-	Image *decodeImage();
+	MyImage *decodeImage(string file);
 };
 
 

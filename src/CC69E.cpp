@@ -26,13 +26,11 @@ int main(int argc, char* argv[]) {
 
 	cout << "Values: " << proc->getArgAsDouble("-d") << endl;
 	cout << "Values: " << proc->getArgAsInt("-w") << endl;
-	Image *img = new Image(300, 300);
+	MyImage *img = new MyImage(300, 300);
 	delete img;
 
 	ImageFactory *_if = ImageFactory::getInstance();
-	_if->makeImgFromFile(IMAGE_JPG);
-	_if->makeImgFromFile(IMAGE_PNG);
-	_if->makeImgFromFile(IMAGE_TIFF);
+	_if->makeImgFromFile("/home/juanin/ImgA000000.tif");
 
 	ParameterContainer *pc = new ParameterContainer();
 	pc->addParam("myint", new Container(new int(1)));

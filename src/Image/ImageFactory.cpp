@@ -4,7 +4,7 @@
  *  Created on: 11-06-2011
  *      Author: juanin
  */
-#include "Image.h"
+#include "MyImage.h"
 #include "ImageFactory.h"
 #include "ImageReader/ImageReader.h"
 #include "ImageReader/JPGImageReader.h"
@@ -19,27 +19,28 @@ ImageFactory::~ImageFactory(){
 
 }
 
-Image *ImageFactory::makeImgFromFile(ImageTypes type){
-		Image *ret;
-		ImageReader *reader;
+MyImage *ImageFactory::makeImgFromFile(string file){
+	MyImage *ret;
+	ImageReader *reader;
 
-		switch(type){
-			case IMAGE_JPG :
-				reader = new JPGImageReader();
-				ret = reader->decodeImage();
-				break;
-			case IMAGE_PNG:
-				reader = new PNGImageReader();
-				ret = reader->decodeImage();
-				break;
-			case IMAGE_TIFF:
-				reader = new TIFFImageReader();
-				ret = reader->decodeImage();
-				break;
-		}
-		delete reader;
-		return ret;
+	ImageTypes type = IMAGE_TIF;
+	switch(type){
+		case IMAGE_JPG :
+			reader = new JPGImageReader();
+			ret = reader->decodeImage(file);
+			break;
+		case IMAGE_PNG:
+			reader = new PNGImageReader();
+			ret = reader->decodeImage(file);
+			break;
+		case IMAGE_TIF:
+			reader = new TIFFImageReader();
+			ret = reader->decodeImage(file);
+			break;
 	}
+	delete reader;
+	return ret;
+}
 
 string ImageFactory::name(){
 	return "ImageFactory";
