@@ -5,7 +5,6 @@
  *      Author: juanin
  */
 #include "ImageReader.h"
-#include <Magick++.h>
 
 #ifndef TIFFIMAGEREADER
 #define TIFFIMAGEREADER

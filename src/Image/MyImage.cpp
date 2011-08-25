@@ -21,27 +21,27 @@ MyImage::MyImage() {
 }
 
 MyImage::MyImage(unsigned int width, unsigned int height){
-	this->setHeight(height);
-	this->setWidth(width);
-	this->reset();
+	setHeight(height);
+	setWidth(width);
+	reset();
 }
 
 MyImage::~MyImage() {
-	if(this->pixels)
-		this->freePixels();
+	if(pixels)
+		freePixels();
 }
 
 void MyImage::allocPixels(){
-	this->pixels = (unsigned char **)malloc((this->height)*sizeof(unsigned char *));
-	for(unsigned int i=0; i< this->height; ++i){
-		this->pixels[i] = (unsigned char *)malloc((this->width)*sizeof(unsigned char *));
+	pixels = (unsigned char **)malloc((width)*sizeof(unsigned char *));
+	for(unsigned int i=0; i<width; ++i){
+		pixels[i] = (unsigned char *)malloc((height)*sizeof(unsigned char *));
 	}
 }
 void MyImage::freePixels(){
-	for(unsigned int i=0; i< this->height; ++i){
-		free(this->pixels[i]);
+	for(unsigned int i=0; i<width; ++i){
+		free(pixels[i]);
 	}
-	free(this->pixels);
+	free(pixels);
 }
 /**
  *******************************
@@ -56,13 +56,24 @@ void MyImage::setHeight(unsigned int height){
 	this->height = height;
 }
 
-void MyImage::reset(unsigned char def){
-	if(!this->pixels)
-		this->allocPixels();
+void MyImage::setPixel(unsigned int x, unsigned int y, unsigned char color){
+	if(x < this->width && y < this->height)
+		pixels[x][y] = color;
+}
 
-	for(unsigned int y=0; y<this->height; ++y){
-		for(unsigned int x=0; x<this->width; ++x){
-			this->pixels[y][x]= def;
+unsigned char MyImage::getPixel(unsigned int x, unsigned int y){
+	if(x < this->width && y < this->height)
+		return pixels[x][y];
+	return 0;
+}
+
+void MyImage::reset(unsigned char def){
+	if(!pixels)
+		allocPixels();
+
+	for(unsigned int x=0; x<width; ++x){
+		for(unsigned int y=0; y<height; ++y){
+			pixels[x][y]= def;
 		}
 	}
 }

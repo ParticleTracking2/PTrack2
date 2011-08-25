@@ -28,15 +28,16 @@ void Chi2Algorithm::run(){
 
 	AlgorithmStepHandler ash;
 
-	ash.add(new Chi2Step());
-	ash.add(new ChiDifferenceStep());
-	ash.add(new ChiImagePeaksStep());
-	ash.add(new CUFFTStep());
-	ash.add(new FFTWStep());
-	ash.add(new NewtonParticleCenterStep());
-	ash.add(new NewtonParticleDWStep());
 	ash.add(new NormalizeStep());
-	ash.add(new ParticleGridStep());
+
+//	ash.add(new Chi2Step());
+//	ash.add(new ChiDifferenceStep());
+//	ash.add(new ChiImagePeaksStep());
+//	ash.add(new CUFFTStep());
+//	ash.add(new FFTWStep());
+//	ash.add(new NewtonParticleCenterStep());
+//	ash.add(new NewtonParticleDWStep());
+//	ash.add(new ParticleGridStep());
 
 	cout << "Running " << name() << endl;
 	ash.handleData();

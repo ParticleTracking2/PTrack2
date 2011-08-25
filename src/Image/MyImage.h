@@ -28,6 +28,8 @@ public:
 
 	void setWidth(unsigned int width);
 	void setHeight(unsigned int height);
+	void setPixel(unsigned int x, unsigned int y, unsigned char color);
+	unsigned char getPixel(unsigned int x, unsigned int y);
 	void reset(unsigned char def = 0);
 };
 
