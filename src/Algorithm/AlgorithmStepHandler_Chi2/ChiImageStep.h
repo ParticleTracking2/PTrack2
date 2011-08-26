@@ -5,11 +5,14 @@
  *      Author: juanin
  */
 #include "../AlgorithmStepHandler.h"
+#include "fftw3.h"
 
 #ifndef CHIIMAGESTEP
 #define CHIIMAGESTEP
 
 class ChiImageStep: public AlgorithmStepHandler {
+private:
+	void conv2d_fft(MyImage *img, MyImage *ipf);
 public:
 	ChiImageStep();
 	virtual ~ChiImageStep();

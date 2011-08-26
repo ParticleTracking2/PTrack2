@@ -16,6 +16,10 @@ ChiImageStep::~ChiImageStep() {
 	// TODO Auto-generated destructor stub
 }
 
+void ChiImageStep::conv2d_fft(MyImage *img, MyImage *ipf){
+
+}
+
 void ChiImageStep::handleData(ParameterContainer *pc){
 	unsigned int os = (unsigned int)pc->getParam("iOS")->getDataInt();
 	unsigned int ss = (unsigned int)pc->getParam("iSS")->getDataInt();
@@ -33,7 +37,12 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 			ipf->setPixel(x,y,(unsigned char)(ipfval*255));
 		}
 
-	ipf->display();
+	//ipf->display();
+
+	//conv2d_fft( normaldata, ipf*ipf )
+	//conv2d_fft( normaldata*normaldata, ipf )
+	//conv2d_fft( blank, ipf*ipf*ipf )
+
 	if(next)
 		next->handleData(pc);
 }
