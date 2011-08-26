@@ -13,7 +13,6 @@ class ConnectorOutput: public Output {
 public:
 	ConnectorOutput();
 	virtual ~ConnectorOutput();
-	static string name();
 	void writeData(void* data);
 };
 

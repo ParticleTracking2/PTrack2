@@ -11,8 +11,6 @@
 
 class JPGImageReader : public ImageReader {
 public:
-	static string name();
-
 	JPGImageReader();
 	virtual ~JPGImageReader();
 

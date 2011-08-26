@@ -6,10 +6,6 @@
  */
 #include "PNGImageReader.h"
 
-string PNGImageReader::name(){
-	return "PNG";
-}
-
 /**
  *******************************
  * Constructores y Destructores
@@ -29,7 +25,7 @@ PNGImageReader::~PNGImageReader(){
  *******************************
  */
 MyImage *PNGImageReader::decodeImage(string file){
-	cout << ">> Decoding " << name() << endl;
+	cout << ">> Decoding PNGImageReader" << endl;
 	Magick::Image my_image;
 	my_image.read(file);
 

@@ -9,18 +9,14 @@
 
 BinaryOutput::BinaryOutput() {
 	// TODO Auto-generated constructor stub
-	cout << "::Constructing " << name() << endl;
+	cout << "::Constructing BinaryOutput" << endl;
 }
 
 BinaryOutput::~BinaryOutput() {
 	// TODO Auto-generated destructor stub
-	cout << "::Deleting " << name() << endl;
-}
-
-string BinaryOutput::name(){
-	return "BinaryOutput";
+	cout << "::Deleting BinaryOutput" << endl;
 }
 
 void BinaryOutput::writeData(void* data){
-	cout << "::Writing " << name() << endl;
+	cout << "::Writing BinaryOutput" << endl;
 }

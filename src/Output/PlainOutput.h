@@ -13,7 +13,6 @@ class PlainOutput : public Output{
 public:
 	PlainOutput();
 	virtual ~PlainOutput();
-	static string name();
 	void writeData(void* data);
 };
 

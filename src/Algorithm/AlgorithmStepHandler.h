@@ -5,7 +5,10 @@
  *      Author: juanin
  */
 #include <iostream>
-#include <string>
+#include <cmath>
+#include "../Container/ParameterContainer.h"
+#include "../Container/Container.h"
+#include "../Image/MyImage.h"
 using namespace std;
 
 #ifndef ALGORITHMSTEPHANDLER
@@ -15,13 +18,12 @@ class AlgorithmStepHandler {
 protected:
 	AlgorithmStepHandler *next;
 public:
-	static string name();
 	AlgorithmStepHandler();
 	virtual ~AlgorithmStepHandler(){}
 
 	void setNext(AlgorithmStepHandler *nxt);
 	void add(AlgorithmStepHandler *nxt);
-	virtual void handleData();
+	virtual void handleData(ParameterContainer *pc);
 };
 
 #endif

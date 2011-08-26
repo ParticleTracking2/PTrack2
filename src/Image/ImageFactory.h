@@ -24,7 +24,6 @@ private:
 	virtual ~ImageFactory();
 
 public:
-	static string name();
 	MyImage *makeImgFromFile(string file);
 	static ImageFactory *getInstance();
 };

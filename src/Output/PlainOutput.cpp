@@ -9,18 +9,14 @@
 
 PlainOutput::PlainOutput() {
 	// TODO Auto-generated constructor stub
-	cout << "::Constructing " << name() << endl;
+	cout << "::Constructing PlainOutput" << endl;
 }
 
 PlainOutput::~PlainOutput() {
 	// TODO Auto-generated destructor stub
-	cout << "::Deleting " << name() << endl;
-}
-
-string PlainOutput::name(){
-	return "PlainOutput";
+	cout << "::Deleting PlainOutput" << endl;
 }
 
 void PlainOutput::writeData(void* data){
-	cout << "::Writing " << name() << endl;
+	cout << "::Writing PlainOutput" << endl;
 }

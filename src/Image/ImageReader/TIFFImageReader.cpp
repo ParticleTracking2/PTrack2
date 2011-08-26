@@ -6,9 +6,6 @@
  */
 #include "TIFFImageReader.h"
 
-string TIFFImageReader::name(){
-	return "TIFF";
-}
 /**
  *******************************
  * Constructores y Destructores
@@ -28,7 +25,7 @@ TIFFImageReader::~TIFFImageReader(){
  *******************************
  */
 MyImage *TIFFImageReader::decodeImage(string file){
-	cout << ">> Decoding " << name() << endl;
+	cout << ">> Decoding TIFFImageReader" << endl;
 
 	Magick::Image my_image;
 	my_image.read(file);
@@ -45,15 +42,6 @@ MyImage *TIFFImageReader::decodeImage(string file){
 			my_color_mean = (unsigned char)(my_color.shade()*255);
 			ret->setPixel(x,y,my_color_mean);
 		}
-
-// Crear Nueva imagen de ImageMagick a partir de la clase Propia y desplegar.
-//	Magick::Image my_image2(Magick::Geometry(max_x, max_y), Magick::ColorGray(0));
-//	for(unsigned int x = 0; x < max_x; ++x)
-//			for(unsigned int y = 0; y < max_y; ++y){
-//				my_color.shade(ret->getPixel(x,y)/255.0);
-//				my_image2.pixelColor(x,y, my_color);
-//			}
-//	my_image2.display();
 
 	return ret;
 }

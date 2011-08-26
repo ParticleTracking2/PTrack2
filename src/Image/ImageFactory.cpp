@@ -12,11 +12,11 @@
 #include "ImageReader/TIFFImageReader.h"
 
 ImageFactory::ImageFactory(){
-
+	// Do nothing
 }
 
 ImageFactory::~ImageFactory(){
-
+	// Do nothing
 }
 /**
  * Construye una imagen manipulable a partir de la ruta de una imagen de disco
@@ -50,10 +50,6 @@ MyImage *ImageFactory::makeImgFromFile(string file){
 	}
 	delete reader;
 	return ret;
-}
-
-string ImageFactory::name(){
-	return "ImageFactory";
 }
 
 ImageFactory* ImageFactory::myInstance = 0;

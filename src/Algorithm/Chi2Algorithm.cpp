@@ -7,10 +7,6 @@
 
 #include "Chi2Algorithm.h"
 
-string Chi2Algorithm::name(){
-	return "CHi^2 Algorithm";
-}
-
 Chi2Algorithm::Chi2Algorithm() {
 	// TODO Auto-generated constructor stub
 }
@@ -24,21 +20,11 @@ void Chi2Algorithm::setInitialValues(ParameterContainer *pc){
 }
 
 void Chi2Algorithm::run(){
-	cout << "Constructing " << name() << endl;
-
+	cout << "Running Chi2Algorithm" << endl;
 	AlgorithmStepHandler ash;
 
 	ash.add(new NormalizeStep());
+	ash.add(new ChiImageStep());
 
-//	ash.add(new Chi2Step());
-//	ash.add(new ChiDifferenceStep());
-//	ash.add(new ChiImagePeaksStep());
-//	ash.add(new CUFFTStep());
-//	ash.add(new FFTWStep());
-//	ash.add(new NewtonParticleCenterStep());
-//	ash.add(new NewtonParticleDWStep());
-//	ash.add(new ParticleGridStep());
-
-	cout << "Running " << name() << endl;
-	ash.handleData();
+	ash.handleData(pc_chi);
 }

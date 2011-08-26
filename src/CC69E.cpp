@@ -16,6 +16,7 @@
 #include "Output/PlainOutput.h"
 #include "Output/ConnectorOutput.h"
 
+#include <math.h>
 #include <iostream>
 using namespace std;
 
@@ -25,29 +26,31 @@ int main(int argc, char* argv[]) {
 	proc->setArgs(argc, argv);
 
 	cout << "Values: " << proc->getArgAsDouble("-d") << endl;
-	cout << "Values: " << proc->getArgAsInt("-w") << endl;
+	cout << "Values: " << proc->getArgAsDouble("-w") << endl;
 	cout << "Values: " << proc->getArgAsString("-i") << endl;
 
 	ImageFactory *_if = ImageFactory::getInstance();
 	MyImage *img = _if->makeImgFromFile(proc->getArgAsString("-i"));
-	delete img;
 
 	ParameterContainer *pc = new ParameterContainer();
-	pc->addParam("myint", new Container(new int(1)));
+	// Agregar Imagen
+	pc->addParam("image", new Container(img));
+	pc->addParam("dD",new Container(proc->getArgAsDouble("-d")));
+	pc->addParam("dW",new Container(proc->getArgAsDouble("-w")));
+
+	// Agregar tamaño de particula ideal
+	int ss = 2*floor((proc->getArgAsDouble("-d")/2)+(4*proc->getArgAsDouble("-w")/2))-1;
+	pc->addParam("iSS", new Container(ss));
+
+	// (size-1)/2 of ideal particle image
+	int os = ((ss-1)/2);
+	pc->addParam("iOS", new Container(os));
 
 	Algorithm *alg = new Chi2Algorithm();
 	alg->setInitialValues(pc);
 	alg->run();
 
 	Output *outp = new PlainOutput();
-	outp->writeData(0);
-	delete outp;
-
-	outp = new BinaryOutput();
-	outp->writeData(0);
-	delete outp;
-
-	outp = new ConnectorOutput();
 	outp->writeData(0);
 	delete outp;
 

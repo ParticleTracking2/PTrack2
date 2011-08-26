@@ -7,11 +7,7 @@
 
 #include "ImageReader.h"
 
-string ImageReader::name(){
-	return "Generic ImageReader";
-}
-
 MyImage *ImageReader::decodeImage(string file){
-	cout << ">> Decoding " << name() << endl;
+	cout << ">> Decoding ImageReader" << endl;
 	return new MyImage();
 }

@@ -7,9 +7,6 @@
 
 #include "AlgorithmStepHandler.h"
 
-string AlgorithmStepHandler::name(){
-	return "AlgorithmStepHandler";
-}
 /**
  *******************************
  * Constructores y Destructores
@@ -34,8 +31,8 @@ void AlgorithmStepHandler::add(AlgorithmStepHandler *nxt){
 		next = nxt;
 }
 
-void AlgorithmStepHandler::handleData(){
-	cout << name() << " Data" << endl;
+void AlgorithmStepHandler::handleData(ParameterContainer *pc){
+	cout << "AlgorithmStepHandler Data" << endl;
 	if(next)
-		next->handleData();
+		next->handleData(pc);
 }

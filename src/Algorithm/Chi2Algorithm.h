@@ -13,9 +13,9 @@ class Chi2Algorithm: public Algorithm {
 private:
 	ParameterContainer *pc_chi;
 public:
-	static string name();
 	Chi2Algorithm();
 	virtual ~Chi2Algorithm();
+
 	void run();
 	void setInitialValues(ParameterContainer *pc);
 };

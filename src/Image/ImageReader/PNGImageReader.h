@@ -11,8 +11,6 @@
 
 class PNGImageReader : public ImageReader {
 public:
-	static string name();
-
 	PNGImageReader();
 	virtual ~PNGImageReader();
 

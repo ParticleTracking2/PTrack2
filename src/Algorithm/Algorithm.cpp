@@ -6,18 +6,13 @@
  */
 
 #include "Algorithm.h"
-#include <iostream>
-#include <string>
+
 using namespace std;
 
-string Algorithm::name(){
-	return "Generic Algorithm";
-}
-
 void Algorithm::run(){
-	cout << name() << "::Running Algorithm" << endl;
+	cout << "Algorithm::Running Algorithm" << endl;
 }
 
 void Algorithm::setInitialValues(ParameterContainer *pc){
-	cout << name() << "::Setting Values" << endl;
+	cout << "Algorithm::Setting Values" << endl;
 }

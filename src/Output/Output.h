@@ -5,7 +5,6 @@
  *      Author: juanin
  */
 #include <iostream>
-#include <string>
 using namespace std;
 
 #ifndef OUTPUT
@@ -13,7 +12,7 @@ using namespace std;
 
 class Output {
 public:
-	static string name();
+	virtual ~Output() { };
 	virtual void writeData(void* data);
 };
 

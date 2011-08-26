@@ -7,9 +7,6 @@
 
 #include "ArgsProcessor.h"
 
-string ArgsProcessor::name() {
-	return "ArgsProcessor";
-}
 /**
  *******************************
  * Constructores y Destructores

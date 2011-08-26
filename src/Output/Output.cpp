@@ -7,10 +7,6 @@
 
 #include "Output.h"
 
-string Output::name(){
-	return "Output";
-}
-
 void Output::writeData(void* data){
-	cout << "::Writing " << name() << endl;
+	cout << "::Writing Output" << endl;
 }

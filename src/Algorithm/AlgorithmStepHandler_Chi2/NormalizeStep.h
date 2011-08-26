@@ -4,7 +4,7 @@
  *  Created on: 12-06-2011
  *      Author: juanin
  */
-#include "AlgorithmStepHandler.h"
+#include "../AlgorithmStepHandler.h"
 
 #ifndef NORMALIZESTEP
 #define NORMALIZESTEP
@@ -14,8 +14,7 @@ public:
 	NormalizeStep();
 	virtual ~NormalizeStep();
 
-	static string name();
-	void handleData();
+	void handleData(ParameterContainer *pc);
 };
 
 #endif

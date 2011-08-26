@@ -28,7 +28,6 @@ private:
 	virtual ~ArgsProcessor();
 
 public:
-	static string name();
 	static ArgsProcessor *getInstance();
 
 	/**

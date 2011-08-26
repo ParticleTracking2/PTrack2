@@ -4,8 +4,9 @@
  *  Created on: 11-06-2011
  *      Author: juanin
  */
-#include <string>
 #include <stdlib.h>
+#include <iostream>
+#include <Magick++.h>
 
 using namespace std;
 
@@ -21,15 +22,17 @@ private:
 	void allocPixels();
 	void freePixels();
 public:
-	static string name();
 	MyImage();
 	MyImage(unsigned int width, unsigned int height);
 	virtual ~MyImage();
 
 	void setWidth(unsigned int width);
 	void setHeight(unsigned int height);
+	unsigned int getWidth();
+	unsigned int getHeight();
 	void setPixel(unsigned int x, unsigned int y, unsigned char color);
 	unsigned char getPixel(unsigned int x, unsigned int y);
+	void display();
 	void reset(unsigned char def = 0);
 };
 

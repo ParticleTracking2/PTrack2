@@ -7,10 +7,6 @@
 
 #include "MyImage.h"
 
-string MyImage::name(){
-	return "Image";
-}
-
 /**
  *******************************
  * Constructores y Destructores
@@ -21,12 +17,14 @@ MyImage::MyImage() {
 }
 
 MyImage::MyImage(unsigned int width, unsigned int height){
+	this->pixels = 0;
 	setHeight(height);
 	setWidth(width);
 	reset();
 }
 
 MyImage::~MyImage() {
+	this->pixels = 0;
 	if(pixels)
 		freePixels();
 }
@@ -61,10 +59,29 @@ void MyImage::setPixel(unsigned int x, unsigned int y, unsigned char color){
 		pixels[x][y] = color;
 }
 
+unsigned int MyImage::getWidth(){
+	return this->width;
+}
+
+unsigned int MyImage::getHeight(){
+	return this->height;
+}
+
 unsigned char MyImage::getPixel(unsigned int x, unsigned int y){
 	if(x < this->width && y < this->height)
 		return pixels[x][y];
 	return 0;
+}
+
+void MyImage::display(){
+	Magick::Image my_image(Magick::Geometry(this->width, this->height), Magick::ColorGray(0));
+	Magick::ColorGray my_color;
+	for(unsigned int x = 0; x < this->width; ++x)
+			for(unsigned int y = 0; y < this->height; ++y){
+				my_color.shade(this->pixels[x][y]/255.0);
+				my_image.pixelColor(x,y, my_color);
+			}
+	my_image.display();
 }
 
 void MyImage::reset(unsigned char def){

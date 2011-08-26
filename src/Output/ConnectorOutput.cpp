@@ -9,17 +9,14 @@
 
 ConnectorOutput::ConnectorOutput() {
 	// TODO Auto-generated constructor stub
-	cout << "::Constructing " << name() << endl;
+	cout << "::Constructing ConnectorOutput" << endl;
 }
 
 ConnectorOutput::~ConnectorOutput() {
 	// TODO Auto-generated destructor stub
-	cout << "::Deleting " << name() << endl;
+	cout << "::Deleting ConnectorOutput" << endl;
 }
 
-string ConnectorOutput::name(){
-	return "ConnectorOutput";
-}
 void ConnectorOutput::writeData(void* data){
-	cout << "::Writing " << name() << endl;
+	cout << "::Writing ConnectorOutput" << endl;
 }

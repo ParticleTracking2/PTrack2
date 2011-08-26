@@ -11,8 +11,6 @@
 
 class TIFFImageReader : public ImageReader {
 public:
-	static string name();
-
 	TIFFImageReader();
 	virtual ~TIFFImageReader();
 

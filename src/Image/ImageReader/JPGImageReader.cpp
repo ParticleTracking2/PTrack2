@@ -6,10 +6,6 @@
  */
 #include "JPGImageReader.h"
 
-string JPGImageReader::name(){
-	return "JPG";
-}
-
 /**
  *******************************
  * Constructores y Destructores
@@ -29,7 +25,7 @@ JPGImageReader::~JPGImageReader(){
  *******************************
  */
 MyImage *JPGImageReader::decodeImage(string file){
-	cout << ">> Decoding " << name() << endl;
+	cout << ">> Decoding JPGImageReader" << endl;
 	Magick::Image my_image;
 	my_image.read(file);
 

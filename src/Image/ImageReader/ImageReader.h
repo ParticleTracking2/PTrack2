@@ -7,7 +7,6 @@
 #include "../MyImage.h"
 #include <Magick++.h>
 #include <iostream>
-#include <string>
 using namespace std;
 
 #ifndef IMAGEREADER
@@ -15,7 +14,6 @@ using namespace std;
 
 class ImageReader {
 public:
-	static string name();
 	virtual ~ImageReader() { };
 	virtual MyImage *decodeImage(string image);
 };

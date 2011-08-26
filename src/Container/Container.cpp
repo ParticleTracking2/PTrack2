@@ -7,8 +7,24 @@
 
 #include "Container.h"
 
+/**
+ *******************************
+ * Constructores y Destructores
+ *******************************
+ */
 Container::Container() {
-	// TODO Auto-generated constructor stub
+	// Do nothing
+}
+Container::Container(int integer){
+	myint = integer;
+}
+
+Container::Container(double dou){
+	mydouble = dou;
+}
+
+Container::Container(string str){
+	mystring = str;
 }
 
 Container::Container(void* data){
@@ -20,8 +36,24 @@ Container::Container(void** data){
 }
 
 Container::~Container() {
-	// TODO Auto-generated destructor stub
 	// Do Nothing
+}
+
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
+void Container::setData(int integer){
+	myint = integer;
+}
+
+void Container::setData(double dou){
+	mydouble = dou;
+}
+
+void Container::setData(string str){
+	mystring = str;
 }
 
 void Container::setData(void* data){
@@ -38,4 +70,16 @@ void* Container::getData(){
 
 void** Container::getData2(){
 	return mydata2;
+}
+
+int Container::getDataInt(){
+	return myint;
+}
+
+double Container::getDataDouble(){
+	return mydouble;
+}
+
+string Container::getDataString(){
+	return mystring;
 }

@@ -13,7 +13,6 @@ class BinaryOutput: public Output {
 public:
 	BinaryOutput();
 	virtual ~BinaryOutput();
-	static string name();
 	void writeData(void* data);
 };
 
