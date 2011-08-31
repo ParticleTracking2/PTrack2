@@ -5,6 +5,7 @@
  *      Author: juanin
  */
 #include "../AlgorithmStepHandler.h"
+#include "../../Container/Array2D.h"
 
 #ifndef NORMALIZESTEP
 #define NORMALIZESTEP

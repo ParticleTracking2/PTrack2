@@ -4,6 +4,7 @@
  *  Created on: 11-06-2011
  *      Author: juanin
  */
+#include "../Container/Array2D.h"
 #include <stdlib.h>
 #include <iostream>
 #include <Magick++.h>
@@ -13,27 +14,18 @@ using namespace std;
 #ifndef MYIMAGE
 #define MYIMAGE
 
-class MyImage {
+class MyImage : public Array2D<double>{
 private:
-	unsigned int width;
-	unsigned int height;
-	unsigned char ** pixels;
-
-	void allocPixels();
-	void freePixels();
+	double _hi;
+	double _lo;
 public:
-	MyImage();
-	MyImage(unsigned int width, unsigned int height);
-	virtual ~MyImage();
-
-	void setWidth(unsigned int width);
-	void setHeight(unsigned int height);
-	unsigned int getWidth();
-	unsigned int getHeight();
-	void setPixel(unsigned int x, unsigned int y, unsigned char color);
-	unsigned char getPixel(unsigned int x, unsigned int y);
+	MyImage(): Array2D() {}
+	MyImage(unsigned int width, unsigned int height): Array2D(width, height) { getHiLo(); }
+	MyImage(Array2D<double>* data): Array2D(data) { getHiLo(); }
+	void getHiLo();
+	void normalize();
 	void display();
-	void reset(unsigned char def = 0);
+	void printHiLo();
 };
 
 #endif

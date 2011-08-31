@@ -10,7 +10,8 @@
 #include "Image/ImageFactory.h"
 #include "Algorithm/Chi2Algorithm.h"
 #include "Container/Container.h"
-#include "Container/MyArray.h"
+#include "Container/Array2D.h"
+#include "Container/Array1D.h"
 #include "Container/ParameterContainer.h"
 #include "Output/Output.h"
 #include "Output/BinaryOutput.h"
@@ -29,11 +30,6 @@ int main(int argc, char* argv[]) {
 	cout << "Values: " << proc->getArgAsDouble("-d") << endl;
 	cout << "Values: " << proc->getArgAsDouble("-w") << endl;
 	cout << "Values: " << proc->getArgAsString("-i") << endl;
-
-	MyArray<int> *arr = new MyArray<int>(300,300);
-	arr->setValue(100,100,999);
-	cout << "ARR Values: " << arr->getValue(100,100) << endl;
-	delete arr;
 
 	ImageFactory *_if = ImageFactory::getInstance();
 	MyImage *img = _if->makeImgFromFile(proc->getArgAsString("-i"));

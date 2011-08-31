@@ -39,7 +39,7 @@ MyImage *JPGImageReader::decodeImage(string file){
 		for(unsigned int y = 0; y < max_y; ++y){
 			my_color = my_image.pixelColor(x,y);
 			my_color_mean = (unsigned char)(my_color.shade()*255);
-			ret->setPixel(x,y,my_color_mean);
+			ret->setValue(x,y,my_color_mean);
 		}
 
 	return ret;

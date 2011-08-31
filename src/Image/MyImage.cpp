@@ -9,88 +9,45 @@
 
 /**
  *******************************
- * Constructores y Destructores
- *******************************
- */
-MyImage::MyImage() {
-	this->pixels = 0;
-}
-
-MyImage::MyImage(unsigned int width, unsigned int height){
-	this->pixels = 0;
-	setHeight(height);
-	setWidth(width);
-	reset();
-}
-
-MyImage::~MyImage() {
-	if(pixels)
-		freePixels();
-}
-
-void MyImage::allocPixels(){
-	pixels = (unsigned char **)malloc((width)*sizeof(unsigned char *));
-	for(unsigned int i=0; i<width; ++i){
-		pixels[i] = (unsigned char *)malloc((height)*sizeof(unsigned char *));
-	}
-}
-
-void MyImage::freePixels(){
-	for(unsigned int i=0; i<width; ++i){
-		free(pixels[i]);
-	}
-	free(pixels);
-}
-/**
- *******************************
  * Metodos
  *******************************
  */
-void MyImage::setWidth(unsigned int width){
-	this->width = width;
+void MyImage::getHiLo(){
+	double hi = this->getValue(0,0);
+	double lo = this->getValue(0,0);
+	for(unsigned int x = 0; x < this->getWidth(); ++x)
+		for(unsigned int y = 0; y < this->getHeight(); ++y){
+			if(hi < this->getValue(x,y))
+				hi = this->getValue(x,y);
+			if(lo > this->getValue(x,y))
+				lo = this->getValue(x,y);
+		}
+
+	this->_hi = hi;
+	this->_lo = lo;
 }
 
-void MyImage::setHeight(unsigned int height){
-	this->height = height;
-}
-
-void MyImage::setPixel(unsigned int x, unsigned int y, unsigned char color){
-	if(x < this->width && y < this->height)
-		pixels[x][y] = color;
-}
-
-unsigned int MyImage::getWidth(){
-	return this->width;
-}
-
-unsigned int MyImage::getHeight(){
-	return this->height;
-}
-
-unsigned char MyImage::getPixel(unsigned int x, unsigned int y){
-	if(x < this->width && y < this->height)
-		return pixels[x][y];
-	return 0;
+void MyImage::normalize(){
+	double newval;
+	double dif = _hi-_lo;
+	for(unsigned int x =0; x < getWidth(); ++x)
+		for(unsigned int y =0; y < getHeight(); ++y){
+			newval = (_hi-getValue(x,y)*1.0)/dif;
+			setValue(x,y,newval);
+		}
 }
 
 void MyImage::display(){
-	Magick::Image my_image(Magick::Geometry(this->width, this->height), Magick::ColorGray(0));
+	Magick::Image my_image(Magick::Geometry(this->getWidth(), this->getHeight()), Magick::ColorGray(0));
 	Magick::ColorGray my_color;
-	for(unsigned int x = 0; x < this->width; ++x)
-			for(unsigned int y = 0; y < this->height; ++y){
-				my_color.shade(this->pixels[x][y]/255.0);
+	for(unsigned int x = 0; x < this->getWidth(); ++x)
+			for(unsigned int y = 0; y < this->getHeight(); ++y){
+				my_color.shade(this->getValue(x,y));
 				my_image.pixelColor(x,y, my_color);
 			}
 	my_image.display();
 }
 
-void MyImage::reset(unsigned char def){
-	if(!pixels)
-		allocPixels();
-
-	for(unsigned int x=0; x<width; ++x){
-		for(unsigned int y=0; y<height; ++y){
-			pixels[x][y]= def;
-		}
-	}
+void MyImage::printHiLo(){
+	cout << "High: " << _hi << "; Low: " << _lo << endl;
 }
