@@ -12,7 +12,7 @@
 
 class ChiImageStep: public AlgorithmStepHandler {
 private:
-	void conv2d_fft(MyImage *img, MyImage *ipf);
+	void conv2d_fft(MyImage *img, MyImage *kernel_img);
 public:
 	ChiImageStep();
 	virtual ~ChiImageStep();

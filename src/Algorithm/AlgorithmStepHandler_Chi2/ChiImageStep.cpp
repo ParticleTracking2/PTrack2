@@ -16,7 +16,8 @@ ChiImageStep::~ChiImageStep() {
 	// TODO Auto-generated destructor stub
 }
 
-void ChiImageStep::conv2d_fft(MyImage *img, MyImage *ipf){
+void ChiImageStep::conv2d_fft(MyImage *img, MyImage *kernel_img){
+	fftw_complex    *fft_image, *fft_kernel;
 
 }
 

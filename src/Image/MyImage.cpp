@@ -13,7 +13,7 @@
  *******************************
  */
 MyImage::MyImage() {
-	// Hagase nada!
+	this->pixels = 0;
 }
 
 MyImage::MyImage(unsigned int width, unsigned int height){
@@ -24,7 +24,6 @@ MyImage::MyImage(unsigned int width, unsigned int height){
 }
 
 MyImage::~MyImage() {
-	this->pixels = 0;
 	if(pixels)
 		freePixels();
 }
@@ -35,6 +34,7 @@ void MyImage::allocPixels(){
 		pixels[i] = (unsigned char *)malloc((height)*sizeof(unsigned char *));
 	}
 }
+
 void MyImage::freePixels(){
 	for(unsigned int i=0; i<width; ++i){
 		free(pixels[i]);
