@@ -125,7 +125,6 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 	//conv2d_fft( blank, ipf*ipf*ipf )
 	Array2D<double> *third_term 	= getThirdTerm(img, kernel_img);
 
-
 	double newval;
 	for(unsigned int x=0; x < first_term->getWidth(); ++x)
 		for(unsigned int y=0; y < first_term->getWidth(); ++y){

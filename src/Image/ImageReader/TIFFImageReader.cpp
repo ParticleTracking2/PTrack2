@@ -40,6 +40,7 @@ MyImage *TIFFImageReader::decodeImage(string file){
 			my_color = my_image.pixelColor(x,y);
 			ret->setValue(x,y,my_color.shade());
 		}
+	ret->getHiLo();
 
 	return ret;
 }
