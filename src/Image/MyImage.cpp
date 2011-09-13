@@ -12,27 +12,13 @@
  * Metodos
  *******************************
  */
-void MyImage::getHiLo(){
-	double hi = this->getValue(0,0);
-	double lo = this->getValue(0,0);
-	for(unsigned int x = 0; x < this->getWidth(); ++x)
-		for(unsigned int y = 0; y < this->getHeight(); ++y){
-			if(hi < this->getValue(x,y))
-				hi = this->getValue(x,y);
-			if(lo > this->getValue(x,y))
-				lo = this->getValue(x,y);
-		}
-
-	this->_hi = hi;
-	this->_lo = lo;
-}
 
 void MyImage::normalize(){
 	double newval;
-	double dif = _hi-_lo;
+	double dif = this->getHigh()-this->getLow();
 	for(unsigned int x =0; x < getWidth(); ++x)
 		for(unsigned int y =0; y < getHeight(); ++y){
-			newval = (_hi-getValue(x,y)*1.0)/dif;
+			newval = (this->getHigh()-getValue(x,y)*1.0)/dif;
 			setValue(x,y,newval);
 		}
 }
@@ -46,8 +32,4 @@ void MyImage::display(){
 				my_image.pixelColor(x,y, my_color);
 			}
 	my_image.display();
-}
-
-void MyImage::printHiLo(){
-	cout << "High: " << _hi << "; Low: " << _lo << endl;
 }

@@ -32,7 +32,10 @@ void AlgorithmStepHandler::add(AlgorithmStepHandler *nxt){
 }
 
 void AlgorithmStepHandler::handleData(ParameterContainer *pc){
-	cout << "AlgorithmStepHandler Data" << endl;
 	if(next)
 		next->handleData(pc);
+}
+
+void AlgorithmStepHandler::printDescription(){
+	cout << "::: No description available :::" << endl;
 }

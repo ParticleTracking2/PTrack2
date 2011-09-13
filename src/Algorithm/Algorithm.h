@@ -7,6 +7,8 @@
 #include "AlgorithmStepHandler.h"
 #include "AlgorithmStepHandler_Chi2/NormalizeStep.h"
 #include "AlgorithmStepHandler_Chi2/ChiImageStep.h"
+#include "AlgorithmStepHandler_Chi2/PeaksStep.h"
+#include "AlgorithmStepHandler_Chi2/ParticleGridStep.h"
 #include "../Container/ParameterContainer.h"
 #include "../Container/Container.h"
 

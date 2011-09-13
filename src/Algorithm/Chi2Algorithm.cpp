@@ -25,6 +25,8 @@ void Chi2Algorithm::run(){
 
 	ash.add(new NormalizeStep());
 	ash.add(new ChiImageStep());
+	ash.add(new PeaksStep());
+	ash.add(new ParticleGridStep());
 
 	ash.handleData(pc_chi);
 }

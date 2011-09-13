@@ -7,14 +7,11 @@
 
 #include "ChiImageStep.h"
 
-ChiImageStep::ChiImageStep() {
-	// TODO Auto-generated constructor stub
-
-}
-
-ChiImageStep::~ChiImageStep() {
-	// TODO Auto-generated destructor stub
-}
+/**
+ *******************************
+ * Metodos
+ *******************************
+ */
 
 Array2D<double>* ChiImageStep::conv2d_fft(Array2D<double> *img, Array2D<double> *kernel_img){
 	fftw_complex	*fft_image, *fft_kernel;
@@ -87,28 +84,37 @@ Array2D<double>* ChiImageStep::conv2d_fft(Array2D<double> *img, Array2D<double> 
 }
 
 Array2D<double>* ChiImageStep::getFirstTerm(Array2D<double> *img, Array2D<double> *kernel_img){
+//	kernel_img->setPower(2);
 	Array2D<double> *kernel_img2 = new Array2D<double>(kernel_img); kernel_img2->squareIt();
-	return conv2d_fft(img, kernel_img2);
+	Array2D<double> *ret = conv2d_fft(img, kernel_img2);
+//	kernel_img->setPower(1);
+	return ret;
 }
 Array2D<double>* ChiImageStep::getSecondTerm(Array2D<double> *img, Array2D<double> *kernel_img){
+//	img->setPower(2);
 	Array2D<double> *img2 = new Array2D<double>(img); img2->squareIt();
-	return conv2d_fft(img2, kernel_img);
+	Array2D<double> *ret = conv2d_fft(img2, kernel_img);
+//	img->setPower(1);
+	return ret;
 }
 Array2D<double>* ChiImageStep::getThirdTerm(Array2D<double> *img, Array2D<double> *kernel_img){
+//	kernel_img->setPower(3);
 	Array2D<double> *kernel_img3 = new Array2D<double>(kernel_img); kernel_img3->cubeIt();
-	Array2D<double> *blank = new Array2D<double>(img->getWidth(),img->getHeight());
-	return conv2d_fft(blank, kernel_img3);
+	Array2D<double> *blank = new Array2D<double>(img->getWidth(),img->getHeight(), 1.0);
+	Array2D<double> *ret =  conv2d_fft(blank, kernel_img3);
+//	kernel_img->setPower(1.0);
+	return ret;
 }
 
 void ChiImageStep::handleData(ParameterContainer *pc){
-	cout << "ChiImageStep Data" << endl;
+	printDescription();
 	unsigned int os = (unsigned int)pc->getParam("iOS")->getDataInt();
 	unsigned int ss = (unsigned int)pc->getParam("iSS")->getDataInt();
 	double d = pc->getParam("dD")->getDataDouble();
 	double w = pc->getParam("dW")->getDataDouble();
 	Array2D<double> *img = (Array2D<double> *)pc->getParam("normal_image")->getData();
-
 	Array2D<double> *kernel_img = new Array2D<double>(ss,ss);
+
 	double absolute;
 	double ipfval;
 	for(unsigned int x=0; x < ss; ++x)
@@ -120,19 +126,21 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 
 	//conv2d_fft( normaldata, ipf*ipf )
 	Array2D<double> *first_term 	= getFirstTerm(img, kernel_img);
+	first_term->printInfo();
 	//conv2d_fft( normaldata*normaldata, ipf )
 	Array2D<double> *second_term 	= getSecondTerm(img, kernel_img);
+	second_term->printInfo();
 	//conv2d_fft( blank, ipf*ipf*ipf )
 	Array2D<double> *third_term 	= getThirdTerm(img, kernel_img);
-
+	third_term->printInfo();
 	double newval;
 	for(unsigned int x=0; x < first_term->getWidth(); ++x)
 		for(unsigned int y=0; y < first_term->getWidth(); ++y){
 			newval = 1.0/(1.0+ (-2.0*first_term->getValue(x,y) +second_term->getValue(x,y))/third_term->getValue(x,y));
 			first_term->setValue(x,y, newval);
 		}
-
-	pc->addParam("chi_image", new Container(first_term));
+	first_term->printInfo();
+	pc->addParam("chi_image", new Container(first_term), "[Array2D<double>] Imagen como Chi2");
 
 	if(next)
 		next->handleData(pc);

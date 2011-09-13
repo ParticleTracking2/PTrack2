@@ -64,6 +64,10 @@ void Container::setData(void** data){
 	mydata2 = data;
 }
 
+void Container::setDescription(string desc){
+	_description = desc;
+}
+
 void* Container::getData(){
 	return mydata;
 }
@@ -83,3 +87,8 @@ double Container::getDataDouble(){
 string Container::getDataString(){
 	return mystring;
 }
+
+string Container::getDescription(){
+	return _description;
+}
+

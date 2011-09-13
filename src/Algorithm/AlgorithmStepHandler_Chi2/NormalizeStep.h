@@ -12,9 +12,6 @@
 
 class NormalizeStep: public AlgorithmStepHandler {
 public:
-	NormalizeStep();
-	virtual ~NormalizeStep();
-
 	void handleData(ParameterContainer *pc);
 };
 

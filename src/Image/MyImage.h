@@ -15,17 +15,12 @@ using namespace std;
 #define MYIMAGE
 
 class MyImage : public Array2D<double>{
-private:
-	double _hi;
-	double _lo;
 public:
 	MyImage(): Array2D() {}
-	MyImage(unsigned int width, unsigned int height): Array2D(width, height) { getHiLo(); }
-	MyImage(Array2D<double>* data): Array2D(data) { getHiLo(); }
-	void getHiLo();
+	MyImage(unsigned int width, unsigned int height): Array2D(width, height) { this->getHiLo(); }
+	MyImage(Array2D<double>* data): Array2D(data) { this->getHiLo(); }
 	void normalize();
 	void display();
-	void printHiLo();
 };
 
 #endif

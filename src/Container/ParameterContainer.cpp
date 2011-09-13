@@ -27,10 +27,18 @@ ParameterContainer::~ParameterContainer() {
  */
 void ParameterContainer::addParam(string key, Container* data){
 	my_data.insert(pair<string, Container*>(key,data));
-	keys.push_back(key);
+}
+
+void ParameterContainer::addParam(string key, Container* data, string description){
+	data->setDescription(description);
+	my_data.insert(pair<string, Container*>(key,data));
 }
 
 void ParameterContainer::setParam(string key, Container* data){
+	setParam(key,data,"");
+}
+
+void ParameterContainer::setParam(string key, Container* data, string description){
 
 }
 
@@ -59,7 +67,12 @@ Container* ParameterContainer::getParam(string key){
 }
 
 vector <string> ParameterContainer::getKeys(){
-	return keys;
+	vector<string> my_keys;
+	map<string, Container*>::iterator it;
+	for(it = my_data.begin(); it != my_data.end(); ++it){
+		my_keys.push_back(it->first);
+	}
+	return my_keys;
 }
 
 void* ParameterContainer::getData(string key){
@@ -74,4 +87,16 @@ void** ParameterContainer::getData2(string key){
 		return getParam(key)->getData2();
 	else
 		return NULL;
+}
+
+void ParameterContainer::printInformation(){
+	cout << "**********************************" << endl;
+	cout << "ParameterContainer Information:" << endl;
+	map<string, Container*>::iterator it;
+	for(it = my_data.begin(); it != my_data.end(); ++it){
+		cout << "Key: " << "'" << it->first << "'\t\t";
+		//cout << " Type: " << "'" << typeid(getData(keys[i])).name() << "'\t\t";
+		cout << " Description: " << "'" << it->second->getDescription() << "'" << endl;
+	}
+	cout << "**********************************" << endl;
 }

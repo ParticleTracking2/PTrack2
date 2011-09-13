@@ -17,6 +17,7 @@ private:
 	int myint;
 	double mydouble;
 	string mystring;
+	string _description;
 public:
 	Container();
 	Container(int integer);
@@ -31,12 +32,14 @@ public:
 	void setData(string str);
 	void setData(void* data);
 	void setData(void** data);
+	void setDescription(string desc);
 
 	void* getData();
 	void** getData2();
 	int getDataInt();
 	double getDataDouble();
 	string getDataString();
+	string getDescription();
 };
 
 #endif

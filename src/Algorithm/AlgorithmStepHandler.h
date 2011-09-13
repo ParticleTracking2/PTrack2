@@ -24,6 +24,7 @@ public:
 	void setNext(AlgorithmStepHandler *nxt);
 	void add(AlgorithmStepHandler *nxt);
 	virtual void handleData(ParameterContainer *pc);
+	virtual void printDescription();
 };
 
 #endif

@@ -18,9 +18,6 @@ private:
 	Array2D<double>* getSecondTerm(Array2D<double> *img, Array2D<double> *kernel_img);
 	Array2D<double>* getThirdTerm(Array2D<double> *img, Array2D<double> *kernel_img);
 public:
-	ChiImageStep();
-	virtual ~ChiImageStep();
-
 	void handleData(ParameterContainer *pc);
 };
 

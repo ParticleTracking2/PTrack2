@@ -9,29 +9,15 @@
 
 /**
  *******************************
- * Constructores y Destructores
- *******************************
- */
-NormalizeStep::NormalizeStep() {
-	// Do Nothing
-}
-
-NormalizeStep::~NormalizeStep() {
-	// Do Nothing
-}
-
-/**
- *******************************
  * Metodos
  *******************************
  */
 void NormalizeStep::handleData(ParameterContainer *pc){
-	cout << "NormalizeStep Data" << endl;
-	Container *container = pc->getParam("image");
-	MyImage *img = (MyImage *)container->getData();
+	printDescription();
+	MyImage *img = (MyImage *)pc->popParam("image")->getData();
 	img->normalize();
 
-	pc->addParam("normal_image", new Container(img));
+	pc->addParam("normal_image", new Container(img), "[MyImage] Imagen normalizada (Invertidos los colores)");
 
 	if(next)
 		next->handleData(pc);
