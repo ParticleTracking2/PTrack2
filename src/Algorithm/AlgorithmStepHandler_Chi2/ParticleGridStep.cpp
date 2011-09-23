@@ -35,17 +35,20 @@ void ParticleGridStep::handleData(ParameterContainer *pc){
 	unsigned int currentX, currentY;
 	double currentDistance = 0.0;
 	double currentDistanceAux = 0.0;
+
 	if(!peaks->empty())
-	for(unsigned int npks = peaks->size()-1; npks >= 0; --npks){
+	for(int npks = peaks->size()-1; npks >= 0; --npks){
 		for(unsigned int localX=0; localX < 2*half+1; ++localX)
 			for(unsigned int localY=0; localY < 2*half+1; ++localY){
 				currentX = (int)round(px[npks]) - ss + (localX - half);
 				currentY = (int)round(py[npks]) - ss + (localY - half);
 				if( 0 <= currentX && currentX < img->getWidth() && 0 <= currentY && currentY < img->getHeight() ){
-					currentDistance = sqrt(pow(grid_x->getValue(currentX, currentY),2) + pow(grid_y->getValue(currentX, currentY),2) );
+					currentDistance =
+							sqrt(grid_x->getValue(currentX, currentY)*grid_x->getValue(currentX, currentY)
+								+ grid_y->getValue(currentX, currentY)*grid_y->getValue(currentX, currentY));
 					currentDistanceAux =
-							sqrt(1.0*pow((1.0*localX-half+peaks->at(npks).getX() - px[npks]),2) +
-								 1.0*pow((1.0*localY-half+peaks->at(npks).getY() - py[npks]),2));
+							sqrt(1.0*(1.0*localX-half+peaks->at(npks).getX() - px[npks])*(1.0*localX-half+peaks->at(npks).getX() - px[npks]) +
+								 1.0*(1.0*localY-half+peaks->at(npks).getY() - py[npks])*(1.0*localY-half+peaks->at(npks).getY() - py[npks]));
 
 					if(currentDistance >= currentDistanceAux){
 						over->setValue(currentX, currentY, npks+1);
@@ -61,7 +64,14 @@ void ParticleGridStep::handleData(ParameterContainer *pc){
 	if(!peaks->empty()){
 		cout << "Total pgrid: " << 1.0*counter/peaks->size() << "; counter: " << counter << endl;
 	}
-	//pc->printInformation();
+
+	pc->addParam("grid_x", new Container(grid_x), "[Array2D<double>]");
+	pc->addParam("grid_y", new Container(grid_y), "[Array2D<double>]");
+	pc->addParam("over", new Container(over), "[Array2D<int>]");
+
+	pc->addParam("px", new Container(&px), "[vector<double>]");
+	pc->addParam("py", new Container(&py), "[vector<double>]");
+	pc->printInformation();
 
 	if(next)
 		next->handleData(pc);
