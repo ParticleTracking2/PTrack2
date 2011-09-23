@@ -44,6 +44,7 @@ public:
 	void squareIt();
 	void cubeIt();
 	myType getValue(unsigned int x, unsigned int y);
+	myType getValuePow(unsigned int x, unsigned int y);
 
 	void reset(myType def = 0);
 
@@ -166,6 +167,14 @@ void Array2D<myType>::cubeIt(){
 
 template <class myType>
 myType Array2D<myType>::getValue(unsigned int x, unsigned int y){
+	if(x < _width && y < _height){
+		return data[x][y];
+	}
+	return 0;
+}
+
+template <class myType>
+myType Array2D<myType>::getValuePow(unsigned int x, unsigned int y){
 	if(x < _width && y < _height){
 		return pow(data[x][y],_power);
 	}

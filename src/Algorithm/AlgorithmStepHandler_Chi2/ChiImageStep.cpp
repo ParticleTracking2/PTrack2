@@ -38,12 +38,12 @@ Array2D<double>* ChiImageStep::conv2d_fft(Array2D<double> *img, Array2D<double> 
 	//populate kernel and shift input
 	for(unsigned int i = 0 ; i < kernel_img->getWidth() ; ++i )
 		for(unsigned int j=0; j < kernel_img->getHeight(); ++j){
-			kernel[i*nwidth+ j]= kernel_img->getValue(i,j);
+			kernel[i*nwidth+ j]= kernel_img->getValuePow(i,j);
 		}
 
 	for(unsigned int i = 0 ; i < img->getWidth() ; ++i )
 		for(unsigned int j=0; j < img->getHeight(); ++j){
-			data[i*nwidth+ j]= img->getValue(i,j);
+			data[i*nwidth+ j]= img->getValuePow(i,j);
 		}
 
 	/** FFT Execute */
@@ -53,9 +53,13 @@ Array2D<double>* ChiImageStep::conv2d_fft(Array2D<double> *img, Array2D<double> 
 		fftw_execute( plan_forward_kernel );
 
 		//convolution in fourier domain
+		double f1, f2;
 		for(unsigned int i=0; i< nwidth * (floor(nheight/2) + 1) ; ++i){
-			fft_image[i][0]=(fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1])/(nwidth*nheight);
-			fft_image[i][1]=(fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0])/(nwidth*nheight);
+			f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
+			f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];
+
+			fft_image[i][0]=f1/(nwidth*nheight);
+			fft_image[i][1]=f2/(nwidth*nheight);
 		}
 
 		//ifft of the product
@@ -84,25 +88,22 @@ Array2D<double>* ChiImageStep::conv2d_fft(Array2D<double> *img, Array2D<double> 
 }
 
 Array2D<double>* ChiImageStep::getFirstTerm(Array2D<double> *img, Array2D<double> *kernel_img){
-//	kernel_img->setPower(2);
-	Array2D<double> *kernel_img2 = new Array2D<double>(kernel_img); kernel_img2->squareIt();
-	Array2D<double> *ret = conv2d_fft(img, kernel_img2);
-//	kernel_img->setPower(1);
+	kernel_img->setPower(2);
+	Array2D<double> *ret = conv2d_fft(img, kernel_img);
+	kernel_img->setPower(1);
 	return ret;
 }
 Array2D<double>* ChiImageStep::getSecondTerm(Array2D<double> *img, Array2D<double> *kernel_img){
-//	img->setPower(2);
-	Array2D<double> *img2 = new Array2D<double>(img); img2->squareIt();
-	Array2D<double> *ret = conv2d_fft(img2, kernel_img);
-//	img->setPower(1);
+	img->setPower(2);
+	Array2D<double> *ret = conv2d_fft(img, kernel_img);
+	img->setPower(1);
 	return ret;
 }
 Array2D<double>* ChiImageStep::getThirdTerm(Array2D<double> *img, Array2D<double> *kernel_img){
-//	kernel_img->setPower(3);
-	Array2D<double> *kernel_img3 = new Array2D<double>(kernel_img); kernel_img3->cubeIt();
+	kernel_img->setPower(3);
 	Array2D<double> *blank = new Array2D<double>(img->getWidth(),img->getHeight(), 1.0);
-	Array2D<double> *ret =  conv2d_fft(blank, kernel_img3);
-//	kernel_img->setPower(1.0);
+	Array2D<double> *ret =  conv2d_fft(blank, kernel_img);
+	kernel_img->setPower(1);
 	return ret;
 }
 
@@ -126,20 +127,18 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 
 	//conv2d_fft( normaldata, ipf*ipf )
 	Array2D<double> *first_term 	= getFirstTerm(img, kernel_img);
-	first_term->printInfo();
 	//conv2d_fft( normaldata*normaldata, ipf )
 	Array2D<double> *second_term 	= getSecondTerm(img, kernel_img);
-	second_term->printInfo();
 	//conv2d_fft( blank, ipf*ipf*ipf )
 	Array2D<double> *third_term 	= getThirdTerm(img, kernel_img);
-	third_term->printInfo();
+
 	double newval;
 	for(unsigned int x=0; x < first_term->getWidth(); ++x)
-		for(unsigned int y=0; y < first_term->getWidth(); ++y){
+		for(unsigned int y=0; y < first_term->getHeight(); ++y){
 			newval = 1.0/(1.0+ (-2.0*first_term->getValue(x,y) +second_term->getValue(x,y))/third_term->getValue(x,y));
 			first_term->setValue(x,y, newval);
 		}
-	first_term->printInfo();
+
 	pc->addParam("chi_image", new Container(first_term), "[Array2D<double>] Imagen como Chi2");
 
 	if(next)

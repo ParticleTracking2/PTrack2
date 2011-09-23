@@ -10,6 +10,7 @@
 #include <vector>
 #include <math.h>
 #include <algorithm>
+#include <time.h>
 
 #ifndef PEAKSSTEP
 #define PEAKSSTEP
@@ -21,8 +22,8 @@ private:
 	int _mindistance;
 	Array2D<double> *chi_img;
 
-	bool findLocalMinimum(Array2D<double> *img, unsigned int imgX, unsigned int imgY);
-	void validatePeaks(vector<MyPeak> *peaks);
+	bool findLocalMinimum(unsigned int imgX, unsigned int imgY);
+	vector<MyPeak> validatePeaks(vector<MyPeak> *peaks);
 public:
 	PeaksStep();
 	void handleData(ParameterContainer *pc);

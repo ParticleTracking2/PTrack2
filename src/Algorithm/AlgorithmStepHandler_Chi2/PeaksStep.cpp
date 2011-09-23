@@ -29,60 +29,79 @@ void PeaksStep::handleData(ParameterContainer *pc){
 	chi_img = (Array2D<double> *)pc->getParam("chi_image")->getData();
 
 	vector<MyPeak> *peaks = new vector<MyPeak>();
-
+	clock_t start = clock();
 	for(unsigned int x=0; x < chi_img->getWidth(); ++x)
 		for(unsigned int y=0; y < chi_img->getHeight(); ++y){
 			if(chi_img->getValue(x,y) > _threshold){
-				if(findLocalMinimum(chi_img,x,y)){
+				if(findLocalMinimum(x,y)){
 					MyPeak local(x,y, chi_img->getValue(x,y));
 					peaks->push_back(local);
 				}
 			}
 		}
 
-	cout << "Peaks detected: " << peaks->size() << " Of " << chi_img->getHeight()*chi_img->getWidth() << endl;
-	sort(peaks->begin(), peaks->end(), MyPeak::compare);
-	validatePeaks(peaks);
+	clock_t stop = clock();
+	cout << "TimePeaks: " << ((stop-start)*1000/CLOCKS_PER_SEC) << endl;
 
-	pc->addParam("peaks", new Container(peaks), "[vector<MyPeak>] Maximos encontrados a partir de la imagen Chi2");
+	cout << "Peaks detected: " << peaks->size() << " Of " << chi_img->getHeight()*chi_img->getWidth() << endl;
+	sort(peaks->begin(), peaks->end(), MyPeak::compareMe);
+
+	start = clock();
+	vector<MyPeak> valids = validatePeaks(peaks);
+	stop = clock();
+
+	cout << "Peaks detected valids: " << valids.size() << " Of " << chi_img->getHeight()*chi_img->getWidth() << endl;
+	cout << "TimeValid: " << ((stop-start)*1000/CLOCKS_PER_SEC) << endl;
+	pc->addParam("peaks", new Container(&valids), "[vector<MyPeak>] Maximos encontrados a partir de la imagen Chi2");
 
 	if(next)
 		next->handleData(pc);
 }
 
 // Eliminar los que no cumplen con la minima distancia
-void PeaksStep::validatePeaks(vector<MyPeak> *peaks){
+vector<MyPeak> PeaksStep::validatePeaks(vector<MyPeak> *peaks){
 	int difx = 0;
 	int dify = 0;
+	bool valid = true;
+	vector<MyPeak> valids;
 	for(unsigned int i=0; i < peaks->size(); ++i){
+		valid = true;
 		for(unsigned int j=i+1; j < peaks->size(); ++j){
 			difx = peaks->at(i).getX() - peaks->at(j).getX();
 			dify = peaks->at(i).getY() - peaks->at(j).getY();
 
-			if(sqrt(difx*difx + dify*dify) < _mindistance){
-				peaks->erase(peaks->begin()+(i-1));
+			if( (difx*difx + dify*dify) < _mindistance*_mindistance){
+				valid = false;
+				break;
 			}
 		}
+		if(valid){
+			valids.push_back(peaks->at(i));
+		}
 	}
+	return valids;
 }
 
-bool PeaksStep::findLocalMinimum(Array2D<double> *img, unsigned int imgX, unsigned int imgY){
+bool PeaksStep::findLocalMinimum(unsigned int imgX, unsigned int imgY){
 	int currentX = 0;
 	int currentY = 0;
 	for(int localX = _minsep; localX >= -_minsep; --localX){
-		currentX = (imgX+localX);
-		if(currentX < 0)
-			currentX = img->getWidth() + currentX;
-		currentX = currentX % img->getWidth();
-
 		for(int localY = _minsep; localY >= -_minsep; --localY){
-			currentY = (imgY+localY);
-			if(currentY < 0)
-				currentY = img->getHeight() + currentY;
-			currentY = currentY % img->getHeight();
+			if(localX != 0 && localY != 0){
+				currentX = (imgX+localX);
+				currentY = (imgY+localY);
 
-			if(img->getValue(imgX, imgY) <= img->getValue(currentX, currentY))
-				return false;
+				if(currentX < 0)
+					currentX = chi_img->getWidth() + currentX;
+				if(currentY < 0)
+					currentY = chi_img->getHeight() + currentY;
+
+				currentX = (currentX)% chi_img->getWidth();
+				currentY = (currentY)% chi_img->getHeight();
+
+				if(chi_img->getValue(imgX, imgY) <= chi_img->getValue(currentX, currentY))
+					return false;
+			}
 		}
 	}
 	return true;

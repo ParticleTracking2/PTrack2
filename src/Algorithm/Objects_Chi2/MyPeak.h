@@ -26,8 +26,8 @@ public:
 	unsigned int getY();
 	double getIntensity();
 
-	static bool compare(MyPeak first, MyPeak second){
-		return (first.getIntensity() > second.getIntensity());
+	static bool compareMe(MyPeak first, MyPeak second){
+		return first.getIntensity() < second.getIntensity();
 	}
 };
 
