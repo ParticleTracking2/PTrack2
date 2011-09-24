@@ -54,8 +54,8 @@ void PeaksStep::handleData(ParameterContainer *pc){
 	cout << "TimeValid: " << ((stop-start)*1000/CLOCKS_PER_SEC) << endl;
 	pc->addParam("peaks", new Container(&valids), "[vector<MyPeak>] Maximos encontrados a partir de la imagen Chi2");
 
-//	if(next)
-//		next->handleData(pc);
+	if(next)
+		next->handleData(pc);
 }
 
 // Eliminar los que no cumplen con la minima distancia
