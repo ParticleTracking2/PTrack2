@@ -125,12 +125,21 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 			kernel_img->setValue(x,y,ipfval);
 		}
 
+	Array2D<double> *first_term = getChiImage(img,kernel_img);
+
+	pc->addParam("chi_image", new Container(first_term), "[Array2D<double>] Imagen como Chi2");
+	pc->addParam("kernel_image", new Container(kernel_img), "[Array2D<double>] Imagen de particula ideal");
+	if(next)
+		next->handleData(pc);
+}
+
+Array2D<double>* ChiImageStep::getChiImage(Array2D<double> *base_img, Array2D<double> *kernel_img){
 	//conv2d_fft( normaldata, ipf*ipf )
-	Array2D<double> *first_term 	= getFirstTerm(img, kernel_img);
+	Array2D<double> *first_term 	= getFirstTerm(base_img, kernel_img);
 	//conv2d_fft( normaldata*normaldata, ipf )
-	Array2D<double> *second_term 	= getSecondTerm(img, kernel_img);
+	Array2D<double> *second_term 	= getSecondTerm(base_img, kernel_img);
 	//conv2d_fft( blank, ipf*ipf*ipf )
-	Array2D<double> *third_term 	= getThirdTerm(img, kernel_img);
+	Array2D<double> *third_term 	= getThirdTerm(base_img, kernel_img);
 
 	double newval;
 	for(unsigned int x=0; x < first_term->getWidth(); ++x)
@@ -139,8 +148,5 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 			first_term->setValue(x,y, newval);
 		}
 
-	pc->addParam("chi_image", new Container(first_term), "[Array2D<double>] Imagen como Chi2");
-
-	if(next)
-		next->handleData(pc);
+	return first_term;
 }

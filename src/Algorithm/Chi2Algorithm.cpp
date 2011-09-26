@@ -21,12 +21,18 @@ void Chi2Algorithm::setInitialValues(ParameterContainer *pc){
 
 void Chi2Algorithm::run(){
 	cout << "Running Chi2Algorithm" << endl;
+	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	AlgorithmStepHandler ash;
 
 	ash.add(new NormalizeStep());
 	ash.add(new ChiImageStep());
 	ash.add(new PeaksStep());
 	ash.add(new ParticleGridStep());
+	ash.add(new ChiDifferenceStep());
+	// Si esta el parametro hdensity
+	if(proc->hasKey("-hdensity")){
+		ash.add(new AddMissedPeaks_Step());
+	}
 
 	ash.handleData(pc_chi);
 }

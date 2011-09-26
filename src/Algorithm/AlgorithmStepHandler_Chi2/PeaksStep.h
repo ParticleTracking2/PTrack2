@@ -20,10 +20,9 @@ private:
 	int _threshold;
 	int _minsep;
 	int _mindistance;
-	Array2D<double> *chi_img;
 
-	bool findLocalMinimum(unsigned int imgX, unsigned int imgY);
-	vector<MyPeak> validatePeaks(vector<MyPeak> *peaks);
+	static bool findLocalMinimum(Array2D<double> *img, unsigned int imgX, unsigned int imgY, int minsep);
+	static vector<MyPeak> validatePeaks(vector<MyPeak> *peaks, int mindistance);
 public:
 	PeaksStep();
 	void handleData(ParameterContainer *pc);
@@ -31,6 +30,8 @@ public:
 	void setThreshold(int threshold);
 	void setMinSeparation(int minsep);
 	void setMinDistance(int mindistance);
+
+	static vector<MyPeak> getPeaks(Array2D<double> *img, int threshold, int mindistance, int minsep);
 };
 
 #endif /* PEAKSSTEP */

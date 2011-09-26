@@ -43,6 +43,8 @@ public:
 	void setValue(unsigned int x, unsigned int y, myType val);
 	void squareIt();
 	void cubeIt();
+	void normalize();
+
 	myType getValue(unsigned int x, unsigned int y);
 	myType getValuePow(unsigned int x, unsigned int y);
 
@@ -162,6 +164,17 @@ void Array2D<myType>::cubeIt(){
 		for(unsigned int y=0; y<_height; ++y){
 				data[x][y]= data[x][y]*data[x][y]*data[x][y];
 			}
+		}
+}
+
+template <class myType>
+void Array2D<myType>::normalize(){
+	double newval;
+	double dif = this->getHigh()-this->getLow();
+	for(unsigned int x =0; x < getWidth(); ++x)
+		for(unsigned int y =0; y < getHeight(); ++y){
+			newval = (this->getHigh()-getValue(x,y)*1.0)/dif;
+			setValue(x,y,newval);
 		}
 }
 

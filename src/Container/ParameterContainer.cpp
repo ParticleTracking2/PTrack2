@@ -66,6 +66,15 @@ Container* ParameterContainer::getParam(string key){
 		return NULL;
 }
 
+bool ParameterContainer::existParam(string key){
+	map<string, Container*>::const_iterator iter;
+	iter = my_data.find(key);
+	if(iter != my_data.end())
+		return true;
+	else
+		return false;
+}
+
 vector <string> ParameterContainer::getKeys(){
 	vector<string> my_keys;
 	map<string, Container*>::iterator it;

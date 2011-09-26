@@ -71,7 +71,6 @@ void ParticleGridStep::handleData(ParameterContainer *pc){
 
 	pc->addParam("px", new Container(&px), "[vector<double>]");
 	pc->addParam("py", new Container(&py), "[vector<double>]");
-	pc->printInformation();
 
 	if(next)
 		next->handleData(pc);

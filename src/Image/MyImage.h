@@ -19,7 +19,6 @@ public:
 	MyImage(): Array2D() {}
 	MyImage(unsigned int width, unsigned int height): Array2D(width, height) { this->getHiLo(); }
 	MyImage(Array2D<double>* data): Array2D(data) { this->getHiLo(); }
-	void normalize();
 	void display();
 };
 

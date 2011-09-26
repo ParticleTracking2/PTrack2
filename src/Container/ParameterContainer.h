@@ -29,6 +29,7 @@ public:
 	vector <string> getKeys();
 	Container* popParam(string key);
 	Container* getParam(string key);
+	bool existParam(string key);
 	void* getData(string key);
 	void** getData2(string key);
 
