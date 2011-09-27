@@ -6,8 +6,11 @@
  */
 #include "../AlgorithmStepHandler.h"
 #include "../Objects_Chi2/MyPeak.h"
+#include "../../Image/MyImage.h"
 #include "PeaksStep.h"
 #include "ChiImageStep.h"
+#include "ParticleGridStep.h"
+#include "ChiDifferenceStep.h"
 #include <vector>
 #include <math.h>
 

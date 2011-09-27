@@ -16,6 +16,7 @@
 class ParticleGridStep: public AlgorithmStepHandler {
 public:
 	void handleData(ParameterContainer *pc);
+	static unsigned int generateGrid(vector<MyPeak> *peaks, unsigned int ss, Array2D<double> *img, Array2D<double> *grid_x, Array2D<double> *grid_y, Array2D<int> *over);
 };
 
 #endif /* PARTICLEGRIDSTEP */

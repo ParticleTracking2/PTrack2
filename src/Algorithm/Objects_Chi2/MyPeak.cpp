@@ -19,12 +19,12 @@ MyPeak::MyPeak(){
 	_intensity = 0;
 }
 
-MyPeak::MyPeak(unsigned int x, unsigned int y){
+MyPeak::MyPeak(double x, double y){
 	setX(x);
 	setY(y);
 }
 
-MyPeak::MyPeak(unsigned int x, unsigned int y, double intensity){
+MyPeak::MyPeak(double x, double y, double intensity){
 	setX(x);
 	setY(y);
 	setIntensity(intensity);
@@ -35,21 +35,21 @@ MyPeak::MyPeak(unsigned int x, unsigned int y, double intensity){
  *******************************
  */
 
-void MyPeak::setX(unsigned int x){
+void MyPeak::setX(double x){
 	_x = x;
 }
-void MyPeak::setY(unsigned int y){
+void MyPeak::setY(double y){
 	_y = y;
 }
 void MyPeak::setIntensity(double intensity){
 	_intensity = intensity;
 }
 
-unsigned int MyPeak::getX(){
+double MyPeak::getX(){
 	return _x;
 }
 
-unsigned int MyPeak::getY(){
+double MyPeak::getY(){
 	return _y;
 }
 
