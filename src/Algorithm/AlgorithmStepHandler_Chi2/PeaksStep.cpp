@@ -29,14 +29,15 @@ void PeaksStep::handleData(ParameterContainer *pc){
 
 	vector<MyPeak> valids = PeaksStep::getPeaks(chi_img, _threshold, _mindistance, _minsep);
 
-	cout << "Peaks detected valids: " << valids.size() << " Of " << chi_img->getHeight()*chi_img->getWidth() << endl;
+//	MyUtils::writeToFile(valids, "peaks1-cpp.txt");
 	pc->addParam("peaks", new Container(&valids), "[vector<MyPeak>] Maximos encontrados a partir de la imagen Chi2");
 
-	if(next)
-		next->handleData(pc);
+	nextStep(pc);
 }
 
 vector<MyPeak> PeaksStep::getPeaks(Array2D<double> *img, int threshold, int mindistance, int minsep){
+	cout << "threshold: " << threshold << ", mindistance:" << mindistance << ", minsep: " << minsep << endl;
+
 	vector<MyPeak> *peaks = new vector<MyPeak>();
 	for(unsigned int x=0; x < img->getWidth(); ++x)
 		for(unsigned int y=0; y < img->getHeight(); ++y){
@@ -48,9 +49,11 @@ vector<MyPeak> PeaksStep::getPeaks(Array2D<double> *img, int threshold, int mind
 			}
 		}
 
+	cout << "Peaks detected: " << peaks->size() << " Of " << img->getWidth()*img->getHeight() << endl;
 	sort(peaks->begin(), peaks->end(), MyPeak::compareMe);
 	vector<MyPeak> valids = validatePeaks(peaks, mindistance);
 
+	cout << "Peaks detected valids: " << valids.size() << " Of " << peaks->size() << endl;
 	return valids;
 }
 
@@ -75,6 +78,7 @@ vector<MyPeak> PeaksStep::validatePeaks(vector<MyPeak> *peaks, int mindistance){
 			valids.push_back(peaks->at(i));
 		}
 	}
+
 	return valids;
 }
 
@@ -83,7 +87,7 @@ bool PeaksStep::findLocalMinimum(Array2D<double> *img, unsigned int imgX, unsign
 	int currentY = 0;
 	for(int localX = minsep; localX >= -minsep; --localX){
 		for(int localY = minsep; localY >= -minsep; --localY){
-			if(localX != 0 && localY != 0){
+			if(!(localX == 0 && localY == 0)){
 				currentX = (imgX+localX);
 				currentY = (imgY+localY);
 
@@ -113,4 +117,8 @@ void PeaksStep::setMinSeparation(int minsep){
 
 void PeaksStep::setMinDistance(int mindistance){
 	_mindistance = mindistance;
+}
+
+void PeaksStep::printDescription(){
+	cout << "3.- Obtener los maximos locales (representantes de particulas)" << endl;
 }

@@ -30,6 +30,7 @@ public:
 	void setThreshold(int threshold);
 	void setMinSeparation(int minsep);
 	void setMinDistance(int mindistance);
+	void printDescription();
 
 	static vector<MyPeak> getPeaks(Array2D<double> *img, int threshold, int mindistance, int minsep);
 };

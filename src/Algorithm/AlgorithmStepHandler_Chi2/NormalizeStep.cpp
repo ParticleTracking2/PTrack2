@@ -15,10 +15,14 @@
 void NormalizeStep::handleData(ParameterContainer *pc){
 	printDescription();
 	MyImage *img = (MyImage *)pc->popParam("image")->getData();
+//	img->writeToFile("img-cpp.txt");
 	img->normalize();
-
+//	img->writeToFile("nimg-cpp.txt");
 	pc->addParam("normal_image", new Container(img), "[MyImage] Imagen normalizada (Invertidos los colores)");
 
-	if(next)
-		next->handleData(pc);
+	nextStep(pc);
+}
+
+void NormalizeStep::printDescription(){
+	cout << "1.- Normalizar la imagen (invertir colores)" << endl;
 }

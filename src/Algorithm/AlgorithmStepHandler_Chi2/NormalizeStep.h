@@ -13,6 +13,7 @@
 class NormalizeStep: public AlgorithmStepHandler {
 public:
 	void handleData(ParameterContainer *pc);
+	void printDescription();
 };
 
 #endif

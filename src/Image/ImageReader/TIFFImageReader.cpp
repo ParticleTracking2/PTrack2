@@ -30,15 +30,15 @@ MyImage *TIFFImageReader::decodeImage(string file){
 	Magick::Image my_image;
 	my_image.read(file);
 
-	unsigned int max_x = my_image.columns();
-	unsigned int max_y = my_image.rows();
+	unsigned int max_x = my_image.rows();
+	unsigned int max_y = my_image.columns();
 
 	MyImage *ret = new MyImage(max_x, max_y);
 	Magick::ColorGray my_color;
 	for(unsigned int x = 0; x < max_x; ++x)
 		for(unsigned int y = 0; y < max_y; ++y){
 			my_color = my_image.pixelColor(x,y);
-			ret->setValue(x,y,my_color.shade());
+			ret->setValue(max_y-y-1,x, (my_color.shade()*255));
 		}
 	ret->getHiLo();
 

@@ -8,6 +8,7 @@
 #include "math.h"
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 #ifndef ARRAY2D
 #define ARRAY2D
@@ -176,10 +177,10 @@ void Array2D<myType>::cubeIt(){
 template <class myType>
 void Array2D<myType>::normalize(){
 	double newval;
-	double dif = this->getHigh()-this->getLow();
+	double dif = getHigh()-getLow();
 	for(unsigned int x =0; x < getWidth(); ++x)
 		for(unsigned int y =0; y < getHeight(); ++y){
-			newval = (this->getHigh()-getValue(x,y)*1.0)/dif;
+			newval = (1.0*getHigh()-getValue(x,y)*1.0)/dif;
 			setValue(x,y,newval);
 		}
 }

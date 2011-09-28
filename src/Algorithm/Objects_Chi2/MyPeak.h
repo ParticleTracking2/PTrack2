@@ -10,20 +10,20 @@
 
 class MyPeak {
 private:
-	double _x;
-	double _y;
+	unsigned int _x;
+	unsigned int _y;
 	double _intensity;
 public:
 	MyPeak();
-	MyPeak(double x, double y);
-	MyPeak(double x, double y, double intensity);
+	MyPeak(unsigned int x, unsigned int y);
+	MyPeak(unsigned int x, unsigned int y, double intensity);
 
-	void setX(double x);
-	void setY(double y);
+	void setX(unsigned int x);
+	void setY(unsigned int y);
 	void setIntensity(double intensity);
 
-	double getX();
-	double getY();
+	unsigned int getX();
+	unsigned int getY();
 	double getIntensity();
 
 	static bool compareMe(MyPeak first, MyPeak second){

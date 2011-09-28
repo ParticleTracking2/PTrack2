@@ -24,11 +24,11 @@ void Chi2Algorithm::run(){
 	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	AlgorithmStepHandler ash;
 
-	ash.add(new NormalizeStep());
-	ash.add(new ChiImageStep());
-	ash.add(new PeaksStep());
-	ash.add(new ParticleGridStep());
-	ash.add(new ChiDifferenceStep());
+	ash.add(new NormalizeStep()); 		// OK
+	ash.add(new ChiImageStep()); 		// OK
+	ash.add(new PeaksStep()); 			// OK
+	ash.add(new ParticleGridStep()); 	// OK con problemas de compilador? al asignar los valores a grid_x e grid_y con indice x=9 y y=0
+	ash.add(new ChiDifferenceStep()); 	// OK
 	// Si esta el parametro hdensity
 	if(proc->hasKey("-hdensity")){
 		ash.add(new AddMissedPeaks_Step());

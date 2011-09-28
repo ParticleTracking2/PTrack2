@@ -18,13 +18,16 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 	Array2D<double> *kernel = (Array2D<double>*)pc->getData("kernel_image");
 	Array2D<double> *diff = (Array2D<double>*)pc->getData("chi_difference");
 	vector<MyPeak> *peaks = (vector<MyPeak>*)pc->getData("peaks");
-	unsigned int ss = pc->getParam("iSS")->getDataInt();
+	unsigned int os = pc->getParam("iOS")->getDataInt();
 	double d = pc->getParam("dD")->getDataDouble();
 	double w = pc->getParam("dW")->getDataDouble();
 
 	Array2D<double> *grid_x = (Array2D<double>*)pc->getData("grid_x");
 	Array2D<double> *grid_y = (Array2D<double>*)pc->getData("grid_y");
 	Array2D<int> *over = (Array2D<int>*)pc->getData("over");
+
+	vector<double> *px = (vector<double>*)pc->getData("px");
+	vector<double> *py = (vector<double>*)pc->getData("py");
 
 	Array2D<double> *normaldata_chi = new Array2D<double>(diff->getWidth(), diff->getHeight());
 
@@ -53,34 +56,42 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 
 		vector<MyPeak> new_peaks = PeaksStep::getPeaks(my_chi_img, _chi_cut, _mindistance, _minsep);
 
-		cout << "Peaks detected valids: " << new_peaks.size() << " Of " << my_chi_img->getHeight()*my_chi_img->getWidth() << endl;
-
 		MyPeak tmp;
 		unsigned int old_size = peaks->size();
 		//check if NEW points are inside the image (clean newpeaks)
 		for(unsigned int i=0; i < new_peaks.size(); ++i){
 			tmp = new_peaks.at(i);
-			if(	0 <= (tmp.getX() - ss) && (tmp.getX() - ss) < img->getWidth() &&
-				0 <= (tmp.getY() - ss) && (tmp.getY() - ss) < img->getHeight()){
+			if(	0 <= (tmp.getX() - os) && (tmp.getX() - os) < img->getWidth() &&
+				0 <= (tmp.getY() - os) && (tmp.getY() - os) < img->getHeight()){
 				peaks->push_back(new_peaks.at(i));
+				px->push_back(1.0*new_peaks.at(i).getX());
+				py->push_back(1.0*new_peaks.at(i).getY());
 			}
 		}
 		unsigned int new_size = peaks->size();
 
+		cout << "Original No of Points: " << old_size << ", +" << (new_size-old_size) << "; Total = " << new_size << endl;
 		// No hay nuevos puntos
 		if(old_size == new_size)
 			break;
 
 		// Generar nueva image diferenciada con esos puntos
-		unsigned int counter = ParticleGridStep::generateGrid(peaks, ss, img, grid_x, grid_y, over);
-		cout << "Total pgrid: " << 1.0*counter/peaks->size() << "; counter: " << counter << endl;
-		diff = ChiDifferenceStep::computeDifference(img,grid_x, grid_y, d, w);
+		ParticleGridStep::generateGrid(peaks, px, py, os, img, grid_x, grid_y, over);
+		diff = ChiDifferenceStep::computeDifference(img, grid_x, grid_y, d, w);
+
+		MyUtils::writeToFile(grid_x, "grid_x2-cpp.txt");
+		MyUtils::writeToFile(grid_y, "grid_y2-cpp.txt");
+		MyUtils::writeToFile(over, "over2-cpp.txt");
+
+		return
+		new_peaks.clear();
+		delete my_chi_img;
 	}
 
 	sort(peaks->begin(), peaks->end(), MyPeak::compareMe);
 	pc->printInformation();
-	if(next)
-		next->handleData(pc);
+
+	nextStep(pc);
 }
 
 void AddMissedPeaks_Step::setChiCut(int chi_cut){

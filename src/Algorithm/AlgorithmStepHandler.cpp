@@ -23,7 +23,10 @@ AlgorithmStepHandler::AlgorithmStepHandler(){
 void AlgorithmStepHandler::setNext(AlgorithmStepHandler *nxt){
 	next = nxt;
 }
-
+void AlgorithmStepHandler::nextStep(ParameterContainer *pc){
+	if(next)
+		next->handleData(pc);
+}
 void AlgorithmStepHandler::add(AlgorithmStepHandler *nxt){
 	if(next)
 		next->add(nxt);

@@ -20,6 +20,7 @@ private:
 public:
 	void handleData(ParameterContainer *pc);
 	static Array2D<double>* getChiImage(Array2D<double> *base_img, Array2D<double> *kernel_img);
+	void printDescription();
 };
 
 #endif
