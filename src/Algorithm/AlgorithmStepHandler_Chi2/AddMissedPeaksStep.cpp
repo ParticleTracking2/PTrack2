@@ -31,12 +31,15 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 
 	Array2D<double> *normaldata_chi = new Array2D<double>(diff->getWidth(), diff->getHeight());
 
-	double maxval;
+	double total_found = 0;
 	while(1){
+		double maxval;
+		double tmp;
 		//scalematrix
 		for(unsigned int x=0; x < diff->getWidth(); ++x)
 			for(unsigned int y=0; y < diff->getHeight(); ++y){
-				normaldata_chi->setValue(x,y, 4*diff->getValue(x,y)*diff->getValue(x,y));
+				tmp = 4*diff->getValue(x,y)*diff->getValue(x,y);
+				normaldata_chi->setValue(x,y,tmp);
 			}
 
 		//find maxima
@@ -46,7 +49,8 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 		//inverse data
 		for(unsigned int x=0; x < diff->getWidth(); ++x)
 			for(unsigned int y=0; y < diff->getHeight(); ++y){
-				normaldata_chi->setValue(x,y, maxval - normaldata_chi->getValue(x,y) );
+				tmp = maxval - normaldata_chi->getValue(x,y);
+				normaldata_chi->setValue(x,y,tmp);
 			}
 
 		//normalize data
@@ -55,40 +59,50 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 		Array2D<double> *my_chi_img = ChiImageStep::getChiImage(normaldata_chi, kernel);
 
 		vector<MyPeak> new_peaks = PeaksStep::getPeaks(my_chi_img, _chi_cut, _mindistance, _minsep);
+		delete my_chi_img;
 
-		MyPeak tmp;
+		unsigned int totalinside = 0;
 		unsigned int old_size = peaks->size();
 		//check if NEW points are inside the image (clean newpeaks)
+		MyPeak tmppk;
 		for(unsigned int i=0; i < new_peaks.size(); ++i){
-			tmp = new_peaks.at(i);
-			if(	0 <= (tmp.getX() - os) && (tmp.getX() - os) < img->getWidth() &&
-				0 <= (tmp.getY() - os) && (tmp.getY() - os) < img->getHeight()){
+			tmppk = new_peaks.at(i);
+			if(	0 <= (tmppk.getX() - os) && (tmppk.getX() - os) < img->getWidth() &&
+				0 <= (tmppk.getY() - os) && (tmppk.getY() - os) < img->getHeight()){
 				peaks->push_back(new_peaks.at(i));
 				px->push_back(1.0*new_peaks.at(i).getX());
 				py->push_back(1.0*new_peaks.at(i).getY());
+				totalinside++;
 			}
 		}
-		unsigned int new_size = peaks->size();
+		new_peaks.clear();
 
-		cout << "Original No of Points: " << old_size << ", +" << (new_size-old_size) << "; Total = " << new_size << endl;
-		// No hay nuevos puntos
-		if(old_size == new_size)
-			break;
+		total_found += totalinside;
+		cout << "Original No of Points: " << old_size << ", +" << totalinside << "; Total = " << total_found << endl;
 
 		// Generar nueva image diferenciada con esos puntos
 		ParticleGridStep::generateGrid(peaks, px, py, os, img, grid_x, grid_y, over);
+
+//		MyUtils::writeToFile(grid_x, "grid_x2-cpp.txt");
+//		MyUtils::writeToFile(grid_y, "grid_y2-cpp.txt");
+//		MyUtils::writeToFile(over, "over2-cpp.txt");
+
+		// No hay nuevos puntos
+		if(totalinside <= 0)
+			break;
+
 		diff = ChiDifferenceStep::computeDifference(img, grid_x, grid_y, d, w);
-
-		MyUtils::writeToFile(grid_x, "grid_x2-cpp.txt");
-		MyUtils::writeToFile(grid_y, "grid_y2-cpp.txt");
-		MyUtils::writeToFile(over, "over2-cpp.txt");
-
-		return
-		new_peaks.clear();
-		delete my_chi_img;
 	}
 
 	sort(peaks->begin(), peaks->end(), MyPeak::compareMe);
+	px->clear();
+	py->clear();
+
+	for(unsigned int i=0; i < peaks->size(); ++i){
+		px->push_back(1.0*peaks->at(i).getX());
+		py->push_back(1.0*peaks->at(i).getY());
+	}
+
 	pc->printInformation();
 
 	nextStep(pc);

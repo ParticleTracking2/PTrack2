@@ -24,7 +24,6 @@ PeaksStep::PeaksStep(){
  *******************************
  */
 void PeaksStep::handleData(ParameterContainer *pc){
-	printDescription();
 	Array2D<double> *chi_img = (Array2D<double> *)pc->getParam("chi_image")->getData();
 
 	vector<MyPeak> valids = PeaksStep::getPeaks(chi_img, _threshold, _mindistance, _minsep);

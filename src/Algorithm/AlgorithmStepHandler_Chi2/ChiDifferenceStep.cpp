@@ -16,7 +16,7 @@ void ChiDifferenceStep::handleData(ParameterContainer *pc){
 
 	Array2D<double> *diff = computeDifference(img, grid_x, grid_y, d, w);
 
-	MyUtils::writeToFile(diff, "chi2diff-cpp.txt");
+//	MyUtils::writeToFile(diff, "chi2diff-cpp.txt");
 	pc->addParam("chi_difference", new Container(diff), "[Array2D<double>] Diferencia entre la imagen normalizada y la imagen Chi2 generada");
 	pc->addParam("chi2_value", new Container(diff->chi2Error()), "[double] Sumatoria de los valores de chi_difference");
 

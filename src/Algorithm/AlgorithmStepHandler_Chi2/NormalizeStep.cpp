@@ -13,7 +13,6 @@
  *******************************
  */
 void NormalizeStep::handleData(ParameterContainer *pc){
-	printDescription();
 	MyImage *img = (MyImage *)pc->popParam("image")->getData();
 //	img->writeToFile("img-cpp.txt");
 	img->normalize();

@@ -27,10 +27,6 @@ int main(int argc, char* argv[]) {
 	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	proc->setArgs(argc, argv);
 
-	cout << "Values: " << proc->getArgAsDouble("-d") << endl;
-	cout << "Values: " << proc->getArgAsDouble("-w") << endl;
-	cout << "Values: " << proc->getArgAsString("-i") << endl;
-
 	ImageFactory *_if = ImageFactory::getInstance();
 	MyImage *img = _if->makeImgFromFile(proc->getArgAsString("-i"));
 

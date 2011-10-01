@@ -8,7 +8,6 @@
 #include "ParticleGridStep.h"
 
 void ParticleGridStep::handleData(ParameterContainer *pc){
-	printDescription();
 	vector<MyPeak> *peaks = (vector<MyPeak> *)pc->getData("peaks");
 	Array2D<double> *img = (Array2D<double>*)pc->getData("normal_image");
 	unsigned int os = (unsigned int)pc->getParam("iOS")->getDataInt();
@@ -33,9 +32,9 @@ void ParticleGridStep::handleData(ParameterContainer *pc){
 
 	generateGrid(peaks, px, py, os, img, grid_x, grid_y, over);
 
-	MyUtils::writeToFile(grid_x, "grid_x-cpp.txt");
-	MyUtils::writeToFile(grid_y, "grid_y-cpp.txt");
-	MyUtils::writeToFile(over, "over-cpp.txt");
+//	MyUtils::writeToFile(grid_x, "grid_x-cpp.txt");
+//	MyUtils::writeToFile(grid_y, "grid_y-cpp.txt");
+//	MyUtils::writeToFile(over, "over-cpp.txt");
 
 	pc->addParam("grid_x", new Container(grid_x), "[Array2D<double>]");
 	pc->addParam("grid_y", new Container(grid_y), "[Array2D<double>]");
@@ -52,10 +51,6 @@ unsigned int ParticleGridStep::generateGrid(vector<MyPeak> *peaks, vector<double
 	unsigned int currentX, currentY;
 	double currentDistance = 0.0;
 	double currentDistanceAux = 0.0;
-
-	cout << "Half: " << half;
-	cout << " SS: " << shift;
-	cout << endl;
 
 	if(!peaks->empty())
 	for(int npks = peaks->size()-1; npks >= 0; npks--){

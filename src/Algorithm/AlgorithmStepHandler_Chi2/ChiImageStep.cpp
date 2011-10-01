@@ -108,7 +108,6 @@ Array2D<double>* ChiImageStep::getThirdTerm(Array2D<double> *img, Array2D<double
 }
 
 void ChiImageStep::handleData(ParameterContainer *pc){
-	printDescription();
 	unsigned int os = (unsigned int)pc->getParam("iOS")->getDataInt();
 	unsigned int ss = (unsigned int)pc->getParam("iSS")->getDataInt();
 	double d = pc->getParam("dD")->getDataDouble();

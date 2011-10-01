@@ -38,7 +38,7 @@ MyImage *TIFFImageReader::decodeImage(string file){
 	for(unsigned int x = 0; x < max_x; ++x)
 		for(unsigned int y = 0; y < max_y; ++y){
 			my_color = my_image.pixelColor(x,y);
-			ret->setValue(max_y-y-1,x, (my_color.shade()*255));
+			ret->setValue(max_y-y-1,x, my_color.shade());
 		}
 	ret->getHiLo();
 
