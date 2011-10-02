@@ -35,6 +35,9 @@ void Chi2Algorithm::run(){
 		ash.add(new ReComputeGridAndDiff());
 	}
 	ash.add(new Chi2Minimization());
+	if(proc->hasKey("-hdensity")){
+		ash.add(new CheckParticlesStep());
+	}
 
 	ash.handleData(pc_chi);
 }

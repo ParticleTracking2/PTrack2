@@ -42,8 +42,6 @@ public:
 
 	void setPower(double power);
 	void setValue(unsigned int x, unsigned int y, myType val);
-	void squareIt();
-	void cubeIt();
 	void normalize();
 
 	myType getValue(unsigned int x, unsigned int y);
@@ -164,24 +162,6 @@ void Array2D<myType>::setValue(unsigned int x, unsigned int y, myType val){
 template <class myType>
 void Array2D<myType>::setPower(double power){
 	_power = power;
-}
-
-template <class myType>
-void Array2D<myType>::squareIt(){
-	for(unsigned int x=0; x<_width; ++x){
-		for(unsigned int y=0; y<_height; ++y){
-				data[x][y]= data[x][y]*data[x][y];
-			}
-		}
-}
-
-template <class myType>
-void Array2D<myType>::cubeIt(){
-	for(unsigned int x=0; x<_width; ++x){
-		for(unsigned int y=0; y<_height; ++y){
-				data[x][y]= data[x][y]*data[x][y]*data[x][y];
-			}
-		}
 }
 
 template <class myType>
