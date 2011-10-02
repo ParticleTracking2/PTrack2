@@ -5,7 +5,6 @@
  *      Author: juanin
  */
 #include "MyImage.h"
-#include <string>
 
 #ifndef MYIMAGEFACTORY
 #define MYIMAGEFACTORY

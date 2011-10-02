@@ -29,6 +29,7 @@ public:
 	void setChiCut(int chi_cut);
 	void setMinSep(int minsep);
 	void setMinDistance(int mindistance);
+	void printDescription();
 };
 
 #endif /* ADDMISSEDPEAKSSTEP */

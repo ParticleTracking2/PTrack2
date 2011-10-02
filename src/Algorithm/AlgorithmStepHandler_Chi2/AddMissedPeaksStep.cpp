@@ -83,10 +83,6 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 		// Generar nueva image diferenciada con esos puntos
 		ParticleGridStep::generateGrid(peaks, px, py, os, img, grid_x, grid_y, over);
 
-//		MyUtils::writeToFile(grid_x, "grid_x2-cpp.txt");
-//		MyUtils::writeToFile(grid_y, "grid_y2-cpp.txt");
-//		MyUtils::writeToFile(over, "over2-cpp.txt");
-
 		// No hay nuevos puntos
 		if(totalinside <= 0)
 			break;
@@ -114,4 +110,8 @@ void AddMissedPeaks_Step::setMinSep(int minsep){
 }
 void AddMissedPeaks_Step::setMinDistance(int mindistance){
 	_mindistance = mindistance;
+}
+
+void AddMissedPeaks_Step::printDescription(){
+
 }
