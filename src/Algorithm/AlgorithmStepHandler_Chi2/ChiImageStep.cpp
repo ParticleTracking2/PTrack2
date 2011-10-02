@@ -124,14 +124,10 @@ void ChiImageStep::handleData(ParameterContainer *pc){
 			kernel_img->setValue(x,y,ipfval);
 		}
 
-//	MyUtils::writeToFile(kernel_img, "kernel-cpp.txt");
-
 	Array2D<double> *first_term = getChiImage(img,kernel_img);
 
 	pc->addParam("chi_image", new Container(first_term), "[Array2D<double>] Imagen como Chi2");
 	pc->addParam("kernel_image", new Container(kernel_img), "[Array2D<double>] Imagen de particula ideal");
-
-//	MyUtils::writeToFile(first_term, "chi2-cpp.txt");
 
 	nextStep(pc);
 }

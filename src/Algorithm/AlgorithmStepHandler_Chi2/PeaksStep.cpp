@@ -25,10 +25,8 @@ PeaksStep::PeaksStep(){
  */
 void PeaksStep::handleData(ParameterContainer *pc){
 	Array2D<double> *chi_img = (Array2D<double> *)pc->getParam("chi_image")->getData();
-
 	vector<MyPeak> valids = PeaksStep::getPeaks(chi_img, _threshold, _mindistance, _minsep);
 
-//	MyUtils::writeToFile(valids, "peaks1-cpp.txt");
 	pc->addParam("peaks", new Container(&valids), "[vector<MyPeak>] Maximos encontrados a partir de la imagen Chi2");
 
 	nextStep(pc);

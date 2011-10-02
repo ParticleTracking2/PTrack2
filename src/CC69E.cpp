@@ -7,11 +7,10 @@
 //============================================================================
 
 #include "ArgsProcessor.h"
-#include "Image/ImageFactory.h"
+#include "Image/MyImageFactory.h"
 #include "Algorithm/Chi2Algorithm.h"
 #include "Container/Container.h"
 #include "Container/Array2D.h"
-#include "Container/Array1D.h"
 #include "Container/ParameterContainer.h"
 #include "Output/Output.h"
 #include "Output/BinaryOutput.h"
@@ -27,8 +26,7 @@ int main(int argc, char* argv[]) {
 	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	proc->setArgs(argc, argv);
 
-	ImageFactory *_if = ImageFactory::getInstance();
-	MyImage *img = _if->makeImgFromFile(proc->getArgAsString("-i"));
+	MyImage *img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));
 
 	ParameterContainer *pc = new ParameterContainer();
 	// Agregar Imagen

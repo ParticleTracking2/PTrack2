@@ -4,11 +4,11 @@
  *  Created on: 31/08/2011
  *      Author: juanin
  */
-#include "Array1D.h"
 #include "math.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 
 #ifndef ARRAY2D
 #define ARRAY2D
@@ -22,19 +22,19 @@ private:
 	unsigned int _height;
 	double _power;
 
-	vector <vector <myType> > data;
+	myType** data;
 	myType _hi;
 	myType _lo;
 
 	void allocateData();
+	void setWidth(unsigned int width);
+	void setHeight(unsigned int height);
 public:
 	Array2D();
 	Array2D(Array2D* arr2);
 	Array2D(unsigned int width, unsigned int height);
 	Array2D(unsigned int width, unsigned int height, myType def);
 	~Array2D();
-	void setWidth(unsigned int width);
-	void setHeight(unsigned int height);
 	unsigned int getWidth();
 	unsigned int getHeight();
 	myType getHigh();
@@ -45,7 +45,6 @@ public:
 	void squareIt();
 	void cubeIt();
 	void normalize();
-	myType chi2Error();
 
 	myType getValue(unsigned int x, unsigned int y);
 	myType getValuePow(unsigned int x, unsigned int y);
@@ -64,11 +63,13 @@ public:
 template <class myType>
 Array2D<myType>::Array2D() {
 	setPower(1);
+	data = 0;
 }
 
 template <class myType>
 Array2D<myType>::Array2D(Array2D* arr2){
 	setPower(1);
+	data = 0;
 	setHeight(arr2->getWidth());
 	setWidth(arr2->getHeight());
 	reset();
@@ -82,6 +83,7 @@ Array2D<myType>::Array2D(Array2D* arr2){
 template <class myType>
 Array2D<myType>::Array2D(unsigned int width, unsigned int height){
 	setPower(1);
+	data = 0;
 	setHeight(height);
 	setWidth(width);
 	reset();
@@ -90,6 +92,7 @@ Array2D<myType>::Array2D(unsigned int width, unsigned int height){
 template <class myType>
 Array2D<myType>::Array2D(unsigned int width, unsigned int height, myType def){
 	setPower(1);
+	data = 0;
 	setHeight(height);
 	setWidth(width);
 	reset(def);
@@ -97,17 +100,24 @@ Array2D<myType>::Array2D(unsigned int width, unsigned int height, myType def){
 
 template <class myType>
 Array2D<myType>::~Array2D() {
-	data.clear();
 	_width = 0;
 	_height = 0;
 	_power = 0;
 	_hi = 0;
 	_lo = 0;
+
+	for(unsigned int h=0; h < _height; ++h){
+		free(data[h]);
+	}
+	free(data);
 }
 
 template <class myType>
 void Array2D<myType>::allocateData(){
-	data.assign(_width, vector<myType>(_height));
+	data = (myType**)malloc(_width*sizeof(myType));
+	for(unsigned int h=0; h < _height; ++h){
+		data[h] = (myType*)malloc(_height*sizeof(myType));
+	}
 }
 
 /**
@@ -184,16 +194,6 @@ void Array2D<myType>::normalize(){
 			setValue(x,y,newval);
 		}
 }
-template <class myType>
-myType Array2D<myType>::chi2Error(){
-	myType chi2 = 0;
-	for(unsigned int x =0; x < getWidth(); ++x)
-		for(unsigned int y =0; y < getHeight(); ++y){
-			chi2 += data[x][y]*data[x][y];
-		}
-
-	return chi2;
-}
 
 template <class myType>
 myType Array2D<myType>::getValue(unsigned int x, unsigned int y){
@@ -213,7 +213,7 @@ myType Array2D<myType>::getValuePow(unsigned int x, unsigned int y){
 
 template <class myType>
 void Array2D<myType>::reset(myType def){
-	if(data.empty())
+	if(!data)
 		allocateData();
 
 	for(unsigned int x=0; x<_width; ++x){
@@ -227,8 +227,8 @@ template <class myType>
 void Array2D<myType>::getHiLo(){
 	myType hi = getValue(0,0);
 	myType lo = getValue(0,0);
-	for(unsigned int x = 0; x < data.size(); ++x)
-		for(unsigned int y = 0; y < data[x].size(); ++y){
+	for(unsigned int x = 0; x < _width; ++x)
+		for(unsigned int y = 0; y < _height; ++y){
 			if(hi < getValue(x,y))
 				hi = getValue(x,y);
 			if(lo > getValue(x,y))

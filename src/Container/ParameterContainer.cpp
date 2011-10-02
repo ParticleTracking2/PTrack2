@@ -35,11 +35,23 @@ void ParameterContainer::addParam(string key, Container* data, string descriptio
 }
 
 void ParameterContainer::setParam(string key, Container* data){
-	setParam(key,data,"");
+	Container *pop;
+	if(existParam(key)){
+		pop = popParam(key);
+		data->setDescription(pop->getDescription());
+		delete pop;
+		addParam(key,data);
+	}
 }
 
 void ParameterContainer::setParam(string key, Container* data, string description){
-
+	Container *pop;
+	if(existParam(key)){
+		pop = popParam(key);
+		data->setDescription(description);
+		delete pop;
+		addParam(key,data);
+	}
 }
 
 /**

@@ -14,16 +14,15 @@ void ChiDifferenceStep::handleData(ParameterContainer *pc){
 	double d = pc->getParam("dD")->getDataDouble();
 	double w = pc->getParam("dW")->getDataDouble();
 
-	Array2D<double> *diff = computeDifference(img, grid_x, grid_y, d, w);
+	Array2D<double> *diff = computeDifference(img, grid_x, grid_y, d, w).first;
 
-//	MyUtils::writeToFile(diff, "chi2diff-cpp.txt");
 	pc->addParam("chi_difference", new Container(diff), "[Array2D<double>] Diferencia entre la imagen normalizada y la imagen Chi2 generada");
-	pc->addParam("chi2_value", new Container(diff->chi2Error()), "[double] Sumatoria de los valores de chi_difference");
+	pc->addParam("chi2_value", new Container(2132.123), "[double] Sumatoria de los valores de chi_difference");
 
 	nextStep(pc);
 }
 
-Array2D<double>* ChiDifferenceStep::computeDifference(Array2D<double> *img, Array2D<double> *grid_x, Array2D<double> *grid_y, double d, double w){
+pair<Array2D<double>*, double> ChiDifferenceStep::computeDifference(Array2D<double> *img, Array2D<double> *grid_x, Array2D<double> *grid_y, double d, double w){
 	Array2D<double> *diff = new Array2D<double>(img->getWidth(), img->getHeight(), 0.0);
 	double x2y2 = 0.0;
 	double temp = 0.0;
@@ -38,7 +37,11 @@ Array2D<double>* ChiDifferenceStep::computeDifference(Array2D<double> *img, Arra
 			chi2err += temp*temp;
 		}
 	cout << "Chi2 Error:" << chi2err << endl;
-	return diff;
+
+	pair<Array2D<double>*, double> ret;
+	ret.first = diff;
+	ret.second = chi2err;
+	return ret;
 }
 
 void ChiDifferenceStep::printDescription(){

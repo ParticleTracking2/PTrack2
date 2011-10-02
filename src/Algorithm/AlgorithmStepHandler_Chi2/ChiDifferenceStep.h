@@ -13,7 +13,7 @@
 class ChiDifferenceStep: public AlgorithmStepHandler {
 public:
 	void handleData(ParameterContainer *pc);
-	static Array2D<double>* computeDifference(Array2D<double> *img, Array2D<double> *grid_x, Array2D<double> *grid_y, double d, double w);
+	static pair<Array2D<double>*, double> computeDifference(Array2D<double> *img, Array2D<double> *grid_x, Array2D<double> *grid_y, double d, double w);
 	void printDescription();
 };
 

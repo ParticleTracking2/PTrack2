@@ -32,7 +32,9 @@ void Chi2Algorithm::run(){
 	// Si esta el parametro hdensity
 	if(proc->hasKey("-hdensity")){
 		ash.add(new AddMissedPeaks_Step());	// [+/-] Recoge todos los puntos, sin embargo al generar las grillas de particulas estas no tienen el mismo valor.
+		ash.add(new ReComputeGridAndDiff());
 	}
+	ash.add(new Chi2Minimization());
 
 	ash.handleData(pc_chi);
 }

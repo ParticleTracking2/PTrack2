@@ -91,7 +91,7 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 		if(totalinside <= 0)
 			break;
 
-		diff = ChiDifferenceStep::computeDifference(img, grid_x, grid_y, d, w);
+		diff = ChiDifferenceStep::computeDifference(img, grid_x, grid_y, d, w).first;
 	}
 
 	sort(peaks->begin(), peaks->end(), MyPeak::compareMe);
@@ -102,8 +102,6 @@ void AddMissedPeaks_Step::handleData(ParameterContainer *pc){
 		px->push_back(1.0*peaks->at(i).getX());
 		py->push_back(1.0*peaks->at(i).getY());
 	}
-
-	pc->printInformation();
 
 	nextStep(pc);
 }

@@ -5,28 +5,21 @@
  *      Author: juanin
  */
 #include "MyImage.h"
-#include "ImageFactory.h"
+#include "MyImageFactory.h"
 #include "ImageReader/ImageReader.h"
 #include "ImageReader/JPGImageReader.h"
 #include "ImageReader/PNGImageReader.h"
 #include "ImageReader/TIFFImageReader.h"
 
-ImageFactory::ImageFactory(){
-	// Do nothing
-}
-
-ImageFactory::~ImageFactory(){
-	// Do nothing
-}
 /**
  * Construye una imagen manipulable a partir de la ruta de una imagen de disco
  */
-MyImage *ImageFactory::makeImgFromFile(string file){
+MyImage* MyImageFactory::makeImgFromFile(string file){
 	MyImage *ret;
 	ImageReader *reader;
 
 	string typetxt = file.substr(file.find_last_of(".")+1, file.length());
-	ImageTypes type;
+	MyImageTypes type;
 	if(!typetxt.compare("tif") || !typetxt.compare("TIF") || !typetxt.compare("tiff") || !typetxt.compare("TIFF"))
 		type = IMAGE_TIF;
 	if(!typetxt.compare("jpg") || !typetxt.compare("JPG") || !typetxt.compare("jpeg") || !typetxt.compare("JPEG"))
@@ -50,12 +43,4 @@ MyImage *ImageFactory::makeImgFromFile(string file){
 	}
 	delete reader;
 	return ret;
-}
-
-ImageFactory* ImageFactory::myInstance = 0;
-
-ImageFactory* ImageFactory::getInstance(){
-	if(!myInstance)
-		myInstance = new ImageFactory();
-	return myInstance;
 }

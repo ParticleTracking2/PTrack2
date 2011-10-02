@@ -32,10 +32,6 @@ void ParticleGridStep::handleData(ParameterContainer *pc){
 
 	generateGrid(peaks, px, py, os, img, grid_x, grid_y, over);
 
-//	MyUtils::writeToFile(grid_x, "grid_x-cpp.txt");
-//	MyUtils::writeToFile(grid_y, "grid_y-cpp.txt");
-//	MyUtils::writeToFile(over, "over-cpp.txt");
-
 	pc->addParam("grid_x", new Container(grid_x), "[Array2D<double>]");
 	pc->addParam("grid_y", new Container(grid_y), "[Array2D<double>]");
 	pc->addParam("over", new Container(over), "[Array2D<int>]");

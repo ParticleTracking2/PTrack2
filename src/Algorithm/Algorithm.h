@@ -5,13 +5,6 @@
  *      Author: juanin
  */
 #include "AlgorithmStepHandler.h"
-#include "AlgorithmStepHandler_Chi2/NormalizeStep.h"
-#include "AlgorithmStepHandler_Chi2/ChiImageStep.h"
-#include "AlgorithmStepHandler_Chi2/PeaksStep.h"
-#include "AlgorithmStepHandler_Chi2/ParticleGridStep.h"
-#include "AlgorithmStepHandler_Chi2/ChiDifferenceStep.h"
-
-#include "AlgorithmStepHandler_Chi2/AddMissedPeaksStep.h"
 
 #include "../ArgsProcessor.h"
 #include "../Container/ParameterContainer.h"
