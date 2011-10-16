@@ -1,0 +1,6 @@
+ImageMagick:
+Requiere de muchas bibliotecas extras para funcionar completamente. Para la aplicacion se requiere al menos de tiff, jpeg, png y zlib.
+Se recomienda instalar el paquete de desarrollo desde el gestor de paquetes Synaptic o con apt-get install ImageMagickdev (o algo asi) y luego compilar e instalar la biblioteca.
+	
+Log4CPP:
+Lo mismo que con ImageMagick.
