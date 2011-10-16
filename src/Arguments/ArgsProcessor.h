@@ -62,39 +62,49 @@ public:
 
 	static ArgsProcessor *getInstance();
 
+	static void printHelp();
+
 	/**
 	 * Establece y almacena los argumentos de ejecucion a partir
 	 * de los argumentos ingresados al momento de ejecutar el programa.
 	 */
 	void setArgs(int argcount, char* argvalues[]);
+
 	/**
 	 * Obtiene todas las llaves validas ingresadas como argumentos
 	 */
 	vector <string> getKeys();
+
 	/**
 	 * Verifica que una llave exista dentro de los argumentos
 	 */
 	bool hasKey(string key);
+
 	/**
 	 * Obtiene un argumento valido como entero
 	 */
 	int getArgAsInt(string key);
+
 	/**
 	 * Obtiene un argumento valido como double
 	 */
 	double getArgAsDouble(string key);
+
 	/**
 	 * Obtiene un argumento valido como string
 	 */
 	string getArgAsString(string key);
+
 	/**
 	 * Devuelve el contenedor
 	 */
 	ParameterContainer *getContainer();
+
 	/**
 	 * Devuelve el algoritmo seleccionado
 	 */
 	AlgorithmType getAlgorithmType();
+
 	/**
 	 * Devuelve el tipo de salida seleccionada
 	 */

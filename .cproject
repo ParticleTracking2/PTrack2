@@ -49,6 +49,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.852173068" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
+									<listOptionValue builtIn="false" value="log4cpp"/>
 									<listOptionValue builtIn="false" value="Magick++"/>
 									<listOptionValue builtIn="false" value="MagickWand"/>
 									<listOptionValue builtIn="false" value="MagickCore"/>

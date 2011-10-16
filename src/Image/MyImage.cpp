@@ -25,7 +25,7 @@ MyImage::MyImage(unsigned int width, unsigned int height){
  *******************************
  */
 void MyImage::display(){
-	MyLogger::log()->debug("[MyImage] Displaying Image: Size = %fx%f",mtrx.sX(), mtrx.sY());
+	MyLogger::log()->debug("[MyImage] Displaying Image: Size = %ix%i",mtrx.sX(), mtrx.sY());
 	Magick::Image my_image(Magick::Geometry(mtrx.sX(), mtrx.sY()), Magick::ColorGray(0));
 	Magick::ColorGray my_color;
 	for(unsigned int x = 0; x < mtrx.sX(); ++x){

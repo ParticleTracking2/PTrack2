@@ -26,20 +26,21 @@ ArgsProcessor::ArgsProcessor() {
 	 */
 	ArgObj chi2;
 	chi2.type = Chi2_Algorithm;
+	chi2.argkey = "chi2";
+	chi2.description = "Convolution based least-squares fitting.";
+	chi2.example = "chi2 -i MyImage.tif -d 9.87 -w 1.84";
 
 	/* Parametros aceptables */
-	KeyTreat img; img.key = "-i";
+	KeyTreat img; img.key = "-i"; img.description = "Image to read.";
 	img.treat.push_back(Require_Treat);
 	img.treat.push_back(Followed_String_Treat);
 	chi2.keys_treats.push_back(img);
 
-	KeyTreat d; d.key = "-d";
-	d.treat.push_back(Require_Treat);
+	KeyTreat d; d.key = "-d"; d.description = "Diameter of an ideal particle.";
 	d.treat.push_back(Followed_Double_Treat);
 	chi2.keys_treats.push_back(d);
 
-	KeyTreat w; w.key = "-w";
-	w.treat.push_back(Require_Treat);
+	KeyTreat w; w.key = "-w"; w.description = "Value of how sharply the ideal particle is viewed (Focus).";
 	w.treat.push_back(Followed_Double_Treat);
 	chi2.keys_treats.push_back(w);
 
@@ -52,11 +53,26 @@ ArgsProcessor::ArgsProcessor() {
 	 */
 	ArgObj chi2hd;
 	chi2hd.type = Chi2HD_Algorithm;
+	chi2hd.argkey = "chi2hd";
+	chi2hd.description = "Convolution based least-squares fitting for High density particle systems.";
+	chi2hd.example = "chi2hd -i MyImage.tif -d 9.87 -w 1.84";
 
 	/* Parametros aceptables */
 	chi2hd.keys_treats.push_back(img);
 	chi2hd.keys_treats.push_back(d);
 	chi2hd.keys_treats.push_back(w);
+
+	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
+	chi_cut.treat.push_back(Followed_Double_Treat);
+	chi2hd.keys_treats.push_back(chi_cut);
+
+	KeyTreat vor_cut; vor_cut.key = "-vorcut"; vor_cut.description = "Minimal Voronoi area acceptable of peak to be considered as peak.";
+	vor_cut.treat.push_back(Followed_Double_Treat);
+	chi2hd.keys_treats.push_back(vor_cut);
+
+	KeyTreat vor_sl; vor_sl.key = "-vorsl"; vor_sl.description = "Voronoi area value division of solid and liquid particle.";
+	vor_sl.treat.push_back(Followed_Double_Treat);
+	chi2hd.keys_treats.push_back(vor_sl);
 
 	vParams.push_back(chi2hd);
 
@@ -65,27 +81,27 @@ ArgsProcessor::ArgsProcessor() {
 	 * Parametros generales
 	 *************************
 	 */
-	KeyTreat silent; silent.key = "-silent";
+	KeyTreat silent; silent.key = "-silent"; silent.description = "Displays no text during process.";
 	silent.treat.push_back(Exist_Treat);
 
-	KeyTreat debug; debug.key = "-debug";
+	KeyTreat debug; debug.key = "-debug"; debug.description = "Display major process status.";
 	debug.treat.push_back(Exist_Treat);
 
-	KeyTreat debugwf; debugwf.key = "-debugwf";
+	KeyTreat debugwf; debugwf.key = "-debugwf"; debugwf.description = "Display major process status and write status files.";
 	debugwf.treat.push_back(Exist_Treat);
 
-	KeyTreat chrono; chrono.key = "-chrono";
+	KeyTreat chrono; chrono.key = "-chrono"; chrono.description = "Display starting and finishing status.";
 	chrono.treat.push_back(Exist_Treat);
 
-	KeyTreat out; out.key = "-out";
+	KeyTreat out; out.key = "-out"; out.description = "Plain Text Output file.";
 	out.treat.push_back(Output_Treat);
 	out.treat.push_back(Followed_String_Treat);
 
-	KeyTreat outb; outb.key = "-outbin";
+	KeyTreat outb; outb.key = "-outbin"; outb.description = "Binary Output file.";
 	outb.treat.push_back(Output_Treat);
 	outb.treat.push_back(Followed_String_Treat);
 
-	KeyTreat outc; outc.key = "-outcon";
+	KeyTreat outc; outc.key = "-outcon"; outc.description = "Output Conection (Unimplemented, for future release).";
 	outc.treat.push_back(Output_Treat);
 	for(unsigned int i=0; i < vParams.size(); ++i){
 		vParams.at(i).keys_treats.push_back(silent);
@@ -96,18 +112,6 @@ ArgsProcessor::ArgsProcessor() {
 		vParams.at(i).keys_treats.push_back(outb);
 		vParams.at(i).keys_treats.push_back(outc);
 	}
-
-//	vParams.push_back("-ot");
-//	vParams.push_back("-of");
-//	vParams.push_back("-debug");
-//	vParams.push_back("-debugWF");
-//	vParams.push_back("-chrono");
-//	vParams.push_back("-cut");
-//	vParams.push_back("-vorslcut");
-//	vParams.push_back("-hchicut");
-//	vParams.push_back("-hvorcut");
-//	vParams.push_back("-hdensity");
-//	vParams.push_back("-silent");
 }
 
 ArgsProcessor::~ArgsProcessor() {
@@ -120,6 +124,53 @@ ArgsProcessor::~ArgsProcessor() {
  * Metodos
  ******************************
  */
+void ArgsProcessor::printHelp(){
+	cout << "Primary use as: $ ptrack2 [Algorithm Type] [[Algorithm Argument] ..]" << endl << endl;
+
+	// Por cada algoritmo
+	for(unsigned int i=0; i < myInstance->vParams.size(); ++i){
+		ArgObj alg = myInstance->vParams.at(i);
+		cout << "Type:\t" << alg.argkey << endl;
+		cout << "Description: " << alg.description << endl;
+		cout << "Typical use: " << alg.example << endl;
+
+		// Por cada argumento del algoritmo
+		for(unsigned int ks=0; ks < alg.keys_treats.size(); ++ks){
+
+			cout << "\t[" << alg.keys_treats.at(ks).key << "]\t";
+			// Por cada opcion de tratamiento del argumento
+			string treats = "";
+			for(unsigned int tr=0; tr < alg.keys_treats.at(ks).treat.size(); ++tr){
+				KeyTreat kt = alg.keys_treats.at(ks);
+				switch (kt.treat.at(tr)) {
+					case Require_Treat:
+						treats.append("REQUIRED, ");
+						break;
+					case Exist_Treat:
+						treats.append("Existance Only, ");
+						break;
+					case Followed_Double_Treat:
+						treats.append("Followed by Double value, ");
+						break;
+					case Followed_Int_Treat:
+						treats.append("Followed by Integer value, ");
+						break;
+					case Followed_String_Treat:
+						treats.append("Followed by String value, ");
+						break;
+					case Output_Treat:
+						treats.append("Result Output, ");
+						break;
+				}
+			}
+			cout << "[" << treats.substr(0, treats.size()-2) << "] ";
+			cout << alg.keys_treats.at(ks).description;
+			cout << " // " << alg.keys_treats.at(ks).example << endl;
+		}
+		cout << endl;
+	}
+}
+
 int ArgsProcessor::find(string key, int argcount, char* argvalues[]){
 	int position = -1;
 
@@ -169,6 +220,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 	// Chequear primer argumento => Tipo de algoritmo
 	if(argcount < 2){
 		MyLogger::log()->error("[ArgsProcessor][setArgs] No Algorithm Selected");
+		printHelp();
 		exit(EXIT_FAILURE);
 	}
 
@@ -216,14 +268,16 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 						MyLogger::log()->error("[ArgsProcessor][setArgs] Required Argument not found: %s", currentKey.key.c_str());
 						exit(EXIT_FAILURE);
 					}
+					MyLogger::log()->debug("[ArgsProcessor][setArgs] %s Required", currentKey.key.c_str());
 					require = true;
 					break;
 				case Followed_Double_Treat:
 					// Buscar el siguiente parametro para retornarlo como double
 					if(currentArgPosition != -1){
-						if(argvalues[currentArgPosition+1])
+						if(argvalues[currentArgPosition+1]){
+							MyLogger::log()->debug("[ArgsProcessor][setArgs] %s=%f", currentKey.key.c_str(), atof(argvalues[currentArgPosition+1]));
 							pc->addParam(currentKey.key, new Container(atof(argvalues[currentArgPosition+1])));
-						else{
+						}else{
 							MyLogger::log()->error("[ArgsProcessor][setArgs] Required Folowed Argument not found: %s", currentKey.key.c_str());
 							exit(EXIT_FAILURE);
 						}
@@ -232,9 +286,10 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 				case Followed_Int_Treat:
 					// Buscar el siguiente parametro para retornarlo como Integer
 					if(currentArgPosition != -1){
-						if(argvalues[currentArgPosition+1])
+						if(argvalues[currentArgPosition+1]){
+							MyLogger::log()->debug("[ArgsProcessor][setArgs] %s=%i", currentKey.key.c_str(), atoi(argvalues[currentArgPosition+1]));
 							pc->addParam(currentKey.key, new Container(atoi(argvalues[currentArgPosition+1])));
-						else{
+						}else{
 							MyLogger::log()->error("[ArgsProcessor][setArgs] Required Folowed Argument not found: %s", currentKey.key.c_str());
 							exit(EXIT_FAILURE);
 						}
@@ -243,9 +298,10 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 				case Followed_String_Treat:
 					// Buscar el siguiente parametro para retornarlo como String
 					if(currentArgPosition != -1){
-						if(argvalues[currentArgPosition+1])
+						if(argvalues[currentArgPosition+1]){
+							MyLogger::log()->debug("[ArgsProcessor][setArgs] %s=%s", currentKey.key.c_str(), argvalues[currentArgPosition+1]);
 							pc->addParam(currentKey.key, new Container(argvalues[currentArgPosition+1]));
-						else{
+						}else{
 							MyLogger::log()->error("[ArgsProcessor][setArgs] Required Folowed Argument not found: %s", currentKey.key.c_str());
 							exit(EXIT_FAILURE);
 						}
@@ -254,12 +310,14 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 				case Exist_Treat:
 					// Solamente debe existir
 					if(currentArgPosition != -1){
+						MyLogger::log()->debug("[ArgsProcessor][setArgs] %s Exist", currentKey.key.c_str());
 						pc->addParam(currentKey.key, new Container(argvalues[currentArgPosition]));
 					}
 					break;
 				case Output_Treat:
 					// Se asume que sigue con algun parametro tipo string
 					if(currentArgPosition != -1){
+						MyLogger::log()->debug("[ArgsProcessor][setArgs] %s Output", currentKey.key.c_str());
 						currentOutputType = Output::translate(toLowerCase(argvalues[currentArgPosition]));
 					}
 					break;

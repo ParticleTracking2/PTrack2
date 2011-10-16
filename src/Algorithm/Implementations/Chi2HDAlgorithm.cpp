@@ -23,24 +23,24 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] 2. Generate Chi2 image ");
 	MyMatrix<double> kernel = Chi2Lib::generateKernel(ss,os,d,w);
 	MyMatrix<double> chi_img(data->sX()+kernel.sX()-1, data->sY()+kernel.sY()-1);
-	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img);	// ~430 Milisegundos
+	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img);	// ~430|560 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 3. Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
-	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep); // ~120 Milisegundos
+	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep); // ~120|150 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 4. Generate Auxiliary Matrix ");
 	MyMatrix<double> grid_x(data->sX(), data->sY());
 	MyMatrix<double> grid_y(data->sX(), data->sY());
 	MyMatrix<int> over(data->sX(), data->sY());
-	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over);	// ~170 Milisegundos
+	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over);	// ~170|200 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 5. Compute Chi2 Difference ");
 	MyMatrix<double> chi2diff(data->sX(), data->sY());
-	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff); // ~70 Milisegundos
+	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff); // ~70|80 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 6. Add missed points ");
@@ -53,7 +53,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		Chi2LibHighDensity::generateScaledImage(&chi2diff, &normaldata_chi);
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.2. Obtaining new CHi2 Image ");
-		Chi2LibFFTW::getChiImage(&kernel, &normaldata_chi, &chi_img); // ~390 Milisegundos
+		Chi2LibFFTW::getChiImage(&kernel, &normaldata_chi, &chi_img); // ~390|500 Milisegundos
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.3. Obtaining new Peaks ");
 		vector<MyPeak> new_peaks = Chi2Lib::getPeaks(&chi_img, chi_cut, mindistance, minsep);

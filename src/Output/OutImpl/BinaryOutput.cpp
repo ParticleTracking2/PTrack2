@@ -20,7 +20,10 @@ void BinaryOutput::writeData(vector<MyPeak> *peaks, string file){
 	for(unsigned int i=0; i < peaks->size(); ++i){
 		myfile.write(reinterpret_cast<char*>(&peaks->at(i).px), sizeof(double));
 		myfile.write(reinterpret_cast<char*>(&peaks->at(i).py), sizeof(double));
-		myfile.write(reinterpret_cast<char*>(&solid), sizeof(double));
+		if(peaks->at(i).solid)
+			myfile.write(reinterpret_cast<char*>(&solid), sizeof(double));
+		else
+			myfile.write(reinterpret_cast<char*>(&liquid), sizeof(double));
 	}
 	myfile.close();
 	MyLogger::log()->debug("[BinaryOutput][writeData] Output file written");

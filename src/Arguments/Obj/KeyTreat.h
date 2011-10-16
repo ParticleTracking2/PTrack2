@@ -25,11 +25,16 @@ enum TreatType{
 
 struct KeyTreat{
 	string key;
+	string description;
+	string example;
 	vector<TreatType> treat;
 };
 
 struct ArgObj{
 	AlgorithmType type;
+	string argkey;
+	string description;
+	string example;
 	vector<KeyTreat> keys_treats;
 };
 

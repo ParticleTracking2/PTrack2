@@ -10,18 +10,15 @@
 void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, MyMatrix<double> *out, bool use_cache){
 	MyLogger::log()->debug("[Chi2LibFFTW] Generating First Convolution");
 	//conv2d_fft( normaldata, ipf*ipf )
-	MyMatrix<double> first_term 	= getFirstTerm(img, kernel, use_cache);
-//	FileUtils::writeToFileM(&first_term, "first_term-cpp.txt");	// OK
+	MyMatrix<double> first_term 	= getFirstTerm(img, kernel, use_cache); // ~200 Milisegundos
 
 	MyLogger::log()->debug("[Chi2LibFFTW] Generating Second Convolution");
 	//conv2d_fft( normaldata*normaldata, ipf )
-	MyMatrix<double> second_term 	= getSecondTerm(img, kernel, use_cache);
-//	FileUtils::writeToFileM(&second_term, "second_term-cpp.txt");	// OK
+	MyMatrix<double> second_term 	= getSecondTerm(img, kernel); // ~180 Milisegundos
 
 	MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
 	//conv2d_fft( blank, ipf*ipf*ipf )
-	MyMatrix<double> third_term 	=getThirdTerm(img, kernel, use_cache);
-//	FileUtils::writeToFileM(&third_term, "third_term-cpp.txt");	// OK
+	MyMatrix<double> third_term 	= getThirdTerm(img, kernel, use_cache); // ~170 Milisegundos
 
 	MyLogger::log()->debug("[Chi2LibFFTW] Computing result");
 	for(unsigned int x=0; x < first_term.sX(); ++x)
@@ -49,7 +46,6 @@ MyMatrix<double> Chi2LibFFTW::getFirstTerm(MyMatrix<double> *img, MyMatrix<doubl
 		Chi2LibMatrix::squareIt(kernel_img2);
 	}
 
-//	FileUtils::writeToFileM(&kernel_img2, "kernel_img2-cpp.txt");	// OK
 	MyMatrix<double> ret = conv2d_fft(img, kernel_img2);
 	if(!use_cache){
 		delete kernel_img2;
@@ -74,7 +70,7 @@ MyMatrix<double> Chi2LibFFTW::getSecondTerm(MyMatrix<double> *img, MyMatrix<doub
 		Chi2LibMatrix::copy(img, img2);
 		Chi2LibMatrix::squareIt(img2);
 	}
-//	FileUtils::writeToFileM(&img2, "img2-cpp.txt");	// OK
+
 	MyMatrix<double> ret = conv2d_fft(img2, kernel_img);
 	if(!use_cache){
 		delete img2;
@@ -104,7 +100,7 @@ MyMatrix<double> Chi2LibFFTW::getThirdTerm(MyMatrix<double> *img, MyMatrix<doubl
 		Chi2LibMatrix::copy(kernel_img, kernel_img3);
 		Chi2LibMatrix::cubeIt(kernel_img3);
 	}
-//	FileUtils::writeToFileM(&kernel_img3, "kernel_img3-cpp.txt");	// OK
+
 	MyMatrix<double> ret = conv2d_fft(blank, kernel_img3);
 	if(!use_cache){
 		delete blank;

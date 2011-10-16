@@ -26,16 +26,16 @@ int main(int argc, char* argv[]) {
 		mylog->setPriority(log4cpp::Priority::DEBUG);
 		mylog->logFileData(true);
 	}
-	if(proc->hasKey("-debug"))
-		mylog->setPriority(log4cpp::Priority::DEBUG);
 	if(proc->hasKey("-silent"))
 		mylog->setPriority(log4cpp::Priority::FATAL);
 	if(proc->hasKey("-chrono"))
 		mylog->setPriority(log4cpp::Priority::NOTICE);
+	if(proc->hasKey("-debug"))
+		mylog->setPriority(log4cpp::Priority::DEBUG);
 
 	mylog->log()->notice(">> Welcome to Ptracking C++/CUDA <<");
 
-	MyImage img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));	// ~670 milisegundos
+	MyImage img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));	// ~670 --> ~430 (2 threads) milisegundos
 
 	Algorithm *alg = AlgorithmFactory::select(proc->getAlgorithmType());
 	alg->setData(img.matrix());
