@@ -56,3 +56,11 @@ void Chi2LibMatrix::copy(MyMatrix<double> *in, MyMatrix<double> *out){
 		}
 	}
 }
+
+void Chi2LibMatrix::copy(MyMatrix<int> *in, MyMatrix<int> *out){
+	for(unsigned int x=0; x < in->sX(); ++x){
+		for(unsigned int y=0; y < in->sY(); ++y){
+			out->at(x,y) = in->getValue(x,y);
+		}
+	}
+}

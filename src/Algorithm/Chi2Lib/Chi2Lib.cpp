@@ -84,11 +84,40 @@ vector<MyPeak> Chi2Lib::getPeaks(MyMatrix<double> *img, int threshold, int mindi
 	unsigned int detected = peaks.size();
 	MyLogger::log()->info("[Chi2Lib][getPeaks] Peaks detected: %i of %i", detected, img->sX()*img->sY());
 	sort(peaks.begin(), peaks.end(), MyPeak::compareMe);
-	validatePeaks(&peaks, mindistance);
+	vector<MyPeak> valids;
 
-	unsigned int valid = peaks.size();
+	bool threads = true;
+	if(threads){
+		PartitionPeaks p1;
+		p1.peaks = &peaks; p1.init = 0; p1.end = peaks.size()/2;
+		vector<MyPeak> valids1;
+		p1.valids = &valids1; p1.mindistance = mindistance;
+
+		PartitionPeaks p2;
+		p2.peaks = &peaks; p2.init = peaks.size()/2; p2.end = peaks.size();
+		vector<MyPeak> valids2;
+		p2.valids = &valids2; p2.mindistance = mindistance;
+
+		pthread_t thread1, thread2;
+		pthread_create(&thread1, NULL, validatePeaksThread, (void *)&p1);
+		pthread_create(&thread2, NULL, validatePeaksThread, (void *)&p2);
+
+		pthread_join(thread1, NULL);
+		pthread_join(thread2, NULL);
+
+		for(unsigned int i=0; i<valids1.size(); ++i){
+			valids.push_back(valids1.at(i));
+		}
+		for(unsigned int i=0; i<valids2.size(); ++i){
+			valids.push_back(valids2.at(i));
+		}
+	}else{
+		validatePeaks(&peaks, 0, peaks.size(), mindistance, &valids);
+	}
+
+	unsigned int valid = valids.size();
 	MyLogger::log()->info("[Chi2Lib][getPeaks] Peaks detected valids: %i of %i", valid, detected);
-	return peaks;
+	return valids;
 }
 
 bool Chi2Lib::findLocalMinimum(MyMatrix<double> *img, unsigned int imgX, unsigned int imgY, int minsep){
@@ -114,32 +143,37 @@ bool Chi2Lib::findLocalMinimum(MyMatrix<double> *img, unsigned int imgX, unsigne
 	return true;
 }
 
-void Chi2Lib::validatePeaks(vector<MyPeak> *peaks, int mindistance){
+void Chi2Lib::validatePeaks(vector<MyPeak> *peaks, int init, int end, int mindistance, vector<MyPeak> *valids){
 	MyLogger::log()->debug("[Chi2Lib][validatePeaks] Validating Peaks ");
+	bool valid = true;
 	int mindistance2 = mindistance*mindistance;
-	for(unsigned int i=0; i < peaks->size(); ++i){
+	for(int i=init; i < end; ++i){
+		valid = true;
 		for(unsigned int j=i+1; j < peaks->size(); ++j){
 			int difx = peaks->at(i).x - peaks->at(j).x;
 			int dify = peaks->at(i).y - peaks->at(j).y;
 
 			if( (difx*difx + dify*dify) < mindistance2){
-				peaks->erase(peaks->begin()+i);
-				--i;
+				valid = false;
 				break;
 			}
+		}
+		if(valid){
+			valids->push_back(peaks->at(i));
 		}
 	}
 
 	MyLogger::log()->debug("[Chi2Lib][validatePeaks] Peaks Validated");
 }
 
-void Chi2Lib::generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over){
-	MyLogger::log()->debug("[Chi2Lib][generateGrid] Generating Auxiliary Matrix");
-	unsigned int maxDimension = img->sX() > img->sY() ? img->sX() : img->sY();
-	Chi2LibMatrix::fillWith(grid_x, maxDimension);
-	Chi2LibMatrix::fillWith(grid_y, maxDimension);
-	Chi2LibMatrix::fillWith(over, 0);
+void *Chi2Lib::validatePeaksThread( void* ptr){
+	MyLogger::log()->debug("[Chi2Lib][validatePeaksThread] Validating Peaks ");
+	PartitionPeaks *part = (PartitionPeaks*)ptr;
+	validatePeaks(part->peaks, part->init, part->end, part->mindistance, part->valids);
+	return 0;
+}
 
+void Chi2Lib::generateGridImpl(vector<MyPeak> *peaks, int init, int end, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over){
 	unsigned int half=(shift+2);
 	MyLogger::log()->debug("[Chi2Lib][generateGrid] Half=%i, SS=%i", half, shift);
 	unsigned int counter = 0;
@@ -148,7 +182,7 @@ void Chi2Lib::generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<d
 	double currentDistanceAux = 0.0;
 
 	if(!peaks->empty())
-	for(int npks = peaks->size()-1; npks >= 0; npks--){
+	for(int npks = end-1; npks >= init; npks--){
 		for(unsigned int localX=0; localX < 2*half+1; ++localX)
 			for(unsigned int localY=0; localY < 2*half+1; ++localY){
 				MyPeak currentPeak = peaks->at(npks);
@@ -177,6 +211,40 @@ void Chi2Lib::generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<d
 	MyLogger::log()->debug("[Chi2Lib][generateGrid] Auxiliary Matrix Generation Complete");
 	MyLogger::log()->info("[Chi2Lib][generateGrid] Total pgrid= %f; Counter= %i", 1.0*counter/peaks->size(), counter);
 }
+void Chi2Lib::generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over){
+	MyLogger::log()->debug("[Chi2Lib][generateGrid] Generating Auxiliary Matrix");
+	unsigned int maxDimension = img->sX() > img->sY() ? img->sX() : img->sY();
+	Chi2LibMatrix::fillWith(grid_x, maxDimension);
+	Chi2LibMatrix::fillWith(grid_y, maxDimension);
+	Chi2LibMatrix::fillWith(over, 0);
+
+	bool thread = false;
+	if(thread){
+		PartitionGrid p1; p1.shift = shift;
+		p1.peaks = peaks; p1.init = 0; p1.end = peaks->size()/2;
+		p1.img = img; p1.grid_x = grid_x; p1.grid_y = grid_y; p1.over = over;
+
+		PartitionGrid p2; p2.shift = shift;
+		p2.peaks = peaks; p2.init = peaks->size()/2; p2.end = peaks->size();
+		p2.img = img; p2.grid_x = grid_x; p2.grid_y = grid_y; p2.over = over;
+
+		pthread_t thread1, thread2;
+		pthread_create(&thread1, NULL, generateGridThread, (void *)&p1);
+		pthread_create(&thread2, NULL, generateGridThread, (void *)&p2);
+
+		pthread_join(thread1, NULL);
+		pthread_join(thread2, NULL);
+		// No quedan iguales, algunos valores se sobreescriben
+	}else{
+		generateGridImpl(peaks, 0, peaks->size(), shift, img, grid_x, grid_y, over);
+	}
+}
+
+void *Chi2Lib::generateGridThread( void* ptr){
+	PartitionGrid* part = (PartitionGrid *)ptr;
+	generateGridImpl(part->peaks, part->init, part->end, part->shift, part->img, part->grid_x, part->grid_y, part->over);
+	return 0;
+}
 
 double Chi2Lib::computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, double d, double w, MyMatrix<double> *diffout){
 	MyLogger::log()->debug("[Chi2Lib][computeDifference] Computing Chi2 Difference");
@@ -195,7 +263,7 @@ double Chi2Lib::computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_
 	return chi2err;
 }
 
-void Chi2Lib::newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int shift, double D, double w, double dp, double maxdr){
+void Chi2Lib::newtonCenterImpl(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int init, int end,  int shift, double D, double w, double dp, double maxdr){
 	MyLogger::log()->debug("[Chi2Lib][newtonCenter] Starting Newton Minimization");
 	w = 1.0/w;
 	int half = shift+2;
@@ -204,7 +272,7 @@ void Chi2Lib::newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<M
 	double detproblem = 0;
 	int total = 0;
 
-	for(int npks = peaks->size()-1; npks >= 0; npks--){
+	for(int npks = end-1; npks >= init; npks--){
 		double chix, chiy, chixx, chiyy, chixy;
 		chix = chiy = chixx = chiyy = chixy = 0;
 
@@ -279,7 +347,43 @@ void Chi2Lib::newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<M
 	MyLogger::log()->info("[Chi2Lib][newtonCenter] Total cidp2 : %f", 1.0*total/peaks->size());
 	MyLogger::log()->info("[Chi2Lib][newtonCenter] Total of peaks with problems : %i", detproblem);
 	MyLogger::log()->info("[Chi2Lib][newtonCenter] Stats: chix= %f chiy= %f chixx= %f chiyy= %f chixy = %f", statchix, statchiy, statchixx, statchiyy, statchixy);
+}
 
+void Chi2Lib::newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int shift, double D, double w, double dp, double maxdr){
+	bool threads = true;
+	if(threads){
+		PartitionNC p1;
+		p1.diff = diff; p1.over = over;
+		p1.dp = dp;	p1.D = D;
+		p1.i_end = peaks->size()/2;	p1.i_ini = 0;
+		p1.maxdr = maxdr; p1.peaks = peaks;
+		p1.shift = shift; p1.w = w;
+
+		PartitionNC p2;
+		p2.diff = diff; p2.over = over;
+		p2.dp = dp; p2.D = D;
+		p2.i_end = peaks->size();	p2.i_ini = peaks->size()/2;
+		p2.maxdr = maxdr; p2.peaks = peaks;
+		p2.shift = shift; p2.w = w;
+
+		pthread_t thread1, thread2;
+		pthread_create(&thread1, NULL, newtonCenterThread, (void *)&p1);
+		pthread_create(&thread2, NULL, newtonCenterThread, (void *)&p2);
+
+		pthread_join(thread1, NULL);
+		pthread_join(thread2, NULL);
+
+	}else{
+		newtonCenterImpl(over, diff, peaks, 0, peaks->size(), shift, D, w, dp, maxdr);
+	}
+}
+
+void *Chi2Lib::newtonCenterThread( void* ptr){
+	PartitionNC *part = (PartitionNC*)ptr;
+	MyLogger::log()->debug("[Chi2Lib][newtonCenterThread] Starting Newton Minimization");
+	newtonCenterImpl(part->over, part->diff, part->peaks, part->i_ini, part->i_end, part->shift, part->D, part->w, part->dp, part->maxdr);
+
+	return 0;
 }
 
 void Chi2Lib::transformPeaks(vector<MyPeak> *peaks, unsigned int ss, unsigned int width, double vor_areaSL){

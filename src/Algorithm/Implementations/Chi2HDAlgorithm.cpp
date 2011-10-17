@@ -28,7 +28,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 3. Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
-	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep); // ~120|150 Milisegundos
+	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep); // ~120|150 -> |125 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 4. Generate Auxiliary Matrix ");
@@ -109,6 +109,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
+
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9. Checking particles by pixel intensity and voronoi area Tom's algorithm ");

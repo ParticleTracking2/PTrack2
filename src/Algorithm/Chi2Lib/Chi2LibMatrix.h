@@ -32,6 +32,7 @@ public:
 	 * Copia una matriz a la otra matriz
 	 */
 	static void copy(MyMatrix<double> *in, MyMatrix<double> *out);
+	static void copy(MyMatrix<int> *in, MyMatrix<int> *out);
 };
 
 #endif
