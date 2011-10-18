@@ -10,6 +10,7 @@
 #include "../Chi2Lib/Chi2LibHighDensity.h"
 #include "../Chi2Lib/Chi2LibMatrix.h"
 #include "../Chi2Lib/Chi2LibFFTW.h"
+#include "../Chi2Lib/Chi2LibFFTWCache.h"
 
 #ifndef CHI2HDALGORITHM
 #define CHI2HDALGORITHM

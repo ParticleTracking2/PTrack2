@@ -12,7 +12,7 @@
 
 class Chi2LibFFTWCache {
 private:
-	static const unsigned int capacity = 6;
+	static const unsigned int capacity = 7;
 	MyMatrix<double> *_cache[capacity];
 
 	static Chi2LibFFTWCache *instance;
@@ -21,6 +21,7 @@ public:
 	virtual ~Chi2LibFFTWCache();
 
 	static void erase(unsigned int slot);
+	static void eraseAll();
 	static bool empty(unsigned int slot);
 	static MyMatrix<double> * cache(unsigned int slot);
 	static void cache(unsigned int slot, MyMatrix<double> * data);

@@ -17,29 +17,39 @@
 #ifndef CHI2LIB
 #define CHI2LIB
 
-struct PartitionPeaks{
-	vector<MyPeak> *peaks;int init; int end;
-	vector<MyPeak> *valids;
-	int mindistance;
-};
-
-struct PartitionGrid{
-	vector<MyPeak> *peaks;int init; int end;
-	unsigned int shift;
-	MyMatrix<double> *img;
-	MyMatrix<double> *grid_x;
-	MyMatrix<double> *grid_y;
-	MyMatrix<int> *over;
-};
-
-struct PartitionNC{
-	vector<MyPeak> *peaks; int i_ini, i_end;
-	MyMatrix<int> *over; MyMatrix<double> *diff;
-	int shift; double D, w, dp, maxdr;
-};
-
 class Chi2Lib {
 private:
+	struct PartitionPeaks{
+		vector<MyPeak> *peaks;int init; int end;
+		vector<MyPeak> *valids;
+		int mindistance;
+	};
+
+	struct PartitionGrid{
+		vector<MyPeak> *peaks;
+		int x1, x2, y1, y2;
+		unsigned int shift;
+		MyMatrix<double> *img;
+		MyMatrix<double> *grid_x;
+		MyMatrix<double> *grid_y;
+		MyMatrix<int> *over;
+	};
+
+	struct PartitionNC{
+		vector<MyPeak> *peaks; int i_ini, i_end;
+		MyMatrix<int> *over; MyMatrix<double> *diff;
+		int shift; double D, w, dp, maxdr;
+	};
+
+	struct PartitionDiff{
+		MyMatrix<double> *img;
+		unsigned int x1, x2, y1, y2;
+		MyMatrix<double> *grid_x;
+		MyMatrix<double> *grid_y;
+		double d, w;
+		double err;
+		MyMatrix<double> *diffout;
+	};
 	/**
 	 * Verifica si un punto es minimo local
 	 */
@@ -51,7 +61,7 @@ private:
 	static void validatePeaks(vector<MyPeak> *peaks, int init, int end, int mindistance, vector<MyPeak> *valids);
 	static void *validatePeaksThread( void* ptr);
 
-	static void generateGridImpl(vector<MyPeak> *peaks, int init, int end, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over);
+	static void generateGridImpl(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, int x1, int x2, int y1, int y2, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over);
 	static void *generateGridThread( void* ptr);
 
 	static void newtonCenterImpl(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int init, int end, int shift, double D, double w, double dp, double maxdr);
@@ -86,7 +96,7 @@ public:
 	 * Calcula la diferencia con la Imagen Chi2 y la Imagen normal
 	 */
 	static double computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, double d, double w, MyMatrix<double> *diffout);
-
+	static void * computeDifferenceThread( void* ptr);
 	/**
 	 * Trata de mejorar el centro de las particulas mediante el metodo de newton
 	 */

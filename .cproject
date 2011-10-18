@@ -102,6 +102,7 @@
 								<option id="gnu.cpp.compiler.option.include.paths.1952208681" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/local/include/ImageMagick"/>
 								</option>
+								<option id="gnu.cpp.compiler.option.debugging.other.806154239" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" value="-NDEBUG" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1787910551" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.1178139856" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release">
@@ -113,6 +114,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1522868470" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
 								<option id="gnu.cpp.link.option.libs.1732994260" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
+									<listOptionValue builtIn="false" value="log4cpp"/>
 									<listOptionValue builtIn="false" value="Magick++"/>
 									<listOptionValue builtIn="false" value="MagickWand"/>
 									<listOptionValue builtIn="false" value="MagickCore"/>

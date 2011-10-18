@@ -43,6 +43,16 @@ void Chi2LibFFTWCache::erase(unsigned int slot){
 	}
 }
 
+void Chi2LibFFTWCache::eraseAll(){
+	// Crear si no existe.
+	if(!instance)
+		instance = new Chi2LibFFTWCache();
+	for( unsigned int slot = 0; slot < instance->capacity; ++slot){
+		if(instance->_cache[slot])
+			delete instance->_cache[slot];
+	}
+}
+
 bool Chi2LibFFTWCache::empty(unsigned int slot){
 	// Crear si no existe.
 	if(!instance)
