@@ -9,8 +9,13 @@
 
 vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->notice("[Chi2HDAlgorithm] Running Chi2 High Density Algorithm");
-	double d = pc->getParamAsDouble("-d");
-	double w = pc->getParamAsDouble("-w");
+	double d = 9.87;
+	if(pc->existParam("-d"))
+		d = pc->getParamAsDouble("-d");
+
+	double w = 1.84;
+	if(pc->existParam("-w"))
+		w = pc->getParamAsDouble("-w");
 
 	unsigned int ss = 2*floor(d/2 + 4*w/2)-1;
 	unsigned int os = (ss-1)/2;
@@ -23,19 +28,19 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] 2. Generate Chi2 image ");
 	MyMatrix<double> kernel = Chi2Lib::generateKernel(ss,os,d,w);
 	MyMatrix<double> chi_img(data->sX()+kernel.sX()-1, data->sY()+kernel.sY()-1);
-	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img);	// ~430|560 -> |290 Milisegundos
+	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img, use_threads);	// ~430|560 -> |290 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 3. Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
-	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep); // ~120|150 -> |125 Milisegundos
+	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 4. Generate Auxiliary Matrix ");
 	MyMatrix<double> grid_x(data->sX(), data->sY());
 	MyMatrix<double> grid_y(data->sX(), data->sY());
 	MyMatrix<int> over(data->sX(), data->sY());
-	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over);	// ~170|200 -> |150 Milisegundos
+	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);	// ~170|200 -> |150 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	FileUtils::writeToFileM(&grid_x, "gridx.txt");
@@ -44,11 +49,13 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] 5. Compute Chi2 Difference ");
 	MyMatrix<double> chi2diff(data->sX(), data->sY());
-	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff); // ~70|80 -> |50 Milisegundos
+	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads); // ~70|80 -> |50 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 6. Add missed points ");
 	unsigned int chi_cut = 2;
+	if(pc->existParam("-chicut"))
+		chi_cut = pc->getParamAsInt("-chicut");
 	unsigned int total_found = 0;
 	MyMatrix<double> normaldata_chi(data->sX(), data->sY()); // No necesita reset
 
@@ -58,10 +65,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		Chi2LibHighDensity::generateScaledImage(&chi2diff, &normaldata_chi); // ~ 15 Milisegundos
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.2. Obtaining new CHi2 Image ");
-		Chi2LibFFTW::getChiImage(&kernel, &normaldata_chi, &chi_img); // ~390|500 -> |220 Milisegundos
+		Chi2LibFFTW::getChiImage(&kernel, &normaldata_chi, &chi_img, use_threads); // ~390|500 -> |220 Milisegundos
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.3. Obtaining new Peaks ");
-		vector<MyPeak> new_peaks = Chi2Lib::getPeaks(&chi_img, chi_cut, mindistance, minsep); // ~7 Milisegundos
+		vector<MyPeak> new_peaks = Chi2Lib::getPeaks(&chi_img, chi_cut, mindistance, minsep, use_threads); // ~7 Milisegundos
 
 		unsigned int old_size = peaks.size();
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.4. Checking inside image peaks ");
@@ -72,10 +79,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 			break;
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.5. Generating Auxiliary Matrix ");
-		Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over); // ~200 Milisegundos
+		Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over, use_threads); // ~200 Milisegundos
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] 6.6. Computing Chi2 Difference ");
-		currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff); // ~80 Milisegundos
+		currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads); // ~80 Milisegundos
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] Original No of Points: %i, +%i; Total Found = %i", old_size, found, total_found);
 
@@ -87,18 +94,18 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 7. Recompute Auxiliary matrix and Chi2 Difference");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 7.1. Recompute Auxiliary matrix");
-	Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over);
+	Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over, use_threads);
 	MyLogger::log()->info("[Chi2HDAlgorithm] 7.2. Recompute Chi2 Difference");
-	currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff);
+	currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 8. Minimizing Chi2 Error ");
 	unsigned int _minChi2Delta = 1;
-	iterations = 0; _maxIterations = 5;
+	iterations = 0;
 	double chi2Delta = currentChi2Error;
 
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
-		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss); // ~400 -> ~250 Milisegundos
+		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0, use_threads); // ~400 -> ~250 Milisegundos
 
 		for(unsigned int i=0; i < peaks.size(); ++i){
 			peaks.at(i).px = peaks.at(i).px + peaks.at(i).dpx;
@@ -108,10 +115,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 			peaks.at(i).y = (unsigned int)round(peaks.at(i).py);
 		}
 
-		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over);
+		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);
 		Chi2LibMatrix::fillWith(&chi2diff, 0);
 
-		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff);
+		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
@@ -135,20 +142,22 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.3. Filter 'Bad' Peaks using Voronoy Area and intensity");
 	double par_thresh=mu-3.0*sigma;
 	double vor_thresh = 50.0;
+	if(pc->existParam("-vorcut"))
+		vor_thresh = pc->getParamAsDouble("-vorcut");
 	Chi2LibHighDensity::removeBadPeaks(&peaks, data, vor_thresh, par_thresh, os);
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.4. Recompute Auxiliary matrix and Chi2 Difference");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.4.1. Recompute Auxiliary matrix");
-	Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over);
+	Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over, use_threads);
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.4.2. Recompute Chi2 Difference");
-	Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff);
+	Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 	chi2Delta = 1000000.0;
 	iterations = 0;
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.5. Minimizing Chi2 Error ");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
-		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss);
+		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0, use_threads);
 
 		for(unsigned int i=0; i < peaks.size(); ++i){
 			peaks.at(i).px = peaks.at(i).px + peaks.at(i).dpx;
@@ -158,10 +167,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 			peaks.at(i).y = (unsigned int)round(peaks.at(i).py);
 		}
 
-		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over);
+		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);
 		Chi2LibMatrix::fillWith(&chi2diff, 0);
 
-		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff);
+		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
@@ -169,6 +178,9 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.6. Recomputing Voronoi areas ");
 	Chi2LibQhull::addVoronoiAreas(&peaks);
-	Chi2Lib::transformPeaks(&peaks, os, data->sX());
+	double vor_areaSL = 75.0;
+	if(pc->existParam("-vorsl"))
+		vor_areaSL = pc->getParamAsDouble("-vorsl");
+	Chi2Lib::transformPeaks(&peaks, os, data->sX(), vor_areaSL);
 	return peaks;
 }

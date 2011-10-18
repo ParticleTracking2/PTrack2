@@ -85,22 +85,22 @@ public:
 	/**
 	 * Obentiene los minimo locales validos dentro de la imagen
 	 */
-	static vector<MyPeak> getPeaks(MyMatrix<double> *img, int threshold, int mindistance, int minsep);
+	static vector<MyPeak> getPeaks(MyMatrix<double> *img, int threshold, int mindistance, int minsep, bool use_threads = true);
 
 	/**
 	 * Genera las matrices auxiliares con valores iguales a las distancias en X e Y al centro de los puntos detectados.
 	 */
-	static void generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over);
+	static void generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over, bool use_threads = true);
 
 	/**
 	 * Calcula la diferencia con la Imagen Chi2 y la Imagen normal
 	 */
-	static double computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, double d, double w, MyMatrix<double> *diffout);
+	static double computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, double d, double w, MyMatrix<double> *diffout, bool use_threads = true);
 	static void * computeDifferenceThread( void* ptr);
 	/**
 	 * Trata de mejorar el centro de las particulas mediante el metodo de newton
 	 */
-	static void newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int shift, double D, double w, double dp, double maxdr = 20.0);
+	static void newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int shift, double D, double w, double dp, double maxdr = 20.0, bool use_threads = true);
 
 	/**
 	 * Transforma las coordenadas para ser leidas en Matlab

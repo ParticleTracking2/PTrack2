@@ -41,6 +41,10 @@ void Algorithm::setData(MyMatrix<double>* data){
 	this->data = data;
 }
 
+void Algorithm::setThreads(bool use){
+	this->use_threads = use;
+}
+
 vector<MyPeak> Algorithm::run(ParameterContainer *pc){
 	MyLogger::log()->debug("[Algorithm][run] Running nothing, please implement this class function.");
 	vector<MyPeak> ret;

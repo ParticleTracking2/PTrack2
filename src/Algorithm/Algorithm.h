@@ -5,6 +5,7 @@
  *      Author: juanin
  */
 
+#include "../Image/MyImage.h"
 #include "../Container/MyMatrix.h"
 #include "../Container/ParameterContainer.h"
 #include "../Utils/MyLogger.h"
@@ -25,11 +26,13 @@ enum AlgorithmType{
 class Algorithm {
 public:
 	MyMatrix<double>* data;
+	bool use_threads;
 	Algorithm();
 	virtual ~Algorithm();
 
 	static AlgorithmType translate(string alg);
 	void setData(MyMatrix<double>* data);
+	void setThreads(bool use);
 	virtual vector<MyPeak> run(ParameterContainer *pc);
 };
 

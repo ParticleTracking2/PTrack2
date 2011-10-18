@@ -35,7 +35,7 @@ private:
 	static void *conv2d_fftThread(void *ptr);
 	static void conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img, MyMatrix<double> *output);
 public:
-	static void getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, MyMatrix<double> *out);
+	static void getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, MyMatrix<double> *out, bool use_thread = true);
 };
 
 #endif

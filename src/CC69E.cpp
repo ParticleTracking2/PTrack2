@@ -35,10 +35,15 @@ int main(int argc, char* argv[]) {
 
 	mylog->log()->notice(">> Welcome to Ptracking C++/CUDA <<");
 
+	bool use_threads = true;
+	if(proc->getContainer()->existParam("-nothreads"))
+		use_threads = false;
+
 	MyImage img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));	// ~670 --> ~430 (2 threads) milisegundos
 
 	Algorithm *alg = AlgorithmFactory::select(proc->getAlgorithmType());
 	alg->setData(img.matrix());
+	alg->setThreads(use_threads);
 	vector<MyPeak> peaks = alg->run(proc->getContainer());
 	delete alg;
 
@@ -49,6 +54,9 @@ int main(int argc, char* argv[]) {
 		out->writeData(&peaks, proc->getArgAsString("-outbin"));
 	if(!proc->hasKey("-out") && !proc->hasKey("-outbin"))
 		out->writeData(&peaks, "");
+
+	if(proc->hasKey("-display"))
+		img.display(&peaks);
 
 	mylog->log()->notice(">> Ptracking C++/CUDA Finished<<");
 	return EXIT_SUCCESS;

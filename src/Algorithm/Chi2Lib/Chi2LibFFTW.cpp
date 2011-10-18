@@ -8,7 +8,7 @@
 #include "Chi2LibFFTW.h"
 pthread_mutex_t Chi2LibFFTW::mutex1 = PTHREAD_MUTEX_INITIALIZER;
 
-void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, MyMatrix<double> *out){
+void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, MyMatrix<double> *out, bool use_thread){
 	MyLogger::log()->debug("[Chi2LibFFTW][getChiImage] Using cache");
 	if(Chi2LibFFTWCache::empty(cached_kernel)){ //Kernel
 		MyMatrix<double> *kernel_img = new MyMatrix<double>(kernel->sX(), kernel->sY());
@@ -51,8 +51,7 @@ void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, M
 		MyLogger::log()->debug("[Chi2LibFFTW][getChiImage] Third Term Cached");
 	}
 
-	bool thread = true;
-	if(thread){
+	if(use_thread){
 		PartitionFFT p1;
 		p1.img = img; p1.kernel_img = Chi2LibFFTWCache::cache(cached_kernel2);
 		p1.output = Chi2LibFFTWCache::cache(cached_first_term);

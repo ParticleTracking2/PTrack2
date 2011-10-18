@@ -103,6 +103,12 @@ ArgsProcessor::ArgsProcessor() {
 
 	KeyTreat outc; outc.key = "-outcon"; outc.description = "Output Conection (Unimplemented, for future release).";
 	outc.treat.push_back(Output_Treat);
+
+	KeyTreat nth; nth.key = "-nothreads"; nth.description = "Use no threads to calculate";
+	nth.treat.push_back(Exist_Treat);
+
+	KeyTreat dspl; dspl.key = "-display"; dspl.description = "Display Obtained Peaks into Image";
+	dspl.treat.push_back(Exist_Treat);
 	for(unsigned int i=0; i < vParams.size(); ++i){
 		vParams.at(i).keys_treats.push_back(silent);
 		vParams.at(i).keys_treats.push_back(debug);
@@ -111,6 +117,8 @@ ArgsProcessor::ArgsProcessor() {
 		vParams.at(i).keys_treats.push_back(out);
 		vParams.at(i).keys_treats.push_back(outb);
 		vParams.at(i).keys_treats.push_back(outc);
+		vParams.at(i).keys_treats.push_back(nth);
+		vParams.at(i).keys_treats.push_back(dspl);
 	}
 }
 
@@ -165,7 +173,9 @@ void ArgsProcessor::printHelp(){
 			}
 			cout << "[" << treats.substr(0, treats.size()-2) << "] ";
 			cout << alg.keys_treats.at(ks).description;
-			cout << " // " << alg.keys_treats.at(ks).example << endl;
+			if(!alg.keys_treats.at(ks).example.empty())
+				cout << endl << "\t\t\t //Example: " << alg.keys_treats.at(ks).example;
+			cout << endl;
 		}
 		cout << endl;
 	}
@@ -229,6 +239,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 	currentAlgorithmType = Algorithm::translate(alg_str);
 	if(currentAlgorithmType == None_Algorithm){
 		MyLogger::log()->error("[ArgsProcessor][setArgs] No Algorithm Selected: %s", alg_str.c_str());
+		printHelp();
 		exit(EXIT_FAILURE);
 	}
 
@@ -247,6 +258,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 
 	if(!arglist){
 		MyLogger::log()->error("[ArgsProcessor][setArgs] Algorithm without Arguments stablished");
+		printHelp();
 		exit(EXIT_FAILURE);
 	}
 
@@ -266,6 +278,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 					// Debe existir la posicion
 					if(currentArgPosition == -1){
 						MyLogger::log()->error("[ArgsProcessor][setArgs] Required Argument not found: %s", currentKey.key.c_str());
+						printHelp();
 						exit(EXIT_FAILURE);
 					}
 					MyLogger::log()->debug("[ArgsProcessor][setArgs] %s Required", currentKey.key.c_str());
@@ -279,6 +292,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 							pc->addParam(currentKey.key, new Container(atof(argvalues[currentArgPosition+1])));
 						}else{
 							MyLogger::log()->error("[ArgsProcessor][setArgs] Required Folowed Argument not found: %s", currentKey.key.c_str());
+							printHelp();
 							exit(EXIT_FAILURE);
 						}
 					}
@@ -291,6 +305,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 							pc->addParam(currentKey.key, new Container(atoi(argvalues[currentArgPosition+1])));
 						}else{
 							MyLogger::log()->error("[ArgsProcessor][setArgs] Required Folowed Argument not found: %s", currentKey.key.c_str());
+							printHelp();
 							exit(EXIT_FAILURE);
 						}
 					}
@@ -303,6 +318,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 							pc->addParam(currentKey.key, new Container(argvalues[currentArgPosition+1]));
 						}else{
 							MyLogger::log()->error("[ArgsProcessor][setArgs] Required Folowed Argument not found: %s", currentKey.key.c_str());
+							printHelp();
 							exit(EXIT_FAILURE);
 						}
 					}
