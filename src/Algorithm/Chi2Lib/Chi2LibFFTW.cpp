@@ -112,11 +112,12 @@ void *Chi2LibFFTW::conv2d_fftThread(void * ptr){
 }
 
 void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img, MyMatrix<double> *output){
+	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Generating Convolution using FFTW");
 	fftw_complex	*fft_image, *fft_kernel;
 	fftw_plan       plan_forward_image, plan_forward_kernel, plan_backward;
 	//auxiliary structures are necessary because fftw3 optimization plan will destroy it!
 	double 			*ifft_result, *data, *kernel;
-	unsigned int nwidth	=	img->sX()+kernel_img->sX()-1;
+	unsigned int nwidth 	=	img->sX()+kernel_img->sX()-1;
 	unsigned int nheight	=	img->sY()+kernel_img->sY()-1;
 
 	pthread_mutex_lock( &mutex1 );

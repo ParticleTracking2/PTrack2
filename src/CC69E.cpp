@@ -39,7 +39,11 @@ int main(int argc, char* argv[]) {
 	if(proc->getContainer()->existParam("-nothreads"))
 		use_threads = false;
 
-	MyImage img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));	// ~670 --> ~430 (2 threads) milisegundos
+	MyImage img;
+	if(proc->hasKey("-cut"))
+		img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"), proc->getArgAsInt("-cut"));	// ~670 --> ~430 (2 threads) milisegundos
+	else
+		img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));
 
 	Algorithm *alg = AlgorithmFactory::select(proc->getAlgorithmType());
 	alg->setData(img.matrix());

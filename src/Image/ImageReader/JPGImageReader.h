@@ -11,7 +11,7 @@
 
 class JPGImageReader : public ImageReader {
 public:
-	static MyImage decodeImageGray(string file);
+
 };
 
 #endif

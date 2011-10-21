@@ -21,14 +21,6 @@ public:
 	 */
 	static void cubeIt(MyMatrix<double> *mtrx);
 	/**
-	 * Rellena la matrix con el numero indicado
-	 */
-	static void fillWith(MyMatrix<double> *mtrx, double fill);
-	/**
-	 * Rellena la matrix con el numero indicado
-	 */
-	static void fillWith(MyMatrix<int> *mtrx, int fill);
-	/**
 	 * Copia una matriz a la otra matriz
 	 */
 	static void copy(MyMatrix<double> *in, MyMatrix<double> *out);

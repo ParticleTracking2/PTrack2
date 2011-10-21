@@ -16,7 +16,9 @@ using namespace std;
 class ImageReader {
 public:
 	virtual ~ImageReader();
-	static MyImage decodeImageGray(string image);
+	static MyImage decodeImageGray(string file);
+	static MyImage decodeImageGray(string file, unsigned int cut);
+	static MyImage decodeImageGray(string file, unsigned int top, unsigned int bottom, unsigned int left, unsigned int right);
 };
 
 #endif

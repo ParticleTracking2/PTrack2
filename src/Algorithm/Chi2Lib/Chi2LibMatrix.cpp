@@ -7,26 +7,6 @@
 
 #include "Chi2LibMatrix.h"
 
-void Chi2LibMatrix::fillWith(MyMatrix<double> *mtrx, double fill){
-//	MyLogger::log()->debug("[Chi2LibMatrix] Filling Matrix with %f", fill);
-	for(unsigned int x =0; x < mtrx->sX(); ++x){
-		for(unsigned int y =0; y < mtrx->sY(); ++y){
-			mtrx->at(x,y) = fill;
-		}
-	}
-//	MyLogger::log()->debug("[Chi2LibMatrix] Matrix Filled");
-}
-
-void Chi2LibMatrix::fillWith(MyMatrix<int> *mtrx, int fill){
-//	MyLogger::log()->debug("[Chi2LibMatrix] Filling Matrix with %f", fill);
-	for(unsigned int x =0; x < mtrx->sX(); ++x){
-		for(unsigned int y =0; y < mtrx->sY(); ++y){
-			mtrx->at(x,y) = fill;
-		}
-	}
-//	MyLogger::log()->debug("[Chi2LibMatrix] Matrix Filled");
-}
-
 void Chi2LibMatrix::squareIt(MyMatrix<double> *mtrx){
 //	MyLogger::log()->debug("[Chi2LibMatrix] Squaring Matrix");
 	for(unsigned int x =0; x < mtrx->sX(); ++x){

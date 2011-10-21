@@ -19,6 +19,18 @@ MyImage::MyImage(unsigned int width, unsigned int height){
 	MyLogger::log()->debug("[MyImage] Image Alocated");
 }
 
+MyImage::~MyImage(){
+	mtrx.deallocate();
+}
+
+void MyImage::operator = (MyImage img){
+	mtrx.allocate(img.matrix()->sX(), img.matrix()->sY());
+	for(unsigned int x=0; x < img.matrix()->sX(); ++x)
+		for(unsigned int y=0; y < img.matrix()->sY(); ++y){
+			mtrx.at(x,y) = img.matrix()->getValue(x,y);
+		}
+}
+
 /**
  *******************************
  * Metodos

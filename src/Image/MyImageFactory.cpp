@@ -26,6 +26,23 @@ MyImage MyImageFactory::makeImgFromFile(string file){
 	return MyImage();
 }
 
+MyImage MyImageFactory::makeImgFromFile(string file, unsigned int cut){
+	MyImageTypes type = recognizeType(file);
+	switch(type){
+		case IMAGE_JPG :
+			MyLogger::log()->debug("[MyImageFactory] JPG Image type detected");
+			return JPGImageReader::decodeImageGray(file, cut);
+		case IMAGE_PNG:
+			MyLogger::log()->debug("[MyImageFactory] PNG Image type detected");
+			return PNGImageReader::decodeImageGray(file, cut);
+		case IMAGE_TIF:
+			MyLogger::log()->debug("[MyImageFactory] TIFF Image type detected");
+			return TIFFImageReader::decodeImageGray(file, cut);
+	}
+
+	return MyImage();
+}
+
 MyImageTypes MyImageFactory::recognizeType(string file){
 	MyLogger::log()->debug("[MyImageFactory] Finding Extension of image...");
 	string typetxt = file.substr(file.find_last_of(".")+1, file.length());

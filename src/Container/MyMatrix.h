@@ -4,6 +4,7 @@
  *  Created on: 31/08/2011
  *      Author: juanin
  */
+#include <iostream>
 #include <cstdlib>
 
 #ifndef MYMATRIX
@@ -47,16 +48,16 @@ MyMatrix<myType>::MyMatrix() {
 }
 
 template <class myType>
-MyMatrix<myType>::MyMatrix(unsigned int sX, unsigned int sy){
+MyMatrix<myType>::MyMatrix(unsigned int x, unsigned int y){
 	data = 0;
-	_sizeX = sX; _sizeY = sy;
+	_sizeX = x; _sizeY = y;
 	allocate();
 }
 
 template <class myType>
-MyMatrix<myType>::MyMatrix(unsigned int sX, unsigned int sy, myType def){
+MyMatrix<myType>::MyMatrix(unsigned int x, unsigned int y, myType def){
 	data = 0;
-	_sizeX = sX; _sizeY = sy;
+	_sizeX = x; _sizeY = y;
 	allocate();
 	reset(def);
 }
@@ -72,23 +73,24 @@ void MyMatrix<myType>::allocate(){
 		deallocate();
 
 	data = (myType**)malloc(_sizeX*sizeof(myType));
-	for(unsigned int h=0; h < _sizeY; ++h){
+	for(unsigned int h=0; h < _sizeX; ++h){
 		data[h] = (myType*)malloc(_sizeY*sizeof(myType));
 	}
 }
 
 template <class myType>
-void MyMatrix<myType>::allocate(unsigned int sX, unsigned int sy){
-	_sizeX = sX;_sizeY = sy;
+void MyMatrix<myType>::allocate(unsigned int x, unsigned int y){
+	_sizeX = x;_sizeY = y;
 	allocate();
 }
 
 template <class myType>
 void MyMatrix<myType>::deallocate(){
 	if(data){
-		for(unsigned int h=0; h < _sizeY; ++h){
+		for(unsigned int h=0; h < _sizeX; ++h){
 			if(data[h])
 				free(data[h]);
+			data[h] = 0;
 		}
 		free(data);
 	}
@@ -100,6 +102,7 @@ void MyMatrix<myType>::deallocate(){
  * Metodos
  *******************************
  */
+
 template <class myType>
 void MyMatrix<myType>::reset(myType def){
 	for(unsigned int x=0; x<_sizeX; ++x){

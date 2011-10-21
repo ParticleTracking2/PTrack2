@@ -28,6 +28,7 @@ private:
 	static MyImageTypes recognizeType(string file);
 public:
 	static MyImage makeImgFromFile(string file);
+	static MyImage makeImgFromFile(string file, unsigned int cut);
 };
 
 #endif

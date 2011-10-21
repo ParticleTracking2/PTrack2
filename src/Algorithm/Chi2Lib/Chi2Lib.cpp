@@ -214,9 +214,9 @@ void Chi2Lib::generateGridImpl(vector<MyPeak> *peaks, unsigned int shift, MyMatr
 void Chi2Lib::generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over, bool use_threads){
 	MyLogger::log()->debug("[Chi2Lib][generateGrid] Generating Auxiliary Matrix");
 	unsigned int maxDimension = img->sX() > img->sY() ? img->sX() : img->sY();
-	Chi2LibMatrix::fillWith(grid_x, maxDimension);
-	Chi2LibMatrix::fillWith(grid_y, maxDimension);
-	Chi2LibMatrix::fillWith(over, 0);
+	grid_x->reset(maxDimension);
+	grid_y->reset(maxDimension);
+	over->reset(0);
 
 	if(use_threads){
 		PartitionGrid p1; p1.shift = shift;

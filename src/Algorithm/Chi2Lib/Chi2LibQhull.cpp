@@ -136,13 +136,17 @@ string Chi2LibQhull::execQhull(string data, string params){
 }
 
 void Chi2LibQhull::addVoronoiAreas(vector<MyPeak> *peaks){
+	MyLogger::log()->debug("[Chi2LibQhull][addVoronoiAreas] Adding Voronoi Areas to peaks. Size=%i", peaks->size());
 	string prep = prepareData(peaks);
 	string rawData = execQhull(prep, "v Qbb p FN");	// v = Voronoi; Qbb = Qbb-scale-last; p = points; FN = FNeigh-vertex;
 
 	vector< pair<double,double> > vertex;
 	vector< vector<int> > cells;
+	FileUtils::writeToFile(rawData, "Original.txt");
 	interpretData(&rawData, &vertex, &cells);
+	FileUtils::writeToFileM(&vertex, &cells, "Interpreted.txt");
 
+	MyLogger::log()->debug("[Chi2LibQhull][addVoronoiAreas] Iterating over cells");
 	double xold = 0, yold = 0;
 	double currentArea;
 	bool mArea;
@@ -174,4 +178,5 @@ void Chi2LibQhull::addVoronoiAreas(vector<MyPeak> *peaks){
 			peaks->at(i).vor_area = fabs(currentArea);
 		}
 	}
+	MyLogger::log()->debug("[Chi2LibQhull][addVoronoiAreas] Adding Areas Complete!");
 }

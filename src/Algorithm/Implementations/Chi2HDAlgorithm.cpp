@@ -40,13 +40,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyMatrix<double> grid_x(data->sX(), data->sY());
 	MyMatrix<double> grid_y(data->sX(), data->sY());
 	MyMatrix<int> over(data->sX(), data->sY());
+	MyLogger::log()->debug("[Chi2HDAlgorithm] 4.1. Allocation Complete ");
 	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);	// ~170|200 -> |150 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
-	FileUtils::writeToFileM(&grid_x, "gridx.txt");
-	FileUtils::writeToFileM(&grid_y, "gridy.txt");
-	FileUtils::writeToFileM(&over, "over.txt");
-
 	MyLogger::log()->info("[Chi2HDAlgorithm] 5. Compute Chi2 Difference ");
 	MyMatrix<double> chi2diff(data->sX(), data->sY());
 	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads); // ~70|80 -> |50 Milisegundos
@@ -116,7 +113,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		}
 
 		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);
-		Chi2LibMatrix::fillWith(&chi2diff, 0);
+		chi2diff.reset(0);
 
 		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 		chi2Delta = currentChi2Error - newChi2Err;
@@ -168,7 +165,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		}
 
 		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);
-		Chi2LibMatrix::fillWith(&chi2diff, 0);
+		chi2diff.reset(0);
 
 		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 		chi2Delta = currentChi2Error - newChi2Err;

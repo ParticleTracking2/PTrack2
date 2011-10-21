@@ -19,10 +19,11 @@ private:
 	MyMatrix<double> mtrx;
 public:
 	MyImage() { }
-	~MyImage() { }
+	~MyImage();
 	MyImage(unsigned int width, unsigned int height);
 
 	double & operator ()(int x, int y);
+	void operator = (MyImage img);
 	MyMatrix<double>* matrix();
 	void display();
 	void display(vector<MyPeak> *peaks);

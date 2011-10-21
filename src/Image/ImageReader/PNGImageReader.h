@@ -11,7 +11,7 @@
 
 class PNGImageReader : public ImageReader {
 public:
-	static MyImage decodeImageGray(string file);
+
 };
 
 

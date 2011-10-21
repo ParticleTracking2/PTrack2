@@ -124,17 +124,27 @@ void Chi2LibHighDensity::removeBadPeaks(vector<MyPeak> *peaks, MyMatrix<double> 
 	MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] Starting removing peaks by Area < %f and Intensity < %f", vor_threshold, par_threshold);
 	Chi2LibQhull::addVoronoiAreas(peaks);
 
-	vector<double> areas;
 	int xx = 0, yy = 0;
 	for(unsigned int i=0; i < peaks->size(); ++i){
 		xx = peaks->at(i).x - ss;
 		yy = peaks->at(i).y - ss;
 		if(img->getValue(xx,yy) < par_threshold && peaks->at(i).vor_area < vor_threshold){
 			// Remove Peak element at this position
-			MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] >> Deleting Peak: Index=%i , X=%i, Y=%i", i, peaks->at(i).x, peaks->at(i).y );
+			MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] >> Deleting Peak: Index=%i , X=%i, Y=%i, Intensity=%f, VoronoiArea=%f", i, peaks->at(i).x, peaks->at(i).y, img->getValue(xx,yy), peaks->at(i).vor_area );
 			peaks->erase(peaks->begin()+i);
 			--i;
 		}
 	}
+
+//	for(unsigned int i=0; i < peaks->size(); ++i){
+//		xx = peaks->at(i).x - ss;
+//		yy = peaks->at(i).y - ss;
+//		if(img->getValue(xx,yy) < par_threshold ){
+//			// Remove Peak element at this position
+//			MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] >> Deleting Peak: Index=%i , X=%i, Y=%i, Intensity=%f", i, peaks->at(i).x, peaks->at(i).y, img->getValue(xx,yy), peaks->at(i).vor_area );
+//			peaks->erase(peaks->begin()+i);
+//			--i;
+//		}
+//	}
 	MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] Removing complete");
 }

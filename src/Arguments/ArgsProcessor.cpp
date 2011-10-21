@@ -44,6 +44,10 @@ ArgsProcessor::ArgsProcessor() {
 	w.treat.push_back(Followed_Double_Treat);
 	chi2.keys_treats.push_back(w);
 
+	KeyTreat cut; cut.key = "-cut"; cut.description = "Crop image by each side";
+	cut.treat.push_back(Followed_Int_Treat);
+	chi2.keys_treats.push_back(cut);
+
 	vParams.push_back(chi2);
 
 	/**
@@ -61,6 +65,7 @@ ArgsProcessor::ArgsProcessor() {
 	chi2hd.keys_treats.push_back(img);
 	chi2hd.keys_treats.push_back(d);
 	chi2hd.keys_treats.push_back(w);
+	chi2hd.keys_treats.push_back(cut);
 
 	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
 	chi_cut.treat.push_back(Followed_Double_Treat);
@@ -287,7 +292,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 				case Followed_Double_Treat:
 					// Buscar el siguiente parametro para retornarlo como double
 					if(currentArgPosition != -1){
-						if(argvalues[currentArgPosition+1]){
+						if(argvalues[currentArgPosition+1] && atof(argvalues[currentArgPosition+1])!= 0){
 							MyLogger::log()->debug("[ArgsProcessor][setArgs] %s=%f", currentKey.key.c_str(), atof(argvalues[currentArgPosition+1]));
 							pc->addParam(currentKey.key, new Container(atof(argvalues[currentArgPosition+1])));
 						}else{
@@ -300,7 +305,7 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 				case Followed_Int_Treat:
 					// Buscar el siguiente parametro para retornarlo como Integer
 					if(currentArgPosition != -1){
-						if(argvalues[currentArgPosition+1]){
+						if(argvalues[currentArgPosition+1] && atoi(argvalues[currentArgPosition+1])!= 0){
 							MyLogger::log()->debug("[ArgsProcessor][setArgs] %s=%i", currentKey.key.c_str(), atoi(argvalues[currentArgPosition+1]));
 							pc->addParam(currentKey.key, new Container(atoi(argvalues[currentArgPosition+1])));
 						}else{

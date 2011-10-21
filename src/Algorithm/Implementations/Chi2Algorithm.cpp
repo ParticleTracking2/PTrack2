@@ -61,7 +61,7 @@ vector<MyPeak> Chi2Algorithm::run(ParameterContainer *pc){
 		}
 
 		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over);
-		Chi2LibMatrix::fillWith(&chi2diff, 0);
+		chi2diff.reset(0);
 
 		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff);
 		chi2Delta = currentChi2Error - newChi2Err;
