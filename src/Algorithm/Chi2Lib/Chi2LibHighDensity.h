@@ -29,6 +29,10 @@ public:
 	static pair<double,double> gaussianFit(vector<MyPeak> *peaks, MyMatrix<double> *img, unsigned int ss);
 
 	static void removeBadPeaks(vector<MyPeak> *peaks, MyMatrix<double> *img, double vor_threshold, double par_threshold, unsigned int ss);
+
+	static void removeBadIntensityPeaks(vector<MyPeak> *peaks, MyMatrix<double> *img, double par_threshold, unsigned int ss);
+
+	static void removeBadVoronoiPeaks(vector<MyPeak> *peaks, MyMatrix<double> *img, double vor_threshold, unsigned int ss);
 };
 
 #endif

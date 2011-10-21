@@ -106,6 +106,11 @@ public:
 	 * Transforma las coordenadas para ser leidas en Matlab
 	 */
 	static void transformPeaks(vector<MyPeak> *peaks, unsigned int ss, unsigned int width, double vor_areaSL = 75.0);
+
+	/**
+	 * Agrega a los peaks la intensidad de la imagen original.
+	 */
+	static void addIntensityFromImage(MyMatrix<double> *img, vector<MyPeak> *peaks, unsigned int ss);
 };
 
 #endif

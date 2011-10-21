@@ -443,13 +443,20 @@ void *Chi2Lib::newtonCenterThread( void* ptr){
 
 void Chi2Lib::transformPeaks(vector<MyPeak> *peaks, unsigned int ss, unsigned int width, double vor_areaSL){
 	MyLogger::log()->info("[Chi2Lib][transformPeaks] Transforming peaks");
-	double swap = 0.0;
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		swap = peaks->at(i).py - ss+1;
-		peaks->at(i).py = width - (peaks->at(i).px-ss);
-		peaks->at(i).px = swap;
+		peaks->at(i).py = width - (peaks->at(i).py-ss);
+		peaks->at(i).px = width - (peaks->at(i).px-ss);
 		if(peaks->at(i).vor_area < vor_areaSL && peaks->at(i).vor_area > 0)
 			peaks->at(i).solid = true;
 	}
 	MyLogger::log()->info("[Chi2Lib][transformPeaks] Peaks transformed");
+}
+
+void Chi2Lib::addIntensityFromImage(MyMatrix<double> *img, vector<MyPeak> *peaks, unsigned int ss){
+	int xx = 0, yy = 0;
+	for(unsigned int i=0; i < peaks->size(); ++i){
+		xx = peaks->at(i).x - ss;
+		yy = peaks->at(i).y - ss;
+		peaks->at(i).img_intensity = img->getValue(xx,yy);
+	}
 }

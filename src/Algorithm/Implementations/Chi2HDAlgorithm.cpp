@@ -29,15 +29,11 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyMatrix<double> kernel = Chi2Lib::generateKernel(ss,os,d,w);
 	MyMatrix<double> chi_img(data->sX()+kernel.sX()-1, data->sY()+kernel.sY()-1);
 	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img, use_threads);	// ~430|560 -> |290 Milisegundos
-//	MyImage img(&chi_img);
-//	Chi2Lib::normalizeImage(img.matrix());
-//	img.display();
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 3. Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
-
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 4. Generate Auxiliary Matrix ");
@@ -177,6 +173,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
+
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 9.6. Recomputing Voronoi areas ");
 	Chi2LibQhull::addVoronoiAreas(&peaks);
@@ -184,5 +181,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	if(pc->existParam("-vorsl"))
 		vor_areaSL = pc->getParamAsDouble("-vorsl");
 	Chi2Lib::transformPeaks(&peaks, os, data->sX(), vor_areaSL);
+
+	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDAlgorithm] 9.7. Second Filter 'Bad' Peaks using intensity");
+	Chi2LibHighDensity::removeBadIntensityPeaks(&peaks, data, 0.5, os);
+
 	return peaks;
 }

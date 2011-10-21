@@ -76,11 +76,13 @@ void MyImage::display(vector<MyPeak> *peaks){
 	Magick::ColorRGB dotB(0.0, 0.0, 1.0);
 	int diameter = 1;
 	for(unsigned int i=0; i< peaks->size(); ++i){
-		if(	0 <= peaks->at(i).px && (unsigned int)peaks->at(i).px < mtrx.sX() && 0 <= peaks->at(i).py && (unsigned int)peaks->at(i).py < mtrx.sY()){
+		unsigned int px = peaks->at(i).px;
+		unsigned int py = peaks->at(i).py;
+		if(	0 <= px && px < mtrx.sX() && 0 <= py && py < mtrx.sY()){
 			for(int subx = -diameter; subx <= diameter; ++subx){
 				for(int suby = -diameter; suby <= diameter; ++suby){
-					ssize_t sx = (ssize_t)(mtrx.sY()-(peaks->at(i).py+subx));
-					ssize_t sy = (ssize_t)(peaks->at(i).px+suby);
+					ssize_t sx = (ssize_t)(mtrx.sX()-px+subx);
+					ssize_t sy = (ssize_t)(mtrx.sY()-py+suby);
 					if(	0 <= sx && (unsigned int)sx < mtrx.sX() && 0 <= sy && (unsigned int)sy < mtrx.sY()){
 						if(peaks->at(i).solid)
 							my_image.pixelColor(sx, sy, dotR);
@@ -96,6 +98,7 @@ void MyImage::display(vector<MyPeak> *peaks){
 
 	my_image.display();
 	MyLogger::log()->debug("[MyImage] Image Displayed");
+	my_image.write("tmp.tif");
 }
 
 double & MyImage::operator ()(int x, int y){

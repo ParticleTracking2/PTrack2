@@ -142,9 +142,7 @@ void Chi2LibQhull::addVoronoiAreas(vector<MyPeak> *peaks){
 
 	vector< pair<double,double> > vertex;
 	vector< vector<int> > cells;
-	FileUtils::writeToFile(rawData, "Original.txt");
 	interpretData(&rawData, &vertex, &cells);
-	FileUtils::writeToFileM(&vertex, &cells, "Interpreted.txt");
 
 	MyLogger::log()->debug("[Chi2LibQhull][addVoronoiAreas] Iterating over cells");
 	double xold = 0, yold = 0;
