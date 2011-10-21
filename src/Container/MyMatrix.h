@@ -4,6 +4,7 @@
  *  Created on: 31/08/2011
  *      Author: juanin
  */
+#include "../Utils/MyLogger.h"
 #include <iostream>
 #include <cstdlib>
 
@@ -72,10 +73,12 @@ void MyMatrix<myType>::allocate(){
 	if(data)
 		deallocate();
 
-	data = (myType**)malloc(_sizeX*sizeof(myType));
+	MyLogger::log()->debug("[MyMatrix][allocate] Allocating %ix%i",_sizeX,_sizeY);
+	data = new myType*[_sizeX];
 	for(unsigned int h=0; h < _sizeX; ++h){
-		data[h] = (myType*)malloc(_sizeY*sizeof(myType));
+		data[h] = new myType[_sizeY];
 	}
+	MyLogger::log()->debug("[MyMatrix][allocate] Data allocated");
 }
 
 template <class myType>
@@ -86,14 +89,17 @@ void MyMatrix<myType>::allocate(unsigned int x, unsigned int y){
 
 template <class myType>
 void MyMatrix<myType>::deallocate(){
+	MyLogger::log()->debug("[MyMatrix][deallocate] Dealocating data %ix%i",_sizeX,_sizeY);
 	if(data){
+		MyLogger::log()->debug("[MyMatrix][deallocate] Data exist, Freeing Memory");
 		for(unsigned int h=0; h < _sizeX; ++h){
 			if(data[h])
-				free(data[h]);
+				delete [] data[h];
 			data[h] = 0;
 		}
-		free(data);
+		delete [] data;
 	}
+	MyLogger::log()->debug("[MyMatrix][deallocate] Data dealocated");
 	_sizeX = 0; _sizeY = 0;
 	data = 0;
 }

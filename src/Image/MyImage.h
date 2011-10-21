@@ -21,6 +21,7 @@ public:
 	MyImage() { }
 	~MyImage();
 	MyImage(unsigned int width, unsigned int height);
+	MyImage(MyMatrix<double> *trx);
 
 	double & operator ()(int x, int y);
 	void operator = (MyImage img);

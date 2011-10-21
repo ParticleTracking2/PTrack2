@@ -29,14 +29,19 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyMatrix<double> kernel = Chi2Lib::generateKernel(ss,os,d,w);
 	MyMatrix<double> chi_img(data->sX()+kernel.sX()-1, data->sY()+kernel.sY()-1);
 	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img, use_threads);	// ~430|560 -> |290 Milisegundos
+//	MyImage img(&chi_img);
+//	Chi2Lib::normalizeImage(img.matrix());
+//	img.display();
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 3. Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
 
+
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] 4. Generate Auxiliary Matrix ");
+	MyLogger::log()->debug("[Chi2HDAlgorithm] 4.1. Allocating %ix%i", data->sX(), data->sY());
 	MyMatrix<double> grid_x(data->sX(), data->sY());
 	MyMatrix<double> grid_y(data->sX(), data->sY());
 	MyMatrix<int> over(data->sX(), data->sY());

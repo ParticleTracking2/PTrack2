@@ -19,6 +19,14 @@ MyImage::MyImage(unsigned int width, unsigned int height){
 	MyLogger::log()->debug("[MyImage] Image Alocated");
 }
 
+MyImage::MyImage(MyMatrix<double> *trx){
+	mtrx.allocate(trx->sX(), trx->sY());
+	for(unsigned int x=0; x < mtrx.sX(); ++x)
+		for(unsigned int y=0; y < mtrx.sY(); ++y){
+			mtrx.at(x,y) = trx->getValue(x,y);
+		}
+}
+
 MyImage::~MyImage(){
 	mtrx.deallocate();
 }
