@@ -53,32 +53,40 @@ void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, M
 
 	if(use_thread){
 		PartitionFFT p1;
-		p1.img = img; p1.kernel_img = Chi2LibFFTWCache::cache(cached_kernel2);
+		p1.img = img;
+		p1.kernel_img = Chi2LibFFTWCache::cache(cached_kernel2);
 		p1.output = Chi2LibFFTWCache::cache(cached_first_term);
 
 		PartitionFFT p2;
 		MyMatrix<double> img2(img->sX(), img->sY());
 		Chi2LibMatrix::copy(img, &img2);
 		Chi2LibMatrix::squareIt(&img2);
-		p2.img = &img2; p2.kernel_img = Chi2LibFFTWCache::cache(cached_kernel);
+		p2.img = &img2;
+		p2.kernel_img = Chi2LibFFTWCache::cache(cached_kernel);
 		p2.output = Chi2LibFFTWCache::cache(cached_second_term);
-
-		PartitionFFT p3;
-		p3.img = Chi2LibFFTWCache::cache(cached_blank);
-		p3.kernel_img = Chi2LibFFTWCache::cache(cached_kernel3);
-		p3.output = Chi2LibFFTWCache::cache(cached_third_term);
 
 		pthread_t thread1, thread2, thread3;
 		MyLogger::log()->debug("[Chi2LibFFTW] Generating First Convolution");
 		pthread_create(&thread1, NULL, conv2d_fftThread, (void *)&p1);
 		MyLogger::log()->debug("[Chi2LibFFTW] Generating Second Convolution");
 		pthread_create(&thread2, NULL, conv2d_fftThread, (void *)&p2);
-		MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
-		pthread_create(&thread3, NULL, conv2d_fftThread, (void *)&p3);
+
+		if(!Chi2LibFFTWCache::lock(cached_third_term)){
+			PartitionFFT p3;
+			p3.img = Chi2LibFFTWCache::cache(cached_blank);
+			p3.kernel_img = Chi2LibFFTWCache::cache(cached_kernel3);
+			p3.output = Chi2LibFFTWCache::cache(cached_third_term);
+
+			MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
+			pthread_create(&thread3, NULL, conv2d_fftThread, (void *)&p3);
+
+			pthread_join(thread3, NULL);
+			Chi2LibFFTWCache::lock(cached_third_term, true);
+		}
 
 		pthread_join(thread1, NULL);
 		pthread_join(thread2, NULL);
-		pthread_join(thread3, NULL);
+
 	}else{
 		MyLogger::log()->debug("[Chi2LibFFTW] Generating First Convolution");
 		conv2d_fft(img, Chi2LibFFTWCache::cache(cached_kernel2), Chi2LibFFTWCache::cache(cached_first_term));	// ~200 Milisegundos
@@ -89,8 +97,11 @@ void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, M
 		Chi2LibMatrix::squareIt(&img2);
 		conv2d_fft(&img2, Chi2LibFFTWCache::cache(cached_kernel), Chi2LibFFTWCache::cache(cached_second_term)); // ~180 Milisegundos
 
-		MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
-		conv2d_fft(Chi2LibFFTWCache::cache(cached_blank), Chi2LibFFTWCache::cache(cached_kernel3), Chi2LibFFTWCache::cache(cached_third_term)); // ~170 Milisegundos
+		if(!Chi2LibFFTWCache::lock(cached_third_term)){
+			MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
+			conv2d_fft(Chi2LibFFTWCache::cache(cached_blank), Chi2LibFFTWCache::cache(cached_kernel3), Chi2LibFFTWCache::cache(cached_third_term)); // ~170 Milisegundos
+			Chi2LibFFTWCache::lock(cached_third_term, true);
+		}
 	}
 
 	MyMatrix<double> *first_term = Chi2LibFFTWCache::cache(cached_first_term);
@@ -117,19 +128,21 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	fftw_plan       plan_forward_image, plan_forward_kernel, plan_backward;
 	//auxiliary structures are necessary because fftw3 optimization plan will destroy it!
 	double 			*ifft_result, *data, *kernel;
-	unsigned int nwidth 	=	img->sX()+kernel_img->sX()-1;
-	unsigned int nheight	=	img->sY()+kernel_img->sY()-1;
+	int nwidth 	=	(int)(img->sX()+kernel_img->sX()-1);
+	int nheight	=	(int)(img->sY()+kernel_img->sY()-1);
 
 	pthread_mutex_lock( &mutex1 );
 	// FFTW Allocs
+	int size = (int)(nwidth * nheight);
 	//the new size includes zero padding space
-	data 		= fftw_alloc_real(nwidth * nheight);
-	kernel 		= fftw_alloc_real(nwidth * nheight);
-	ifft_result = fftw_alloc_real(nwidth * nheight);
+	data 		= fftw_alloc_real(size);
+	kernel 		= fftw_alloc_real(size);
+	ifft_result = fftw_alloc_real(size);
 
 	//fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2
-	fft_image	= fftw_alloc_complex(nwidth*(int)(floor(nheight/2) + 1));
-	fft_kernel	= fftw_alloc_complex(nwidth*(int)(floor(nheight/2) + 1));
+	size = (int)(nwidth*(floor<int>(nheight/2) + 1));
+	fft_image	= fftw_alloc_complex(size);
+	fft_kernel	= fftw_alloc_complex(size);
 
 	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
 	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
@@ -161,14 +174,14 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 
 		//convolution in fourier domain
 		double f1, f2;
-		double nwnh = nwidth*nheight;
-		double limit = nwidth * (floor(nheight/2) + 1);
+		double nwnh = (double)(nwidth*nheight);
+		unsigned int limit = (unsigned int)(nwidth * (floor<int>(nheight/2) + 1));
 		for(unsigned int i=0; i< limit; ++i){
 			f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
 			f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];
 
-			fft_image[i][0]=f1/(nwnh);
-			fft_image[i][1]=f2/(nwnh);
+			fft_image[i][0]=f1/nwnh;
+			fft_image[i][1]=f2/nwnh;
 		}
 
 		//ifft of the product
@@ -176,7 +189,7 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	/** FFT Execute */
 	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] FFTW Finished");
 
-	if(output->sX() == nwidth && output->sY() == nheight)
+	if(output->sX() == (unsigned int)nwidth && output->sY() == (unsigned int)nheight)
 	for(unsigned int x = 0 ; x < output->sX() ; ++x ){
 		unsigned int xnw = x*nwidth;
 		for(unsigned int y = 0 ; y < output->sY() ; ++y ){

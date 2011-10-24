@@ -29,7 +29,7 @@ private:
 		cached_blank = 3,
 		cached_first_term = 4,
 		cached_second_term = 5,
-		cached_third_term = 6,
+		cached_third_term = 6
 	};
 	static pthread_mutex_t mutex1;
 	static void *conv2d_fftThread(void *ptr);

@@ -17,8 +17,8 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	if(pc->existParam("-w"))
 		w = pc->getParamAsDouble("-w");
 
-	unsigned int ss = 2*floor(d/2 + 4*w/2)-1;
-	unsigned int os = (ss-1)/2;
+	int ss = 2*floor(d/2 + 4*w/2)-1;
+	int os = (ss-1)/2;
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Normalize image ");
@@ -57,6 +57,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	FileUtils::writeToFileM(&grid_y, "grid_y_1.txt");
 	FileUtils::writeToFileM(&over, "over_1.txt");
 	FileUtils::writeToFileM(&chi2diff, "chi2_diff_1.txt");
+	Chi2LibFFTWCache::dump();
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Add missed points ");
