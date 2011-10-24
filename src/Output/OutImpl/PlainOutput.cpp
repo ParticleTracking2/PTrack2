@@ -13,7 +13,7 @@ void PlainOutput::writeData(vector<MyPeak> *peaks, string file){
 	myfile.open(file.c_str());
 	myfile << fixed;
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		myfile << peaks->at(i).px << "  " << peaks->at(i).py << " " << peaks->at(i).solid << endl;
+		myfile << peaks->at(i).px << "\t" << peaks->at(i).py << "\t" << peaks->at(i).solid << endl;
 	}
 	myfile.close();
 	MyLogger::log()->debug("[PlainOutput][writeData] Output file written");

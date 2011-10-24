@@ -11,7 +11,7 @@
 
 class StandarOutput : public Output {
 public:
-	void writeData(vector<MyPeak> *peaks, string file = "none");
+	void writeData(vector<MyPeak> *peaks, string file);
 };
 
 #endif

@@ -11,7 +11,7 @@
 
 class ConnectorOutput: public Output {
 public:
-	void writeData(vector<MyPeak> *peaks, string file = "connector_out.bin");
+	void writeData(vector<MyPeak> *peaks, string file);
 };
 
 #endif

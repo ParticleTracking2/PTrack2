@@ -441,15 +441,22 @@ void *Chi2Lib::newtonCenterThread( void* ptr){
 	return 0;
 }
 
-void Chi2Lib::transformPeaks(vector<MyPeak> *peaks, unsigned int ss, unsigned int width, double vor_areaSL){
+void Chi2Lib::translatePeaks(vector<MyPeak> *peaks, unsigned int ss){
 	MyLogger::log()->info("[Chi2Lib][transformPeaks] Transforming peaks");
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		peaks->at(i).py = width - (peaks->at(i).py-ss);
-		peaks->at(i).px = width - (peaks->at(i).px-ss);
+		peaks->at(i).py = peaks->at(i).py - ss+1;
+		peaks->at(i).px = peaks->at(i).px - ss+1;
+	}
+	MyLogger::log()->info("[Chi2Lib][transformPeaks] Peaks transformed");
+}
+
+void Chi2Lib::addState(vector<MyPeak> *peaks, double vor_areaSL){
+	MyLogger::log()->info("[Chi2Lib][addState] Adding Solid or Liquid state");
+	for(unsigned int i=0; i < peaks->size(); ++i){
 		if(peaks->at(i).vor_area < vor_areaSL && peaks->at(i).vor_area > 0)
 			peaks->at(i).solid = true;
 	}
-	MyLogger::log()->info("[Chi2Lib][transformPeaks] Peaks transformed");
+	MyLogger::log()->info("[Chi2Lib][addState] Adding state complete");
 }
 
 void Chi2Lib::addIntensityFromImage(MyMatrix<double> *img, vector<MyPeak> *peaks, unsigned int ss){

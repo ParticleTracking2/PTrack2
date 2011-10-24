@@ -32,9 +32,8 @@ MyImage TIFFImageReader::decodeImageGray(string file){
 	my_image1.read(file);
 	my_image2.read(file);
 
-	my_image1.rotate(90);
-	my_image2.rotate(90);
-
+//	my_image1.rotate(90);
+//	my_image2.rotate(90);
 
 	unsigned int max_x = my_image1.rows();
 	unsigned int max_y = my_image1.columns();
@@ -68,9 +67,8 @@ MyImage TIFFImageReader::decodeImageGray(string file, unsigned int cut){
 	my_image1.crop( Magick::Geometry(my_image1.columns()-2*cut,my_image1.rows()-2*cut,cut, cut, false, false));
 	my_image2.crop( Magick::Geometry(my_image2.columns()-2*cut,my_image2.rows()-2*cut,cut, cut, false, false));
 
-	my_image1.rotate(90);
-	my_image2.rotate(90);
-
+//	my_image1.rotate(90);
+//	my_image2.rotate(90);
 
 	unsigned int max_x = my_image1.rows();
 	unsigned int max_y = my_image1.columns();

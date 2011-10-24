@@ -81,8 +81,8 @@ void MyImage::display(vector<MyPeak> *peaks){
 		if(	0 <= px && px < mtrx.sX() && 0 <= py && py < mtrx.sY()){
 			for(int subx = -diameter; subx <= diameter; ++subx){
 				for(int suby = -diameter; suby <= diameter; ++suby){
-					ssize_t sx = (ssize_t)(mtrx.sX()-px+subx);
-					ssize_t sy = (ssize_t)(mtrx.sY()-py+suby);
+					ssize_t sx = (ssize_t)(px+subx);
+					ssize_t sy = (ssize_t)(py+suby);
 					if(	0 <= sx && (unsigned int)sx < mtrx.sX() && 0 <= sy && (unsigned int)sy < mtrx.sY()){
 						if(peaks->at(i).solid)
 							my_image.pixelColor(sx, sy, dotR);

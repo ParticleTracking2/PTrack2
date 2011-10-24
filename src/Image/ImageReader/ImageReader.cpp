@@ -11,7 +11,7 @@ MyImage ImageReader::decodeImageGray(string file){
 	MyLogger::log()->debug("[ImageReader] Decoding Generic Image: %s", file.c_str());
 	Magick::Image my_image;
 	my_image.read(file);
-	my_image.rotate(90);
+//	my_image.rotate(90);
 
 	unsigned int max_x = my_image.columns();
 	unsigned int max_y = my_image.rows();
@@ -33,7 +33,7 @@ MyImage ImageReader::decodeImageGray(string file, unsigned int cut){
 	Magick::Image my_image;
 	my_image.read(file);
 	my_image.crop( Magick::Geometry(my_image.columns()-2*cut, my_image.rows()-2*cut, cut, cut, false, false));
-	my_image.rotate(90);
+//	my_image.rotate(90);
 
 	unsigned int max_x = my_image.columns();
 	unsigned int max_y = my_image.rows();
@@ -55,7 +55,7 @@ MyImage ImageReader::decodeImageGray(string file, unsigned int top, unsigned int
 	Magick::Image my_image;
 	my_image.read(file);
 	my_image.crop( Magick::Geometry(my_image.columns()-left-right, my_image.rows()-top-bottom, left, top, false, false));
-	my_image.rotate(90);
+//	my_image.rotate(90);
 
 	unsigned int max_x = my_image.columns();
 	unsigned int max_y = my_image.rows();

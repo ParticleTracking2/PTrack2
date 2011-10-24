@@ -11,7 +11,7 @@ void StandarOutput::writeData(vector<MyPeak> *peaks, string file){
 	MyLogger::log()->notice("[StandarOutput][writeData] Writing output file");
 	cout << fixed;
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		cout << peaks->at(i).px << " " << peaks->at(i).py << " " << peaks->at(i).solid << endl;
+		cout << peaks->at(i).px << "\t" << peaks->at(i).py << "\t" << peaks->at(i).solid << endl;
 	}
 	MyLogger::log()->notice("[StandarOutput][writeData] Output file written");
 }

@@ -103,9 +103,14 @@ public:
 	static void newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int shift, double D, double w, double dp, double maxdr = 20.0, bool use_threads = true);
 
 	/**
-	 * Transforma las coordenadas para ser leidas en Matlab
+	 * Traslada los peaks ajustandolos a la imagen (Originalmente Imagen + Margen del tamaño del Kernel)
 	 */
-	static void transformPeaks(vector<MyPeak> *peaks, unsigned int ss, unsigned int width, double vor_areaSL = 75.0);
+	static void translatePeaks(vector<MyPeak> *peaks, unsigned int ss);
+
+	/**
+	 * Agrega el estado Solido o Liquido a la particula
+	 */
+	static void addState(vector<MyPeak> *peaks, double vor_areaSL = 75.0);
 
 	/**
 	 * Agrega a los peaks la intensidad de la imagen original.

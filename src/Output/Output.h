@@ -27,7 +27,7 @@ class Output {
 public:
 	static OutputType translate(string out);
 	virtual ~Output() { };
-	virtual void writeData(vector<MyPeak> *peaks, string file = "out.fl");
+	virtual void writeData(vector<MyPeak> *peaks, string file);
 };
 
 #endif

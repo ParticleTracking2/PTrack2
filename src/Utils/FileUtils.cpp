@@ -119,10 +119,12 @@ void FileUtils::writeToFileM(vector<MyPeak> *peaks, const char* file){
 		myfile << fixed;
 		for(unsigned int i=0; i < peaks->size(); ++i){
 			myfile << peaks->at(i).x << "\t";
-//			myfile << peaks->at(i).px << "\t" << peaks->at(i).dpx << "\t";
+			myfile << peaks->at(i).px << "\t" << peaks->at(i).dpx << "\t";
 			myfile << peaks->at(i).y << "\t";
-//			myfile << peaks->at(i).py << "\t" << peaks->at(i).dpy << "\t";
-			myfile << peaks->at(i).img_intensity << endl;
+			myfile << peaks->at(i).py << "\t" << peaks->at(i).dpy << "\t";
+			myfile << peaks->at(i).img_intensity << "\t";
+			myfile << peaks->at(i).vor_area;
+			myfile << endl;
 		}
 		myfile.close();
 	}

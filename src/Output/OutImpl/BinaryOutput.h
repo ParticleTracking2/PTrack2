@@ -11,7 +11,7 @@
 
 class BinaryOutput: public Output {
 public:
-	void writeData(vector<MyPeak> *peaks, string file = "binary_out.bin");
+	void writeData(vector<MyPeak> *peaks, string file);
 };
 
 #endif
