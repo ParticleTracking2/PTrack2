@@ -144,12 +144,6 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	fft_image	= fftw_alloc_complex(size);
 	fft_kernel	= fftw_alloc_complex(size);
 
-	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
-	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
-	plan_backward		= fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
-
-	pthread_mutex_unlock( &mutex1 );
-
 	//populate kernel and shift input
 	for(unsigned int x = 0 ; x < kernel_img->sX() ; ++x ){
 		unsigned int xnw = x*nwidth;
@@ -164,6 +158,12 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 			data[xnw+ y]= img->getValue(x,y);
 		}
 	}
+
+	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
+	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
+	plan_backward		= fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
+
+	pthread_mutex_unlock( &mutex1 );
 
 	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Starting FFTW");
 	/** FFT Execute */
