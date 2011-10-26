@@ -166,8 +166,21 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		vor_thresh = pc->getParamAsDouble("-vorcut");
 	Chi2LibHighDensity::removeBadPeaks(&peaks, data, vor_thresh, par_thresh, os);
 
-	MyLogger::log()->info("[Chi2HDAlgorithm] >> Second Filter 'Bad' Peaks using intensity");
-	Chi2LibHighDensity::removeBadIntensityPeaks(&peaks, data, 0.5, os);
+	if(pc->existParam("-2filteri")){
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> Second Filter 'Bad' Peaks using intensity");
+		unsigned int old_total  = peaks.size();
+		Chi2LibHighDensity::removeBadIntensityPeaks(&peaks, data, pc->getParamAsDouble("-2filteri"), os);
+		unsigned int new_total  = peaks.size();
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> New Number of peaks: %i, Filtered :%i", new_total, (old_total - new_total));
+	}
+
+	if(pc->existParam("-2filterv")){
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> Second Filter 'Bad' Peaks using Voronoi Area");
+		unsigned int old_total  = peaks.size();
+		Chi2LibHighDensity::removeBadVoronoiPeaks(&peaks, data, pc->getParamAsDouble("-2filterv"), os);
+		unsigned int new_total  = peaks.size();
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> New Number of peaks: %i, Filtered :%i", new_total, (old_total - new_total));
+	}
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Recompute Auxiliary matrix and Chi2 Difference");

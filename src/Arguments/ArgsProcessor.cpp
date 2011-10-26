@@ -79,6 +79,14 @@ ArgsProcessor::ArgsProcessor() {
 	vor_sl.treat.push_back(Followed_Double_Treat);
 	chi2hd.keys_treats.push_back(vor_sl);
 
+	KeyTreat filter2i; filter2i.key = "-2filteri"; vor_sl.description = "Second Filter of Bad particles using Image intensity Only";
+	filter2i.treat.push_back(Followed_Double_Treat);
+	chi2hd.keys_treats.push_back(filter2i);
+
+	KeyTreat filter2v; filter2v.key = "-2filterv"; vor_sl.description = "Second Filter of Bad particles using Voronoi area Only";
+	filter2v.treat.push_back(Followed_Double_Treat);
+	chi2hd.keys_treats.push_back(filter2v);
+
 	vParams.push_back(chi2hd);
 
 	/**

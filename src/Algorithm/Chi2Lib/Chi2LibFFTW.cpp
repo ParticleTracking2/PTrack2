@@ -151,17 +151,23 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	pthread_mutex_unlock( &mutex1 );
 
 	//populate kernel and shift input
-	for(unsigned int x = 0 ; x < kernel_img->sX() ; ++x ){
+	for(unsigned int x = 0 ; x < (unsigned int)nwidth ; ++x ){
 		unsigned int xnw = x*nwidth;
-		for(unsigned int y=0; y < kernel_img->sY(); ++y){
-			kernel[xnw+ y]= kernel_img->getValue(x,y);
+		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
+			if(x < kernel_img->sX() && y < kernel_img->sY())
+				kernel[xnw+ y] = kernel_img->getValue(x,y);
+			else
+				kernel[xnw+ y] = 0;
 		}
 	}
 
-	for(unsigned int x = 0 ; x < img->sX() ; ++x ){
+	for(unsigned int x = 0 ; x < (unsigned int)nwidth ; ++x ){
 		unsigned int xnw = x*nwidth;
-		for(unsigned int y=0; y < img->sY(); ++y){
-			data[xnw+ y]= img->getValue(x,y);
+		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
+			if(x < img->sX() && y < img->sY())
+				data[xnw+ y] = img->getValue(x,y);
+			else
+				data[xnw+ y] = 0;
 		}
 	}
 

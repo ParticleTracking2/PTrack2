@@ -4,7 +4,7 @@
 mkdir Out
 
 function doit {
-	time ./PTrack2 chi2hd -i ImgA000000.tif -out ./Out/data-$1.txt -silent
+	time ./PTrack2 chi2hd -i ImgA000000.tif -out ./Out/data-$1.txt -silent -2filteri 0.5
 }
 
 function main {
@@ -33,11 +33,12 @@ function verify {
 		else
 			echo "[ERROR] Data $i incorrect MD5Hash"
 			echo "Data was "${VERSTACK[$i]:0:32}
+			exit
 		fi
 	done
 }
 
 echo "Testing PTrack2 using standar parameters"
-(time main $1) 2> time-total.txt
+(time main $1) 2> ./std/time-total.txt
 echo "Test Ended"
 rm -R Out/
