@@ -22,6 +22,8 @@ public:
 	static void writeToFile(string str, const char* file);
 	static void writeToFileM(vector< pair<double,double> > *vertex, vector< vector<int> > *cell, const char* file);
 
+	static void writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, const char* file);
+
 	static void writeToFileM(MyMatrix<double> *arr, const char* file);
 	static void writeToFileM(MyMatrix<int> *arr, const char* file);
 	static void writeToFileM(vector<MyPeak> *peaks, const char* file);

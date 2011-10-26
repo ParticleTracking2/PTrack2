@@ -8,7 +8,7 @@
 #include "../../Container/MyMatrix.h"
 #include "../../Utils/MyLogger.h"
 #include "../../Utils/FileUtils.h"
-#include "fftw3.h"
+#include <fftw3.h>
 #include "Chi2LibMatrix.h"
 #include "Chi2LibFFTWCache.h"
 

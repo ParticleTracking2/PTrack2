@@ -133,16 +133,22 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 
 	pthread_mutex_lock( &mutex1 );
 	// FFTW Allocs
-	int size = (int)(nwidth * nheight);
+	size_t size = (size_t)(nwidth * nheight);
 	//the new size includes zero padding space
 	data 		= fftw_alloc_real(size);
 	kernel 		= fftw_alloc_real(size);
 	ifft_result = fftw_alloc_real(size);
 
 	//fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2
-	size = (int)(nwidth*(floor<int>(nheight/2) + 1));
+	size = (size_t)(nwidth*(floor(nheight/2) + 1));
 	fft_image	= fftw_alloc_complex(size);
 	fft_kernel	= fftw_alloc_complex(size);
+
+	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
+	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
+	plan_backward		= fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
+
+	pthread_mutex_unlock( &mutex1 );
 
 	//populate kernel and shift input
 	for(unsigned int x = 0 ; x < kernel_img->sX() ; ++x ){
@@ -159,12 +165,6 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 		}
 	}
 
-	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
-	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
-	plan_backward		= fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
-
-	pthread_mutex_unlock( &mutex1 );
-
 	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Starting FFTW");
 	/** FFT Execute */
 		//fft of image
@@ -175,7 +175,7 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 		//convolution in fourier domain
 		double f1, f2;
 		double nwnh = (double)(nwidth*nheight);
-		unsigned int limit = (unsigned int)(nwidth * (floor<int>(nheight/2) + 1));
+		unsigned int limit = (unsigned int)(nwidth * (floor(nheight/2) + 1));
 		for(unsigned int i=0; i< limit; ++i){
 			f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
 			f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];

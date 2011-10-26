@@ -21,8 +21,9 @@ void FileUtils::writeToFileM(vector< pair<double,double> > *vertex, vector< vect
 		myfile.open(file);
 
 		myfile << vertex->size() << endl;
+		myfile << fixed;
 		for(unsigned int i=0; i < vertex->size(); ++i){
-			myfile << fixed << vertex->at(i).first << " " << vertex->at(i).second << endl;
+			myfile << vertex->at(i).first << " " << vertex->at(i).second << endl;
 		}
 
 		myfile << cell->size() << endl;
@@ -39,14 +40,32 @@ void FileUtils::writeToFileM(vector< pair<double,double> > *vertex, vector< vect
 	}
 }
 
+void FileUtils::writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, const char* file){
+	if(MyLogger::logFileData()){
+		ofstream myfile;
+		myfile.open(file);
+
+		myfile << fixed;
+		for(unsigned int x = 0 ; x < ref->sX() ; ++x ){
+			unsigned int xnw = x*nwidth;
+			for(unsigned int y=0; y < ref->sY(); ++y){
+				myfile << arr[xnw+ y] << ";";
+			}
+			myfile << endl;
+		}
+		myfile.close();
+	}
+}
+
 void FileUtils::writeToFileM(MyMatrix<double> *arr, const char* file){
 	if(MyLogger::logFileData()){
 		ofstream myfile;
 		myfile.open(file);
 
+		myfile << fixed;
 		for(unsigned int x=0; x < arr->sX(); ++x){
 			for(unsigned int y=0; y < arr->sY(); ++y){
-				myfile << fixed << arr->getValue(x,y) << ";";
+				myfile << arr->getValue(x,y) << ";";
 			}
 			myfile << endl;
 		}
@@ -74,9 +93,10 @@ void FileUtils::writeToFileM(MyMatrix<int> *arr, const char* file){
 		ofstream myfile;
 		myfile.open(file);
 
+		myfile << fixed;
 		for(unsigned int x=0; x < arr->sX(); ++x){
 			for(unsigned int y=0; y < arr->sY(); ++y){
-				myfile << fixed << arr->getValue(x,y) << ";";
+				myfile << arr->getValue(x,y) << ";";
 			}
 			myfile << endl;
 		}
@@ -104,8 +124,9 @@ void FileUtils::writeToFile(vector<MyPeak> *peaks, const char* file){
 		ofstream myfile;
 		myfile.open(file);
 
+		myfile << fixed;
 		for(unsigned int i=0; i < peaks->size(); ++i){
-			myfile << fixed << "Data[" << i << "]: X:" << peaks->at(i).x << ",Y:" << peaks->at(i).y << "; Inten:" << peaks->at(i).intensity << endl;
+			myfile << "Data[" << i << "]: X:" << peaks->at(i).x << ",Y:" << peaks->at(i).y << "; Inten:" << peaks->at(i).intensity << endl;
 		}
 		myfile.close();
 	}
@@ -160,8 +181,9 @@ void FileUtils::writeToFileM(vector<double> *vec, const char* file){
 		ofstream myfile;
 		myfile.open(file);
 
+		myfile << fixed;
 		for(unsigned int i=0; i < vec->size(); ++i){
-			myfile << fixed << vec->at(i) << endl;
+			myfile << vec->at(i) << endl;
 		}
 		myfile.close();
 	}

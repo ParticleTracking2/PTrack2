@@ -36,12 +36,13 @@ void Chi2LibHighDensity::generateScaledImage(MyMatrix<double> *diff, MyMatrix<do
 unsigned int Chi2LibHighDensity::checkInsidePeaks(vector<MyPeak> *old_peaks, vector<MyPeak> *new_peaks, MyMatrix<double> *img, unsigned int os){
 	unsigned int totalinside = 0;
 	MyLogger::log()->debug("[Chi2LibHighDensity][checkInsidePeaks] Checking inside peaks ");
+	int ios = (int) os;
 	//check if NEW points are inside the image (clean newpeaks)
 	MyPeak tmppk;
 	for(unsigned int i=0; i < new_peaks->size(); ++i){
 		tmppk = new_peaks->at(i);
-		if(	0 <= (tmppk.x - os) && (tmppk.x - os) < img->sX() &&
-			0 <= (tmppk.y - os) && (tmppk.y - os) < img->sY()){
+		if(	0 <= (tmppk.x - ios) && (tmppk.x - ios) < img->sX() &&
+			0 <= (tmppk.y - ios) && (tmppk.y - ios) < img->sY()){
 			new_peaks->at(i).px = 1.0*new_peaks->at(i).x;
 			new_peaks->at(i).py = 1.0*new_peaks->at(i).y;
 			old_peaks->push_back(new_peaks->at(i));
@@ -55,9 +56,10 @@ unsigned int Chi2LibHighDensity::checkInsidePeaks(vector<MyPeak> *old_peaks, vec
 
 void Chi2LibHighDensity::filterPeaksOutside(vector<MyPeak> *peaks, MyMatrix<double> *img, unsigned int ss){
 	MyLogger::log()->debug("[Chi2Algorithm][filterPeaksOutside] Filtering peaks outside image");
+	int iss = (int)ss;
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		if( 0 <= peaks->at(i).x - ss && peaks->at(i).x - ss < img->sX() &&
-			0 <= peaks->at(i).y - ss && peaks->at(i).y - ss < img->sY()){
+		if( 0 <= (peaks->at(i).x - iss) && (peaks->at(i).x - iss) < img->sX() &&
+			0 <= (peaks->at(i).y - iss) && (peaks->at(i).y - iss) < img->sY()){
 			// Esta adentro, no se hace nada.
 		}else{
 			peaks->erase(peaks->begin()+i);

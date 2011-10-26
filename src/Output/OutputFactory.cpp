@@ -8,7 +8,6 @@
 #include "OutputFactory.h"
 
 Output *OutputFactory::makeOutputGenerator(OutputType otype){
-	Output *ret;
 	switch (otype) {
 		case Standar_out:
 			MyLogger::log()->debug("[OutputFactory] Standar Output selected");
@@ -27,5 +26,5 @@ Output *OutputFactory::makeOutputGenerator(OutputType otype){
 			return new ConnectorOutput();
 			break;
 	}
-	return ret;
+	return new StandarOutput();
 }

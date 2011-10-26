@@ -76,9 +76,9 @@ void MyImage::display(vector<MyPeak> *peaks){
 	Magick::ColorRGB dotB(0.0, 0.0, 1.0);
 	int diameter = 1;
 	for(unsigned int i=0; i< peaks->size(); ++i){
-		unsigned int px = peaks->at(i).px;
-		unsigned int py = peaks->at(i).py;
-		if(	0 <= px && px < mtrx.sX() && 0 <= py && py < mtrx.sY()){
+		unsigned int px = (unsigned int)peaks->at(i).px;
+		unsigned int py = (unsigned int)peaks->at(i).py;
+		if(	px < mtrx.sX() && py < mtrx.sY()){
 			for(int subx = -diameter; subx <= diameter; ++subx){
 				for(int suby = -diameter; suby <= diameter; ++suby){
 					ssize_t sx = (ssize_t)(px+subx);

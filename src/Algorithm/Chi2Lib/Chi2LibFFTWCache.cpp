@@ -36,7 +36,7 @@ void Chi2LibFFTWCache::erase(unsigned int slot){
 	// Crear si no existe.
 	if(!instance)
 		instance = new Chi2LibFFTWCache();
-	if(0 <= slot && slot <= instance->capacity){
+	if(slot <= instance->capacity){
 		if(instance->_cache[slot]){
 			delete instance->_cache[slot];
 			instance->_cache[slot] = 0;
@@ -71,7 +71,7 @@ bool Chi2LibFFTWCache::empty(unsigned int slot){
 	// Crear si no existe.
 	if(!instance)
 		instance = new Chi2LibFFTWCache();
-	if(0 <= slot && slot <= instance->capacity){
+	if(slot <= instance->capacity){
 		if(!instance->_cache[slot])
 			return true;
 		else
@@ -84,7 +84,7 @@ bool Chi2LibFFTWCache::lock(unsigned int slot){
 	// Crear si no existe.
 	if(!instance)
 		instance = new Chi2LibFFTWCache();
-	if(0 <= slot && slot <= instance->capacity){
+	if(slot <= instance->capacity){
 		return instance->locked[slot];
 	}else
 		return true;
@@ -94,7 +94,7 @@ void Chi2LibFFTWCache::lock(unsigned int slot, bool state){
 	// Crear si no existe.
 	if(!instance)
 		instance = new Chi2LibFFTWCache();
-	if(0 <= slot && slot <= instance->capacity){
+	if(slot <= instance->capacity){
 		instance->locked[slot] = state;
 	}
 }
@@ -104,7 +104,7 @@ MyMatrix<double> * Chi2LibFFTWCache::cache(unsigned int slot){
 	if(!instance)
 		instance = new Chi2LibFFTWCache();
 
-	if(0 <= slot && slot <= instance->capacity)
+	if(slot <= instance->capacity)
 		return instance->_cache[slot];
 	return 0;
 }
@@ -114,7 +114,7 @@ void Chi2LibFFTWCache::cache(unsigned int slot, MyMatrix<double> * data){
 	if(!instance)
 		instance = new Chi2LibFFTWCache();
 
-	if(0 <= slot && slot <= instance->capacity){
+	if(slot <= instance->capacity){
 		// Borrar si existe
 		if(instance->_cache[slot])
 			delete instance->_cache[slot];
