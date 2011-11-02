@@ -30,8 +30,7 @@ function install_fftw {
 	echo ">>Processing FFTW"
 	cd $fftw
 	echo ">>Configuring FFTW"
-	./configure --enable-threads # Para linux x86
-	#./configure --enable-threads CC="gcc -arch i386 -arch x86_64 -m32" CXX="g++ -arch i386 -arch x86_64 -m32" CPP="gcc -E" CXXCPP="g++ -E" # Para MacOSX
+	./configure --enable-threads
 	make_me "FFTW"
 }
 
