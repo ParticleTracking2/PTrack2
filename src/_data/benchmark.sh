@@ -42,7 +42,7 @@ function verify {
 	do
 		if [ "$MAC" = "1" ]
 		then
-			VERSTACK[${#VERSTACK[*]}]=$( md5 "$file" )
+			VERSTACK[${#VERSTACK[*]}]=$( md5 -q "$file" )
 		else
 			VERSTACK[${#VERSTACK[*]}]=$( md5sum "$file" )
 		fi
