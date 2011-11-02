@@ -63,6 +63,12 @@ clean:
 	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) PTrack2
 	-@echo ' '
 
+install:
+	cp PTrack2 /usr/bin
+
+uninstall:
+	rm /usr/bin/PTrack2
+
 .PHONY: all clean dependents
 .SECONDARY:
 
