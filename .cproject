@@ -174,7 +174,7 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.debugging.other.2061489723" name="Other debugging flags" superClass="gnu.cpp.compiler.option.debugging.other" value="" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.other.other.31797424" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.653522731" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-mtune=native -mfpmath=sse -ftree-vectorize -funroll-loops -ffast-math" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.653522731" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-mtune=native -ftree-vectorize -funroll-loops -ffast-math" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.1928946492" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1906610546" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
