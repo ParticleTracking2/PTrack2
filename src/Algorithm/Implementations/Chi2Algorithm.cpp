@@ -9,8 +9,13 @@
 
 vector<MyPeak> Chi2Algorithm::run(ParameterContainer *pc){
 	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2 Algorithm");
-	double d = pc->getParamAsDouble("-d");
-	double w = pc->getParamAsDouble("-w");
+	double d = 9.87;
+	if(pc->existParam("-d"))
+		d = pc->getParamAsDouble("-d");
+
+	double w = 1.84;
+	if(pc->existParam("-w"))
+		w = pc->getParamAsDouble("-w");
 
 	unsigned int ss = 2*floor(d/2 + 4*w/2)-1;
 	unsigned int os = (ss-1)/2;
