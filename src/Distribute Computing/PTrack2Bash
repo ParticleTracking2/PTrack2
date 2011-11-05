@@ -1,0 +1,258 @@
+#!/bin/bash
+# probando probando
+
+if [[ "${#*}" -lt 4 ]]
+then
+	echo "--------------------------------------------------------"
+	echo "Uso: PTrack2Bash [Carpeta] [Carpeta Destino] [D] [W]  "
+	echo "-Carpeta: Carpeta donde ubicar las imagenes             "
+	echo "-Carpeta Destino: Carpeta de destino de los datos       "
+	echo "-D: Parametro de diametro de PTrack                  "
+	echo "-W: Parametro de peso de PTrack                      "
+	echo "--------------------------------------------------------"
+	exit
+fi
+
+configfile=~/.PTrack2Bash.conf
+
+if [ -r $configfile ]
+then
+	echo ">> Reading user configuration file..."
+	if egrep -q -z -v '^#|^[^ ]*=[^;]*|$([*])' $configfile
+	then
+		echo ">> Configuration file is unclean, please cleaning it..."
+		exit
+	fi
+	source $configfile
+	echo ">> Configuration file OK"
+
+	for(( index=0; index<${#SERVER[@]}; ++index))
+	do
+		echo ">> Server: ${SERVER[$index]} -> ${PARALLEL_LIMIT[$index]}"
+	done
+
+	echo ">> Host: $HOST"
+	echo ">> Time Out: $TIME_OUT"
+	echo ">> Try Limit: $TRY_LIMIT"
+	echo ">> User: $USER"
+else
+	echo ">> No configuration file found, please create a new one."
+	exit
+fi
+
+#-------------------------------------
+# - Carpeta fuente de imagenes;
+# - Destino de los datos procesados;
+# - Diametro para PTrack
+# - Peso para PTrack
+#-------------------------------------
+FOLDER=$1
+DEST=$2
+DE=$3
+WU=$4
+
+mkdir $DEST
+
+#-------------------------------------
+# Recuperar los datos del servidor
+# Parametro $1: IP del servidor
+# Parametro $2: Imagen a procesar con nombre de archivo completo
+#-------------------------------------
+function doServer {
+	echo ">> [$1]: Processing Image: $2"
+	local myfile=$2	
+	local OUTFILE='xysl'${myfile:6:4}
+	if [[ "$1" != "$HOST" ]]
+	then
+		scp $FOLDER/$2 $USER@$1:/Users/ptrack
+		echo ">> [$1]: Data transfer complete"
+		ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -out ./Out/$OUTFILE; exit;" &
+		local my_pid=$!
+	else
+		PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
+		local my_pid=$!
+	fi
+
+	timeToKill $TIME_OUT $my_pid $1 $2 &
+	local killer_id=$!
+
+	wait $my_pid
+	disown $killer_id
+	kill $killer_id
+
+	echo ">> [$1]: $2 Data Processing Complete"
+}
+
+#-------------------------------------
+# Genera el tiempo de espera para que
+#  se complete el proceso
+# Parametro $1: Tiempo de espera
+# Parametro $2: Proceso a esperar
+# Parametro $3: Servidor del proceso
+# Parametro $4: Imagen a procesar
+#-------------------------------------
+function timeToKill {
+	local mytime=$1
+	local mypid=$2
+	local myip=$3
+	local myimage=$4
+
+	sleep $mytime
+	kill -0 $mypid
+	local ret=$?
+
+	if [[ $ret -eq 0 ]]
+	then
+		kill $mypid
+		echo "Error: Killed task ID $mypid [$myip->$myimage] due to timeout $mytime exceeded, returned $ret"
+		echo "Error: Killed task ID $mypid [$myip->$myimage] due to timeout $mytime exceeded, returned $ret" >> $DEST/proc-log.txt
+	fi
+}
+
+#-------------------------------------
+# Itera sobre los archivos asignados a procesar para el servidor
+# Parametro $1: IP del servidor
+# Parametro $2+: Imagen a procesar con nombre de archivo completo
+#-------------------------------------
+function iterateServer {
+	for file in ${*:2}
+	do
+		doServer $1 $file &
+	done
+	echo ">> [$1] Waiting server"
+	wait 
+	echo ">> [$1] Done"
+}
+
+#-------------------------------------
+# Recuperar los datos del servidor
+# Parametro $1: IP del servidor
+#-------------------------------------
+function retrieveData {
+	scp -r $USER@$1:/Users/ptrack/Out/* $DEST/
+	echo ">> Data retrieved from $1"
+	ssh $USER@$1 "rm *.tif; rm Out/*; rm /tmp/tmp*; killall PTrack2;"
+	echo ">> Images and data deleted from $1"
+}
+
+#Main Loop
+function main {
+	#-------------------------------------
+	# Agregar todas las imagenes al STACK
+	#-------------------------------------
+	for file in $FOLDER/*.tif
+	do
+		STACK[${#STACK[*]}]=${file: -14}
+	done
+
+	#-------------------------------------
+	# Pasar imagenes a los servidores
+	# y procesar
+	#-------------------------------------
+	STACK_SIZE=${#STACK[@]}
+	while [[ "$STACK_SIZE" -gt 0 ]]
+	do
+		for(( i=0; i<${#SERVER[@]} && 0<$STACK_SIZE; ++i))
+		do
+			let "init=$STACK_SIZE-${PARALLEL_LIMIT[$i]}"
+			if (( $init > 0 ))
+			then
+				min=$init
+			else
+				min=0
+			fi
+
+			iterateServer ${SERVER[$i]} ${STACK[@]:$min:$STACK_SIZE} &
+
+			for img in ${STACK[@]:$min:$STACK_SIZE}
+			do
+				CHECK_STACK[${#CHECK_STACK[*]}]=$img
+			done
+
+			for (( k=0; k<${PARALLEL_LIMIT[$i]} && 0<$STACK_SIZE; ++k ))
+			do
+				unset STACK[${#STACK[@]}-1]
+				STACK_SIZE=${#STACK[@]}
+			done
+		done
+		echo ">> Waiting Iterations on servers"
+		wait
+	
+		#-------------------------------------
+		# Recolectar informacion y limpiar
+		#-------------------------------------
+		for(( i=1; i<${#SERVER[@]}; ++i))
+		do
+			echo ">> Retrieving data from ${SERVER[$i]}"
+			retrieveData ${SERVER[$i]}
+		done
+		wait
+		rm -f /tmp/tmp*
+		#----------------------------------------------
+		# Chequear que se hayan procesado correctamente
+		#----------------------------------------------
+		echo ">> Checking corresponding output data with image data"
+		for img in ${CHECK_STACK[*]}
+		do
+			imgNum='xysl'${img:6:4}
+			found=0
+			
+			#--------------------------------
+			# Encontrar correspondencia entre 
+			# la imagen y los datos
+			#--------------------------------
+			for data in $DEST/*
+			do
+				if [[ "$data" == "$DEST/$imgNum" ]]
+				then
+					found=1
+					break
+				fi
+			done
+			
+			#----------------------------
+			# Colocar denuevo en el STACK
+			#----------------------------
+			if [[ "$found" -eq 0 ]]
+			then
+				echo ">> $img failed to process, trying to re process"
+				echo ">> $img failed to process, trying to re process" >> $DEST/failed-img-log.txt
+				HISTORY_STACK[${#HISTORY_STACK[*]}]=$img
+				
+				hcounter=0
+				for himg in ${HISTORY_STACK[*]}
+				do
+					if [[ "$img" == "$himg" ]]
+					then
+						let hcounter=$hcounter+1
+					fi
+				done
+				echo ">> $img failed to process $hcounter times"
+				if [[ "$hcounter" -lt "$TRY_LIMIT" ]]
+				then
+					STACK[${#STACK[*]}]=$img
+					STACK_SIZE=${#STACK[@]}
+				else
+					echo ">> $img failed to process. Limit $TRY_LIMIT reached"
+					echo ">> $img failed to process. Limit $TRY_LIMIT reached" >> $DEST/failed-img-log.txt
+				fi
+			fi
+		done
+		echo ">> Corresponding output data with image data Checked"		
+		#----------------------------
+		# Vaciar stack de chequeo
+		#----------------------------
+		CHECK_STACK=( )
+		
+		echo ">> Iterations on servers complete"
+	done
+}
+
+#-------------------------------------
+# Medir el tiempo y ejecutar
+#-------------------------------------
+(time main > $DEST/process-log.txt) 2> $DEST/time-log.txt
+#time main
+
+echo "------- All jobs done! -------"
+

@@ -283,7 +283,6 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 
 		KeyTreat currentKey = currentArgs.at(ai);
 		// Dentro de cada tratamiento posible
-		bool require = false;
 		int currentArgPosition = find(currentKey.key, argcount, argvalues);
 		for(unsigned int t=0; t < currentKey.treat.size(); ++t){
 			switch (currentKey.treat.at(t)) {
@@ -295,7 +294,6 @@ void ArgsProcessor::setArgs(int argcount, char* argvalues[]){
 						exit(EXIT_FAILURE);
 					}
 					MyLogger::log()->debug("[ArgsProcessor][setArgs] %s Required", currentKey.key.c_str());
-					require = true;
 					break;
 				case Followed_Double_Treat:
 					// Buscar el siguiente parametro para retornarlo como double
