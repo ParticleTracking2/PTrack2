@@ -338,8 +338,8 @@ void Chi2Lib::newtonCenterImpl(MyMatrix<int> *over, MyMatrix<double> *diff, vect
 				double dipx,dipy,dipxx,dipyy,dipxy;
 				double sech2, tanh1;
 
-				double currentX = (int)round(peaks->at(npks).px) - shift + (localX - half);
-				double currentY = (int)round(peaks->at(npks).py) - shift + (localY - half);
+				double currentX = (int)rint(peaks->at(npks).px) - shift + (localX - half);
+				double currentY = (int)rint(peaks->at(npks).py) - shift + (localY - half);
 
 				if( 0 <= currentX && currentX < over->sX() && 0 <= currentY && currentY < over->sY() && over->getValue(currentX,currentY) == npks +1){
 					xx 		= 1.0*localX - half + peaks->at(npks).x - peaks->at(npks).px;

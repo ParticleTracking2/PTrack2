@@ -103,7 +103,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	iterations = 0;
 	double chi2Delta = currentChi2Error;
 
-	_maxIterations = 7;
+	_maxIterations = 5;
 	if(pc->existParam("-maxchi2miniter"))
 		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
@@ -113,8 +113,8 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 			peaks.at(i).px = peaks.at(i).px + peaks.at(i).dpx;
 			peaks.at(i).py = peaks.at(i).py + peaks.at(i).dpy;
 
-			peaks.at(i).x = (unsigned int)round(peaks.at(i).px);
-			peaks.at(i).y = (unsigned int)round(peaks.at(i).py);
+			peaks.at(i).x = (unsigned int)rint(peaks.at(i).px);
+			peaks.at(i).y = (unsigned int)rint(peaks.at(i).py);
 		}
 
 		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);
@@ -181,8 +181,8 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 			peaks.at(i).px = peaks.at(i).px + peaks.at(i).dpx;
 			peaks.at(i).py = peaks.at(i).py + peaks.at(i).dpy;
 
-			peaks.at(i).x = (unsigned int)round(peaks.at(i).px);
-			peaks.at(i).y = (unsigned int)round(peaks.at(i).py);
+			peaks.at(i).x = (unsigned int)rint(peaks.at(i).px);
+			peaks.at(i).y = (unsigned int)rint(peaks.at(i).py);
 		}
 
 		Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);
