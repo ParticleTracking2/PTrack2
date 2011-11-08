@@ -56,7 +56,7 @@ unsigned int Chi2LibHighDensity::checkInsidePeaks(vector<MyPeak> *old_peaks, vec
 
 void Chi2LibHighDensity::filterPeaksOutside(vector<MyPeak> *peaks, MyMatrix<double> *img, unsigned int ss){
 	MyLogger::log()->debug("[Chi2Algorithm][filterPeaksOutside] Filtering peaks outside image");
-	int iss = (int)ss;
+	int iss = (int)(ss);
 	for(unsigned int i=0; i < peaks->size(); ++i){
 		if( 0 <= (peaks->at(i).x - iss) && (peaks->at(i).x - iss) < img->sX() &&
 			0 <= (peaks->at(i).y - iss) && (peaks->at(i).y - iss) < img->sY()){

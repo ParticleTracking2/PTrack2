@@ -53,6 +53,9 @@ vector<MyPeak> Chi2Algorithm::run(ParameterContainer *pc){
 	unsigned int iterations = 0;
 	double chi2Delta = currentChi2Error;
 
+	if(pc->existParam("-maxchi2miniter"))
+		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
+
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
 		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss);
 

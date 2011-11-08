@@ -36,17 +36,21 @@ ArgsProcessor::ArgsProcessor() {
 	img.treat.push_back(Followed_String_Treat);
 	chi2.keys_treats.push_back(img);
 
-	KeyTreat d; d.key = "-d"; d.description = "Diameter of an ideal particle.";
+	KeyTreat d; d.key = "-d"; d.description = "Diameter of an ideal particle. (Default = 9.87)";
 	d.treat.push_back(Followed_Double_Treat);
 	chi2.keys_treats.push_back(d);
 
-	KeyTreat w; w.key = "-w"; w.description = "Value of how sharply the ideal particle is viewed (Focus).";
+	KeyTreat w; w.key = "-w"; w.description = "Value of how sharply the ideal particle is viewed (Focus). (Default = 1.84)";
 	w.treat.push_back(Followed_Double_Treat);
 	chi2.keys_treats.push_back(w);
 
 	KeyTreat cut; cut.key = "-cut"; cut.description = "Crop image by each side";
 	cut.treat.push_back(Followed_Int_Treat);
 	chi2.keys_treats.push_back(cut);
+
+	KeyTreat maxchi2miniter; maxchi2miniter.key = "-maxchi2miniter"; maxchi2miniter.description = "Limit the iteration for minimizing Chi2Error (Default = 7)";
+	maxchi2miniter.treat.push_back(Followed_Int_Treat);
+	chi2.keys_treats.push_back(maxchi2miniter);
 
 	vParams.push_back(chi2);
 
@@ -66,6 +70,7 @@ ArgsProcessor::ArgsProcessor() {
 	chi2hd.keys_treats.push_back(d);
 	chi2hd.keys_treats.push_back(w);
 	chi2hd.keys_treats.push_back(cut);
+	chi2hd.keys_treats.push_back(maxchi2miniter);
 
 	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
 	chi_cut.treat.push_back(Followed_Double_Treat);
@@ -114,8 +119,8 @@ ArgsProcessor::ArgsProcessor() {
 	outb.treat.push_back(Output_Treat);
 	outb.treat.push_back(Followed_String_Treat);
 
-	KeyTreat outc; outc.key = "-outcon"; outc.description = "Output Conection (Unimplemented, for future release).";
-	outc.treat.push_back(Output_Treat);
+//	KeyTreat outc; outc.key = "-outcon"; outc.description = "Output Conection (Unimplemented, for future release).";
+//	outc.treat.push_back(Output_Treat);
 
 	KeyTreat nth; nth.key = "-nothreads"; nth.description = "Use no threads to calculate";
 	nth.treat.push_back(Exist_Treat);
@@ -129,7 +134,7 @@ ArgsProcessor::ArgsProcessor() {
 		vParams.at(i).keys_treats.push_back(chrono);
 		vParams.at(i).keys_treats.push_back(out);
 		vParams.at(i).keys_treats.push_back(outb);
-		vParams.at(i).keys_treats.push_back(outc);
+//		vParams.at(i).keys_treats.push_back(outc);
 		vParams.at(i).keys_treats.push_back(nth);
 		vParams.at(i).keys_treats.push_back(dspl);
 	}
@@ -233,7 +238,9 @@ void ArgsProcessor::checkArgs(ArgObj *currentArgs, int argcount, char* argvalues
 				}
 			}
 			if(!found){
+				MyLogger::log()->warn("**************************************************************");
 				MyLogger::log()->warn("[ArgsProcessor][checkArgs] Unknown argument: %s", argvalues[i]);
+				MyLogger::log()->warn("**************************************************************");
 			}
 		}
 	}

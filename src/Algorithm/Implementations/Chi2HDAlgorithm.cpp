@@ -49,16 +49,6 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyMatrix<double> chi2diff(data->sX(), data->sY());
 	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads); // ~70|80 -> |50 Milisegundos
 
-	FileUtils::writeToFileM(data, "normal_image.txt");
-	FileUtils::writeToFileM(&kernel, "kernel_image_1.txt");
-	FileUtils::writeToFileM(&chi_img, "chi_image_1.txt");
-	FileUtils::writeToFileM(&peaks, "peaks_1.txt");
-	FileUtils::writeToFileM(&grid_x, "grid_x_1.txt");
-	FileUtils::writeToFileM(&grid_y, "grid_y_1.txt");
-	FileUtils::writeToFileM(&over, "over_1.txt");
-	FileUtils::writeToFileM(&chi2diff, "chi2_diff_1.txt");
-	Chi2LibFFTWCache::dump();
-
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Add missed points ");
 	unsigned int chi_cut = 2;
@@ -67,7 +57,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	unsigned int total_found = 0;
 	MyMatrix<double> normaldata_chi(data->sX(), data->sY()); // No necesita reset
 
-	unsigned int _maxIterations = 5, iterations = 0;
+	unsigned int _maxIterations = 10, iterations = 0;
 	while(iterations <= _maxIterations){
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Generating Scaled Image ");
 		Chi2LibHighDensity::generateScaledImage(&chi2diff, &normaldata_chi); // ~ 15 Milisegundos
@@ -107,19 +97,15 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Recompute Chi2 Difference");
 	currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
 
-	FileUtils::writeToFileM(&chi_img, "chi_image_2.txt");
-	FileUtils::writeToFileM(&peaks, "peaks_2.txt");
-	FileUtils::writeToFileM(&grid_x, "grid_x_2.txt");
-	FileUtils::writeToFileM(&grid_y, "grid_y_2.txt");
-	FileUtils::writeToFileM(&over, "over_2.txt");
-	FileUtils::writeToFileM(&chi2diff, "chi2_diff_2.txt");
-
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Minimizing Chi2 Error ");
 	unsigned int _minChi2Delta = 1;
 	iterations = 0;
 	double chi2Delta = currentChi2Error;
 
+	_maxIterations = 7;
+	if(pc->existParam("-maxchi2miniter"))
+		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
 		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0, use_threads); // ~400 -> ~250 Milisegundos
 
@@ -139,11 +125,6 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
-	FileUtils::writeToFileM(&peaks, "peaks_3.txt");
-	FileUtils::writeToFileM(&grid_x, "grid_x_3.txt");
-	FileUtils::writeToFileM(&grid_y, "grid_y_3.txt");
-	FileUtils::writeToFileM(&over, "over_3.txt");
-	FileUtils::writeToFileM(&chi2diff, "chi2_diff_3.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Checking particles by pixel intensity and voronoi area Tom's algorithm ");
@@ -192,6 +173,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	iterations = 0;
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Minimizing Chi2 Error ");
+
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
 		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0, use_threads);
 
@@ -215,21 +197,17 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Recomputing Voronoi areas ");
 	Chi2LibQhull::addVoronoiAreas(&peaks);
+	FileUtils::writeToFileM(&peaks, "peaks_post_add_voronoi_areas.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Translating coordenates ");
 	Chi2Lib::translatePeaks(&peaks, os);
+	FileUtils::writeToFileM(&peaks, "peaks_post_translate.txt");
 
 	double vor_areaSL = 75.0;
 	if(pc->existParam("-vorsl"))
 		vor_areaSL = pc->getParamAsDouble("-vorsl");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Adding State ");
 	Chi2Lib::addState(&peaks, vor_areaSL);
-
-	FileUtils::writeToFileM(&peaks, "peaks_4.txt");
-	FileUtils::writeToFileM(&grid_x, "grid_x_4.txt");
-	FileUtils::writeToFileM(&grid_y, "grid_y_4.txt");
-	FileUtils::writeToFileM(&over, "over_4.txt");
-	FileUtils::writeToFileM(&chi2diff, "chi2_diff_4.txt");
 
 	return peaks;
 }
