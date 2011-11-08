@@ -48,7 +48,7 @@ ArgsProcessor::ArgsProcessor() {
 	cut.treat.push_back(Followed_Int_Treat);
 	chi2.keys_treats.push_back(cut);
 
-	KeyTreat maxchi2miniter; maxchi2miniter.key = "-maxchi2miniter"; maxchi2miniter.description = "Limit the iteration for minimizing Chi2Error (Default = 7)";
+	KeyTreat maxchi2miniter; maxchi2miniter.key = "-maxchi2miniter"; maxchi2miniter.description = "Limit the iteration for minimizing Chi2Error (Default = 5)";
 	maxchi2miniter.treat.push_back(Followed_Int_Treat);
 	chi2.keys_treats.push_back(maxchi2miniter);
 
