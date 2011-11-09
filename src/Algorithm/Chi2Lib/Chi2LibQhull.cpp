@@ -153,6 +153,9 @@ void Chi2LibQhull::addVoronoiAreas(vector<MyPeak> *peaks){
 		mArea = false;
 		vector<int> currentCell = cells.at(i);
 		// for each cell
+		if(currentCell.empty())
+			mArea = true;
+		else
 		for(unsigned int c=0; c < currentCell.size(); ++c){
 			if(currentCell[c] < 0){
 				mArea = true;

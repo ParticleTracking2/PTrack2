@@ -138,13 +138,15 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	pair<double,double> mypair = Chi2LibHighDensity::gaussianFit(&peaks, data, os);
 	double mu = mypair.first;
 	double sigma = mypair.second;
+	MyLogger::log()->info("[Chi2HDAlgorithm] >> Total peaks: %i; MU=%f; SIGMA=%f", peaks.size(), mu, sigma);
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
-	MyLogger::log()->info("[Chi2HDAlgorithm] >> Filter 'Bad' Peaks using Voronoy Area and intensity");
-	double par_thresh=mu-3.0*sigma;
+	double par_thresh = mu-3.0*sigma;
 	double vor_thresh = 50.0;
 	if(pc->existParam("-vorcut"))
 		vor_thresh = pc->getParamAsDouble("-vorcut");
+
+	MyLogger::log()->info("[Chi2HDAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", vor_thresh, par_thresh);
 	Chi2LibHighDensity::removeBadPeaks(&peaks, data, vor_thresh, par_thresh, os);
 
 	if(pc->existParam("-2filteri")){

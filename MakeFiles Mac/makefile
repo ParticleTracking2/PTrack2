@@ -66,15 +66,18 @@ clean:
 install:
 	cp PTrack2 /usr/bin
 	cp ../src/Distribute\ Computing/PTrack2Bash /usr/bin
+	cp ../src/Distribute\ Computing/PTrack2Folder /usr/bin
 	cp ../src/Distribute\ Computing/PTrack2BashFolders /usr/bin
 	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf ~/
-	chmod +x PTrack2
-	chmod +x PTrack2Bash
-	chmod +x PTrack2BashFolders
+	chmod +x /usr/bin/PTrack2
+	chmod +x /usr/bin/PTrack2Bash
+	chmod +x /usr/bin/PTrack2Folder
+	chmod +x /usr/bin/PTrack2BashFolders
 	
 uninstall:
 	rm /usr/bin/PTrack2
 	rm /usr/bin/PTrack2Bash
+	rm /usr/bin/PTrack2Folder
 	rm /usr/bin/PTrack2BashFolders
 
 .PHONY: all clean dependents
