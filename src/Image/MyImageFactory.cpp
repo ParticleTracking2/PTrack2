@@ -20,11 +20,7 @@ MyImage MyImageFactory::makeImgFromFile(string file){
 			return PNGImageReader::decodeImageGray(file);
 		case IMAGE_TIF:
 			MyLogger::log()->debug("[MyImageFactory] TIFF Image type detected");
-			#ifdef __APPLE__
-				return PNGImageReader::decodeImageGray(file);	// Mac
-			#else
-				return TIFFImageReader::decodeImageGray(file);	// Linux (Mas rapido)
-			#endif
+			return TIFFImageReader::decodeImageGray(file);
 	}
 
 	return MyImage();
