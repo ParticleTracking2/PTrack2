@@ -48,7 +48,6 @@ void Chi2LibQhull::interpretData(string *data, vector< pair<double,double> > *ve
 	vector<string> splited;
 	unsigned int vCount = 0;
 	unsigned int cCount = 0;
-	bool firstCall = true;
 	while(getline(ss, stmp)){
 		if(vCount < vSize){ // Vertex
 			stringSplit(stmp, " ", &splited);
@@ -58,28 +57,31 @@ void Chi2LibQhull::interpretData(string *data, vector< pair<double,double> > *ve
 			vertex->push_back(v_xy);
 			vCount++;
 		}else{ // Cells
-			if(firstCall){ // Data length
-				firstCall = false;
-				cells->reserve(atoi(stmp.c_str()));
-			}else{
-				stringSplit(stmp, " ", &splited);
-
-				// Allocate data
-				vector<int> cells_data;
-				cells_data.reserve(atoi(splited.at(0).c_str()));
-				if(atoi(splited.at(0).c_str()) == 0)
-					cells_data.push_back(-1);
-				// Populate
-				for(unsigned int i=1; i < splited.size(); ++i){
-					cells_data.push_back(atoi(splited.at(i).c_str()));
-				}
-
-				// Append
-				cells->push_back(cells_data);
-				cCount++;
-			}
+			break;
 		}
 	}
+	cells->reserve(atoi(stmp.c_str()));
+	while(getline(ss, stmp)){
+		stringSplit(stmp, " ", &splited);
+
+		// Allocate data
+		vector<int> cells_data;
+		int res = atoi(splited.at(0).c_str());
+		cells_data.reserve(res);
+
+		// En caso de no tener celdas dejar como -1
+		if(res == 0)
+			cells_data.push_back(-1);
+		// Populate
+		for(unsigned int i=1; i < splited.size(); ++i){
+			cells_data.push_back(atoi(splited.at(i).c_str()));
+		}
+
+		// Append
+		cells->push_back(cells_data);
+		cCount++;
+	}
+
 	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Interpretation complete: Vertexs=%i; Cells=%i", vCount, cCount);
 }
 
