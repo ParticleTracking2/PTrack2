@@ -67,7 +67,8 @@ void Chi2LibQhull::interpretData(string *data, vector< pair<double,double> > *ve
 				// Allocate data
 				vector<int> cells_data;
 				cells_data.reserve(atoi(splited.at(0).c_str()));
-
+				if(atoi(splited.at(0).c_str()) == 0)
+					cells_data.push_back(-1);
 				// Populate
 				for(unsigned int i=1; i < splited.size(); ++i){
 					cells_data.push_back(atoi(splited.at(i).c_str()));
@@ -153,9 +154,6 @@ void Chi2LibQhull::addVoronoiAreas(vector<MyPeak> *peaks){
 		mArea = false;
 		vector<int> currentCell = cells.at(i);
 		// for each cell
-		if(currentCell.empty())
-			mArea = true;
-		else
 		for(unsigned int c=0; c < currentCell.size(); ++c){
 			if(currentCell[c] < 0){
 				mArea = true;
