@@ -9,6 +9,15 @@ else
 	MAC=0
 fi
 
+cp ImgA000000.tif ImgA000001.tif
+cp ImgA000000.tif ImgA000002.tif
+cp ImgA000000.tif ImgA000003.tif
+cp ImgA000000.tif ImgA000004.tif
+cp ImgA000000.tif ImgA000005.tif
+cp ImgA000000.tif ImgA000006.tif
+cp ImgA000000.tif ImgA000007.tif
+cp ImgA000000.tif ImgA000008.tif
+
 ##########################
 ## Procesa la Imagen
 ## $1 = Tipo de test
