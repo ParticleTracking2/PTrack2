@@ -103,7 +103,7 @@ function launch {
 
 	echo ">> Verifing Data"
 	verify "7060604e898d35b5aa19b09d262b6162"
-	rm -r Out
+	rm -r Out/
 }
 
 function main {
@@ -130,3 +130,5 @@ function main {
 }
 
 ( (time main)2>&1 ) > log-ref.txt 
+
+rm ImgA000002.tif ImgA000003.tif ImgA000004.tif ImgA000005.tif ImgA000006.tif ImgA000007.tif ImgA000008.tif
