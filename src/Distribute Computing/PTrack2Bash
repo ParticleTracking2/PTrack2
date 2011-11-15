@@ -66,7 +66,7 @@ function doServer {
 	then
 		scp $FOLDER/$2 $USER@$1:/Users/ptrack
 		echo ">> [$1]: Data transfer complete"
-		ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -out ./Out/$OUTFILE; exit;" &
+		ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
 		local my_pid=$!
 	else
 		PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
@@ -187,7 +187,6 @@ function main {
 			retrieveData ${SERVER[$i]}
 		done
 		wait
-		rm -f /tmp/tmp*
 		#----------------------------------------------
 		# Chequear que se hayan procesado correctamente
 		#----------------------------------------------
