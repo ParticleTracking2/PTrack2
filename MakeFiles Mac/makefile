@@ -68,7 +68,7 @@ install:
 	sudo cp ../src/Distribute\ Computing/PTrack2Bash /usr/bin
 	sudo cp ../src/Distribute\ Computing/PTrack2Folder /usr/bin
 	sudo cp ../src/Distribute\ Computing/PTrack2BashFolders /usr/bin
-	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf.example ~/
+	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf ~/PTrack2BashFolders.conf.example
 	cp ../src/Distribute\ Computing/.PTrack2Bash.conf ~/
 	chmod +x /usr/bin/PTrack2
 	chmod +x /usr/bin/PTrack2Bash
