@@ -64,17 +64,19 @@ clean:
 	-@echo ' '
 
 install:
-	cp PTrack2 /usr/bin
-	cp ../src/Distribute\ Computing/PTrack2Bash /usr/bin
-	cp ../src/Distribute\ Computing/PTrack2Folder /usr/bin
-	cp ../src/Distribute\ Computing/PTrack2BashFolders /usr/bin
-	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf ~/
+	sudo cp PTrack2 /usr/bin
+	sudo cp ../src/Distribute\ Computing/PTrack2Bash /usr/bin
+	sudo cp ../src/Distribute\ Computing/PTrack2Folder /usr/bin
+	sudo cp ../src/Distribute\ Computing/PTrack2BashFolders /usr/bin
+	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf.example ~/
+	cp ../src/Distribute\ Computing/.PTrack2Bash.conf ~/
 	chmod +x /usr/bin/PTrack2
 	chmod +x /usr/bin/PTrack2Bash
 	chmod +x /usr/bin/PTrack2Folder
 	chmod +x /usr/bin/PTrack2BashFolders
 	
 uninstall:
+	rm ~/.PTrack2Bash.conf
 	rm /usr/bin/PTrack2
 	rm /usr/bin/PTrack2Bash
 	rm /usr/bin/PTrack2Folder
