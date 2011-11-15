@@ -20,6 +20,7 @@ using namespace std;
 enum AlgorithmType{
 	Chi2_Algorithm,
 	Chi2HD_Algorithm,
+	Chi2HDCuda_Algorithm,
 	None_Algorithm
 };
 

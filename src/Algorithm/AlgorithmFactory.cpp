@@ -18,6 +18,10 @@ Algorithm *AlgorithmFactory::select(AlgorithmType type){
 			MyLogger::log()->info("[AlgorithmFactory][select] Chi2 High Density Algorithm selected");
 			return new Chi2HDAlgorithm();
 			break;
+		case Chi2HDCuda_Algorithm:
+			MyLogger::log()->info("[AlgorithmFactory][select] Chi2 High Density CUDA Algorithm selected");
+			return new Chi2HDCudaAlgorithm();
+			break;
 		case None_Algorithm:
 			MyLogger::log()->info("[AlgorithmFactory][select] No Algorithm selected");
 			return ret;

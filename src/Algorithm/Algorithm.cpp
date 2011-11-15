@@ -33,6 +33,10 @@ AlgorithmType Algorithm::translate(string alg){
 		MyLogger::log()->debug("[Algorithm][translate] Translated to: Chi2HD_Algorithm");
 		ret = Chi2HD_Algorithm;
 	}
+	if(alg.compare("chi2hdcuda")==0){
+		MyLogger::log()->debug("[Algorithm][translate] Translated to: Chi2HDCuda_Algorithm");
+		ret = Chi2HDCuda_Algorithm;
+	}
 
 	return ret;
 }

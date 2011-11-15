@@ -94,6 +94,23 @@ ArgsProcessor::ArgsProcessor() {
 
 	vParams.push_back(chi2hd);
 
+
+	/**
+	 *************************
+	 * Argumentos para Chi2HD CUDA
+	 *************************
+	 */
+	ArgObj chi2hdcuda;
+	chi2hdcuda.type = Chi2HDCuda_Algorithm;
+	chi2hdcuda.argkey = "chi2hdcuda";
+	chi2hdcuda.description = "Convolution based least-squares fitting for High density particle systems. Using CUDA Technology";
+	chi2hdcuda.example = "chi2hdcuda -i MyImage.tif -d 9.87 -w 1.84";
+	chi2hdcuda.keys_treats.push_back(img);
+	chi2hdcuda.keys_treats.push_back(d);
+	chi2hdcuda.keys_treats.push_back(w);
+
+	vParams.push_back(chi2hdcuda);
+
 	/**
 	 *************************
 	 * Parametros generales

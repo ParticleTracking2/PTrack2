@@ -9,7 +9,7 @@
 
 void Chi2LibQhull::stringSplit(string str, string delim, vector<string> *out){
 	out->clear();
-	int cutAt;
+	unsigned int cutAt;
 	while( (cutAt = str.find_first_of(delim)) != str.npos ){
 		if(cutAt > 0){
 			out->push_back(str.substr(0,cutAt));

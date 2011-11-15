@@ -9,6 +9,7 @@
 #include "Algorithm.h"
 #include "Implementations/Chi2Algorithm.h"
 #include "Implementations/Chi2HDAlgorithm.h"
+#include "Implementations/Chi2HDCudaAlgorithm.h"
 
 #ifndef ALGORITHMFACTORY
 #define ALGORITHMFACTORY
