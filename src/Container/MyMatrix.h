@@ -31,6 +31,7 @@ public:
 	void allocate(unsigned int x, unsigned int y);
 	void deallocate();
 	void reset(myType def = 0);
+	float* getCopy();
 
 	myType getValue(unsigned int x, unsigned int y);
 	myType & at(unsigned int x, unsigned int y);
@@ -112,6 +113,17 @@ void MyMatrix<myType>::reset(myType def){
 			data[x][y]= def;
 		}
 	}
+}
+
+template <class myType>
+float* MyMatrix<myType>::getCopy(){
+	float* ret = (float *)malloc(_sizeX*_sizeY*sizeof(float));
+	for(unsigned int x=0; x<_sizeX; ++x){
+		for(unsigned int y=0; y<_sizeY; ++y){
+			ret[x+_sizeY*y] = (float)(data[x][y]);
+		}
+	}
+	return ret;
 }
 
 template <class myType>
