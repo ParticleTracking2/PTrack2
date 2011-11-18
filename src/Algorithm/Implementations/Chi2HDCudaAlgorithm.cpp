@@ -10,24 +10,35 @@
 vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2HD CUDA Algorithm");
 
-	MyLogger::log()->notice("[Chi2Algorithm] Creating cuMyArray2D");
-	cuMyArray2D tmp = CHI2HD_createArray(data->sX(), data->sY());
-	MyLogger::log()->notice("[Chi2Algorithm] Creating cuMyArray2D: Created");
-	CHI2HD_reset(&tmp,0);
-	tmp._host_array = data->getCopy();
-	CHI2HD_copyToDevice(&tmp);
-	MyLogger::log()->notice("[Chi2Algorithm] Data copied to Device. Data[0]=%f", tmp._host_array[0]);
-	//*******************************************
+	float d = 9.87;
+	if(pc->existParam("-d"))
+		d = (float)pc->getParamAsDouble("-d");
 
-	myPair mm = CHI2HD_minMax(&tmp);
-	MyLogger::log()->notice("[Chi2Algorithm] Min Max Found: Min=%f; Max=%f;", mm.first, mm.second);
-	CHI2HD_normalize(&tmp, mm.first, mm.second);
-	MyLogger::log()->notice("[Chi2Algorithm] Normalized");
-	CHI2HD_copyToHost(&tmp);
-	MyLogger::log()->notice("[Chi2Algorithm] Normalized. Data[0]=%f", tmp._host_array[0]);
+	float w = 1.84;
+	if(pc->existParam("-w"))
+		w = (float)pc->getParamAsDouble("-w");
+
+	int ss = 2*floor(d/2 + 4*w/2)-1;
+	int os = (ss-1)/2;
+
+	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDAlgorithm] >> Initializing Device Data ");
+	cuMyArray2D mydata = Chi2LibCuda::initializeData(data);
+	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDAlgorithm] >> Normalize image ");
+	Chi2LibCuda::normalizeImage(&mydata);
+
+	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Chi2 image ");
+	cuMyArray2D mykernel = Chi2LibCuda::generateKernel(ss,os,d,w);
+	for(unsigned int x=0; x < ss; ++x)
+		for(unsigned int y=0; y < ss; ++y){
+			MyLogger::log()->info("[Chi2HDAlgorithm] Data[%i][%i] = %f",x,y, mykernel.getValueHost(x,y));
+		}
 
 	//*******************************************
-	CHI2HD_destroyArray(&tmp);
+	CHI2HD_destroyArray(&mydata);
+	CHI2HD_destroyArray(&mykernel);
 	MyLogger::log()->notice("[Chi2Algorithm] cuMyArray2D Destroyed");
 
 	vector<MyPeak> ret;

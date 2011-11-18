@@ -9,6 +9,7 @@
 #define CHI2HDCUDAALGORITHM
 
 #include "../Algorithm.h"
+#include "../Chi2LibCuda/Chi2LibCuda.h"
 #include "Chi2HD_Cuda.h"
 
 using namespace std;
