@@ -16,20 +16,17 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	CHI2HD_reset(&tmp,0);
 	tmp._host_array = data->getCopy();
 	CHI2HD_copyToDevice(&tmp);
-	MyLogger::log()->notice("[Chi2Algorithm] Data copied to Device");
+	MyLogger::log()->notice("[Chi2Algorithm] Data copied to Device. Data[0]=%f", tmp._host_array[0]);
+	//*******************************************
+
 	myPair mm = CHI2HD_minMax(&tmp);
-	MyLogger::log()->notice("[Chi2Algorithm] Min Max Found: Min=%f; Max=%f;", mm._min, mm._max);
+	MyLogger::log()->notice("[Chi2Algorithm] Min Max Found: Min=%f; Max=%f;", mm.first, mm.second);
+	CHI2HD_normalize(&tmp, mm.first, mm.second);
+	MyLogger::log()->notice("[Chi2Algorithm] Normalized");
 	CHI2HD_copyToHost(&tmp);
-	MyLogger::log()->notice("[Chi2Algorithm] Copied to Host");
-	float mymin = tmp._host_array[0];
-	float mymax = tmp._host_array[0];
-	for(unsigned int i=0; i < tmp.getSize(); ++i){
-		if(tmp._host_array[i] < mymin)
-			mymin = tmp._host_array[i];
-		if(tmp._host_array[i] > mymax)
-			mymax = tmp._host_array[i];
-	}
-	MyLogger::log()->notice("[Chi2Algorithm] Min Max Found: Min=%f; Max=%f;", mymin, mymax);
+	MyLogger::log()->notice("[Chi2Algorithm] Normalized. Data[0]=%f", tmp._host_array[0]);
+
+	//*******************************************
 	CHI2HD_destroyArray(&tmp);
 	MyLogger::log()->notice("[Chi2Algorithm] cuMyArray2D Destroyed");
 
