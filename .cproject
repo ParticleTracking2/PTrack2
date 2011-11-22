@@ -96,6 +96,7 @@
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.438202055" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1952208681" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Chi2HD_Cuda/src/Headers}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/local/cuda/include"/>
 									<listOptionValue builtIn="false" value="/usr/include/ImageMagick"/>
 									<listOptionValue builtIn="false" value="/usr/local/include/ImageMagick"/>
 								</option>
@@ -114,6 +115,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1522868470" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release">
 								<option id="gnu.cpp.link.option.libs.1732994260" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
+									<listOptionValue builtIn="false" value="cufft"/>
 									<listOptionValue builtIn="false" value="cudart"/>
 									<listOptionValue builtIn="false" value="Chi2HD_Cuda"/>
 									<listOptionValue builtIn="false" value="log4cpp"/>

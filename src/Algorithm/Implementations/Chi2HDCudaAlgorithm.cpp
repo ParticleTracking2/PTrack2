@@ -18,8 +18,8 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	if(pc->existParam("-w"))
 		w = (float)pc->getParamAsDouble("-w");
 
-	int ss = 2*floor(d/2 + 4*w/2)-1;
-	int os = (ss-1)/2;
+	unsigned int ss = 2*floor(d/2 + 4*w/2)-1;
+	unsigned int os = (ss-1)/2;
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Initializing Device Data ");
@@ -31,10 +31,8 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Chi2 image ");
 	cuMyArray2D mykernel = Chi2LibCuda::generateKernel(ss,os,d,w);
-	for(unsigned int x=0; x < ss; ++x)
-		for(unsigned int y=0; y < ss; ++y){
-			MyLogger::log()->info("[Chi2HDAlgorithm] Data[%i][%i] = %f",x,y, mykernel.getValueHost(x,y));
-		}
+	cuMyArray2D chi_img = CHI2HD_createArray(mydata._sizeX+mykernel._sizeX-1, mydata._sizeY+mykernel._sizeY-1);
+	Chi2LibCudaFFT::getChiImage(&mykernel, &mydata, &chi_img);
 
 	//*******************************************
 	CHI2HD_destroyArray(&mydata);
