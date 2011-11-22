@@ -35,16 +35,19 @@ void Chi2LibCudaFFT::getChiImage(cuMyArray2D *kernel, cuMyArray2D *img, cuMyArra
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_first_term)){ //First Term -> conv2d_fft( normaldata, ipf*ipf )
 		cuMyArray2D first_term = CHI2HD_createArray(img->_sizeX+kernel->_sizeX-1, img->_sizeY+kernel->_sizeY-1);
+		CHI2HD_reset(&first_term, 0.0f);
 		Chi2LibCudaFFTCache::cache(cached_first_term, &first_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] First Term Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_second_term)){ //Second Term -> conv2d_fft( normaldata*normaldata, ipf )
 		cuMyArray2D second_term = CHI2HD_createArray(img->_sizeX+kernel->_sizeX-1, img->_sizeY+kernel->_sizeY-11);
+		CHI2HD_reset(&second_term, 0.0f);
 		Chi2LibCudaFFTCache::cache(cached_second_term, &second_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Second Term Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_third_term)){ //Third Term -> conv2d_fft( blank, ipf*ipf*ipf )
 		cuMyArray2D third_term = CHI2HD_createArray(img->_sizeX+kernel->_sizeX-1, img->_sizeY+kernel->_sizeY-1);
+		CHI2HD_reset(&third_term, 0.0f);
 		Chi2LibCudaFFTCache::cache(cached_third_term, &third_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Third Term Cached");
 	}
@@ -65,6 +68,6 @@ void Chi2LibCudaFFT::getChiImage(cuMyArray2D *kernel, cuMyArray2D *img, cuMyArra
 	}
 
 	MyLogger::log()->debug("[Chi2LibCudaFFT] Computing result");
-	// TODO Calcular Resultado Final
+	CHI2HD_fftresutl(Chi2LibCudaFFTCache::cache(cached_first_term), Chi2LibCudaFFTCache::cache(cached_second_term), Chi2LibCudaFFTCache::cache(cached_third_term), out);
 	MyLogger::log()->debug("[Chi2LibCudaFFT] Result Computed");
 }

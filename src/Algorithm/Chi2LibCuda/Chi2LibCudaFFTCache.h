@@ -8,6 +8,7 @@
 #ifndef CHI2LIBCUDAFFTCACHE_H_
 #define CHI2LIBCUDAFFTCACHE_H_
 
+#include "../../Utils/FileUtils.h"
 #include "Chi2HD_Cuda.h"
 #include <string>
 #include <sstream>
@@ -15,7 +16,7 @@
 class Chi2LibCudaFFTCache {
 private:
 	static const unsigned int capacity = 7;
-	cuMyArray2D *_cache[capacity];
+	cuMyArray2D _cache[capacity];
 	bool locked[capacity];
 
 	static Chi2LibCudaFFTCache *instance;

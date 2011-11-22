@@ -24,15 +24,22 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Initializing Device Data ");
 	cuMyArray2D mydata = Chi2LibCuda::initializeData(data);
+	FileUtils::writeToFileM(&mydata, "cuda-img.txt");
+
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Normalize image ");
 	Chi2LibCuda::normalizeImage(&mydata);
+	FileUtils::writeToFileM(&mydata, "cuda-img-normalized.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Chi2 image ");
 	cuMyArray2D mykernel = Chi2LibCuda::generateKernel(ss,os,d,w);
+	FileUtils::writeToFileM(&mykernel, "cuda-kernel.txt");
+
 	cuMyArray2D chi_img = CHI2HD_createArray(mydata._sizeX+mykernel._sizeX-1, mydata._sizeY+mykernel._sizeY-1);
 	Chi2LibCudaFFT::getChiImage(&mykernel, &mydata, &chi_img);
+	FileUtils::writeToFileM(&chi_img, "cuda-chi_img.txt");
+	Chi2LibCudaFFTCache::dump();
 
 	//*******************************************
 	CHI2HD_destroyArray(&mydata);
