@@ -40,7 +40,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
 
 	Chi2LibFFTWCache::dump();
-	return peaks;
+//	return peaks;
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Auxiliary Matrix ");

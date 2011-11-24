@@ -9,15 +9,16 @@
 
 void Chi2LibQhull::stringSplit(string str, string delim, vector<string> *out){
 	out->clear();
-	unsigned int cutAt;
-	while( (cutAt = str.find_first_of(delim)) != str.npos ){
-		if(cutAt > 0){
-			out->push_back(str.substr(0,cutAt));
-		}
-		str = str.substr(cutAt+1);
-	}
-	if(str.length() > 0){
-		out->push_back(str);
+	unsigned int oldend = 0;
+	unsigned int end = 0;
+	for(unsigned int i=0; i < str.size(); ++i){
+		end = str.find(delim, i);
+		if(end == oldend)
+			break;
+		oldend = end;
+		out->push_back(str.substr(i,end-i));
+		if(end > i && end < str.size())
+			i = end;
 	}
 }
 
@@ -40,28 +41,31 @@ void Chi2LibQhull::interpretData(string *data, vector< pair<double,double> > *ve
 	string stmp;
 
 	getline(ss, stmp);	// Dim.. Constant = 2 for this
+	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Dimension: %s", stmp.c_str());
 
 	getline(ss, stmp);	// Data length
+	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Vertexs: %i", atoi(stmp.c_str()));
 	unsigned int vSize = atoi(stmp.c_str());
 	vertex->reserve(vSize);
 
+	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Vertex reserved Size");
 	vector<string> splited;
-	unsigned int vCount = 0;
-	unsigned int cCount = 0;
-	while(getline(ss, stmp)){
-		if(vCount < vSize){ // Vertex
-			stringSplit(stmp, " ", &splited);
-			pair<double,double> v_xy;
-			v_xy.first = atof(splited.at(0).c_str());
-			v_xy.second = atof(splited.at(1).c_str());
-			vertex->push_back(v_xy);
-			vCount++;
-		}else{ // Cells
-			break;
-		}
+	for(unsigned int i = 0; i < vSize; ++i){
+		getline(ss, stmp);
+		// Vertex
+		stringSplit(stmp, " ", &splited);
+		pair<double,double> v_xy;
+		v_xy.first = atof(splited.at(0).c_str());
+		v_xy.second = atof(splited.at(1).c_str());
+		vertex->push_back(v_xy);
 	}
-	cells->reserve(atoi(stmp.c_str()));
-	while(getline(ss, stmp)){
+	getline(ss, stmp);
+	unsigned int cSize = atoi(stmp.c_str());
+	cells->reserve(cSize);
+	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Cells: %s", stmp.c_str());
+	for(unsigned int i = 0; i < cSize; ++i){
+		getline(ss, stmp);
+		// Cells
 		stringSplit(stmp, " ", &splited);
 
 		// Allocate data
@@ -79,10 +83,9 @@ void Chi2LibQhull::interpretData(string *data, vector< pair<double,double> > *ve
 
 		// Append
 		cells->push_back(cells_data);
-		cCount++;
 	}
 
-	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Interpretation complete: Vertexs=%i; Cells=%i", vCount, cCount);
+	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Interpretation complete: Vertexs=%i; Cells=%i", vertex->size(), cells->size());
 }
 
 string Chi2LibQhull::execQhull(string data, string params){
