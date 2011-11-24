@@ -9,6 +9,7 @@
 #define CHI2LIBCUDAFFT_H_
 
 #include "Chi2HD_Cuda.h"
+#include "Chi2HD_CudaFFT.h"
 #include "../../Utils/MyLogger.h"
 #include "Chi2LibCudaFFTCache.h"
 

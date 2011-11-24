@@ -25,6 +25,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.889003483" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1758733901" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/include/ImageMagick"/>
+									<listOptionValue builtIn="false" value="/usr/local/cuda/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Chi2HD_Cuda/src/Headers}&quot;"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.217714214" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
@@ -40,6 +41,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1491770595" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 								<option id="gnu.cpp.link.option.libs.380441043" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
+									<listOptionValue builtIn="false" value="cufft"/>
 									<listOptionValue builtIn="false" value="Chi2HD_Cuda"/>
 									<listOptionValue builtIn="false" value="log4cpp"/>
 									<listOptionValue builtIn="false" value="Magick++"/>

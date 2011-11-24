@@ -74,6 +74,22 @@ void FileUtils::writeToFileM(cuMyArray2D *arr, const char* file){
 	}
 }
 
+void FileUtils::writeToFileM(double *arr, unsigned int width, unsigned int height, const char* file){
+	if(MyLogger::logFileData()){
+		ofstream myfile;
+		myfile.open(file);
+
+		myfile << fixed;
+		for(unsigned int x=0; x < width; ++x){
+			for(unsigned int y=0; y < height; ++y){
+				myfile << arr[x+y*height] << ";";
+			}
+			myfile << endl;
+		}
+		myfile.close();
+	}
+}
+
 void FileUtils::writeToFileM(MyMatrix<double> *arr, const char* file){
 	if(MyLogger::logFileData()){
 		ofstream myfile;
