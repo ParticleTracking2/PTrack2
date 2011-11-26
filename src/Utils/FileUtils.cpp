@@ -74,6 +74,20 @@ void FileUtils::writeToFileM(cuMyArray2D *arr, const char* file){
 	}
 }
 
+void FileUtils::writeToFileM(fftw_complex *arr, unsigned int size, const char* file){
+	if(MyLogger::logFileData()){
+		ofstream myfile;
+		myfile.open(file);
+
+		myfile << fixed;
+		for(unsigned int x=0; x < size; ++x){
+			myfile << arr[x][0] << "R;" << arr[x][1] << "I;";
+			myfile << endl;
+		}
+		myfile.close();
+	}
+}
+
 void FileUtils::writeToFileM(double *arr, unsigned int width, unsigned int height, const char* file){
 	if(MyLogger::logFileData()){
 		ofstream myfile;

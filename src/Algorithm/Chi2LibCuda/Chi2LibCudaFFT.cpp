@@ -40,7 +40,7 @@ void Chi2LibCudaFFT::getChiImage(cuMyArray2D *kernel, cuMyArray2D *img, cuMyArra
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] First Term Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_second_term)){ //Second Term -> conv2d_fft( normaldata*normaldata, ipf )
-		cuMyArray2D second_term = CHI2HD_createArray(img->_sizeX+kernel->_sizeX-1, img->_sizeY+kernel->_sizeY-11);
+		cuMyArray2D second_term = CHI2HD_createArray(img->_sizeX+kernel->_sizeX-1, img->_sizeY+kernel->_sizeY-1);
 		CHI2HD_reset(&second_term, 0.0f);
 		Chi2LibCudaFFTCache::cache(cached_second_term, &second_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Second Term Cached");
