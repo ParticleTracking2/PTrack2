@@ -21,31 +21,41 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	unsigned int ss = 2*floor(d/2 + 4*w/2)-1;
 	unsigned int os = (ss-1)/2;
 
-	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
-	MyLogger::log()->info("[Chi2HDAlgorithm] >> Initializing Device Data ");
-	cuMyArray2D mydata = Chi2LibCuda::initializeData(data);
-	FileUtils::writeToFileM(&mydata, "cuda-img.txt");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Initializing Device Data ");
+	cuMyArray2D cuImg = Chi2LibCuda::initializeData(data);
 
-	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
-	MyLogger::log()->info("[Chi2HDAlgorithm] >> Normalize image ");
-	Chi2LibCuda::normalizeImage(&mydata);
-	FileUtils::writeToFileM(&mydata, "cuda-img-normalized.txt");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Normalize image ");
+	Chi2LibCuda::normalizeImage(&cuImg);
+	Chi2Lib::normalizeImage(data);
 
-	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
-	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Chi2 image ");
-	cuMyArray2D mykernel = Chi2LibCuda::generateKernel(ss,os,d,w);
-	FileUtils::writeToFileM(&mykernel, "cuda-kernel.txt");
-
-	cuMyArray2D chi_img = CHI2HD_createArray(mydata._sizeX+mykernel._sizeX-1, mydata._sizeY+mykernel._sizeY-1);
-	Chi2LibCudaFFT::getChiImage(&mykernel, &mydata, &chi_img);
-	FileUtils::writeToFileM(&chi_img, "cuda-chi_img.txt");
-	Chi2LibCudaFFTCache::dump();
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Chi2 image ");
+	cuMyArray2D cuKernel = Chi2LibCuda::generateKernel(ss,os,d,w);
+	cuMyArray2D cu_chi_img = CHI2HD_createArray(cuImg._sizeX+cuKernel._sizeX-1, cuImg._sizeY+cuKernel._sizeY-1);
+	Chi2LibCudaFFT::getChiImage(&cuKernel, &cuImg, &cu_chi_img);
 
 	//*******************************************
-	CHI2HD_destroyArray(&mydata);
-	CHI2HD_destroyArray(&mykernel);
-	MyLogger::log()->notice("[Chi2Algorithm] cuMyArray2D Destroyed");
+	// Hasta aquí llega la implementación en CUDA
+	// Por ahora.
+	//*******************************************
 
-	vector<MyPeak> ret;
-	return ret;
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtain peaks of Chi2 Image ");
+	unsigned int threshold = 5, minsep = 1, mindistance = 5;
+	CHI2HD_copyToHost(&cu_chi_img);
+	MyMatrix<double> chi_img(cu_chi_img._host_array, cu_chi_img._sizeX, cu_chi_img._sizeY, true);
+	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
+
+	//*******************************************
+	// Prueba de los resulados hasta aquí
+	//*******************************************
+	CHI2HD_destroyArray(&cuImg);
+	CHI2HD_destroyArray(&cuKernel);
+	CHI2HD_destroyArray(&cu_chi_img);
+	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] cuMyArray2D Destroyed");
+
+	Chi2Lib::translatePeaks(&peaks, os);
+	return peaks;
 }

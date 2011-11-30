@@ -39,7 +39,10 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
 
-	Chi2LibFFTWCache::dump();
+	/*******************************
+	 * Recordar borrar este segmento
+	 ********************************/
+	Chi2Lib::translatePeaks(&peaks, os);
 	return peaks;
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
@@ -206,11 +209,9 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Recomputing Voronoi areas ");
 	Chi2LibQhull::addVoronoiAreas(&peaks);
-	FileUtils::writeToFileM(&peaks, "peaks_post_add_voronoi_areas.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Translating coordenates ");
 	Chi2Lib::translatePeaks(&peaks, os);
-	FileUtils::writeToFileM(&peaks, "peaks_post_translate.txt");
 
 	double vor_areaSL = 75.0;
 	if(pc->existParam("-vorsl"))

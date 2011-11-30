@@ -22,6 +22,7 @@ protected:
 	unsigned int _sizeY;
 public:
 	MyMatrix();
+	MyMatrix(float* data1d, unsigned int x, unsigned int y, bool transpose = false);
 	MyMatrix(unsigned int x, unsigned int y);
 	MyMatrix(unsigned int x, unsigned int y, myType def);
 	~MyMatrix();
@@ -32,6 +33,8 @@ public:
 	void deallocate();
 	void reset(myType def = 0);
 	float* getCopy();
+	void copyTranspose(float* data1d, unsigned int sizex, unsigned int sizey);
+	void copy(float* data1d, unsigned int sizex, unsigned int sizey);
 
 	myType getValue(unsigned int x, unsigned int y);
 	myType & at(unsigned int x, unsigned int y);
@@ -47,6 +50,17 @@ template <class myType>
 MyMatrix<myType>::MyMatrix() {
 	data = 0;
 	_sizeX = 0; _sizeY = 0;
+}
+
+template <class myType>
+MyMatrix<myType>::MyMatrix(float* data1d, unsigned int x, unsigned int y, bool transpose){
+	data = 0;
+	_sizeX = x; _sizeY = y;
+	allocate();
+	if(transpose)
+		copyTranspose(data1d, x, y);
+	else
+		copy(data1d, x, y);
 }
 
 template <class myType>
@@ -124,6 +138,26 @@ float* MyMatrix<myType>::getCopy(){
 		}
 	}
 	return ret;
+}
+
+template <class myType>
+void MyMatrix<myType>::copyTranspose(float* data1d, unsigned int sizex, unsigned int sizey){
+	if(sizex <= _sizeX && sizey <= _sizeY)
+	for(unsigned int x=0; x < sizex; ++x){
+		for(unsigned int y=0; y < sizey; ++y){
+			data[x][y] = data1d[x*sizex+y];
+		}
+	}
+}
+
+template <class myType>
+void MyMatrix<myType>::copy(float* data1d, unsigned int sizex, unsigned int sizey){
+	if(sizex <= _sizeX && sizey <= _sizeY)
+	for(unsigned int x=0; x < sizex; ++x){
+		for(unsigned int y=0; y < sizey; ++y){
+			data[x][y] = data1d[x+sizey+y];
+		}
+	}
 }
 
 template <class myType>

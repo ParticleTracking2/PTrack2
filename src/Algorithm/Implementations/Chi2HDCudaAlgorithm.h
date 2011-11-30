@@ -10,6 +10,7 @@
 
 #include "../Algorithm.h"
 #include "../../Utils/FileUtils.h"
+#include "../Chi2Lib/Chi2Lib.h"
 #include "../Chi2LibCuda/Chi2LibCuda.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFT.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFTCache.h"
