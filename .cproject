@@ -24,9 +24,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.2009781800" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.889003483" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1758733901" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/include/ImageMagick"/>
-									<listOptionValue builtIn="false" value="/usr/local/cuda/include"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Chi2HD_Cuda/src/Headers}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/local/include"/>
+									<listOptionValue builtIn="false" value="/usr/include"/>
+									<listOptionValue builtIn="false" value="/usr/local/cuda/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/ImageMagick"/>
+									<listOptionValue builtIn="false" value="/usr/local/include/ImageMagick"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.optimization.level.217714214" name="Optimization Level" superClass="gnu.cpp.compiler.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.debugging.level.244763594" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
@@ -41,19 +44,20 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.base.1491770595" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.base">
 								<option id="gnu.cpp.link.option.libs.380441043" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="fftw3"/>
+									<listOptionValue builtIn="false" value="fftw3f"/>
 									<listOptionValue builtIn="false" value="cufft"/>
+									<listOptionValue builtIn="false" value="cudart"/>
 									<listOptionValue builtIn="false" value="Chi2HD_Cuda"/>
 									<listOptionValue builtIn="false" value="log4cpp"/>
 									<listOptionValue builtIn="false" value="Magick++"/>
 									<listOptionValue builtIn="false" value="MagickWand"/>
 									<listOptionValue builtIn="false" value="MagickCore"/>
-									<listOptionValue builtIn="false" value="cudart"/>
 								</option>
 								<option id="gnu.cpp.link.option.paths.1738112671" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/Chi2HD_Cuda/Debug}&quot;"/>
+									<listOptionValue builtIn="false" value="/usr/local/cuda/lib64"/>
 									<listOptionValue builtIn="false" value="/usr/local/lib"/>
 									<listOptionValue builtIn="false" value="/usr/lib"/>
-									<listOptionValue builtIn="false" value="/usr/local/cuda/lib64"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1794926080" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>

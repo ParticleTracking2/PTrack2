@@ -155,7 +155,7 @@ void MyMatrix<myType>::copy(float* data1d, unsigned int sizex, unsigned int size
 	if(sizex <= _sizeX && sizey <= _sizeY)
 	for(unsigned int x=0; x < sizex; ++x){
 		for(unsigned int y=0; y < sizey; ++y){
-			data[x][y] = data1d[x+sizey+y];
+			data[x][y] = data1d[x+sizey*y];
 		}
 	}
 }

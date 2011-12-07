@@ -36,17 +36,16 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	cuMyArray2D cu_chi_img = CHI2HD_createArray(cuImg._sizeX+cuKernel._sizeX-1, cuImg._sizeY+cuKernel._sizeY-1);
 	Chi2LibCudaFFT::getChiImage(&cuKernel, &cuImg, &cu_chi_img);
 
-	//*******************************************
-	// Hasta aquí llega la implementación en CUDA
-	// Por ahora.
-	//*******************************************
-
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
-	CHI2HD_copyToHost(&cu_chi_img);
-	MyMatrix<double> chi_img(cu_chi_img._host_array, cu_chi_img._sizeX, cu_chi_img._sizeY, true);
-	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
+	cuPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep);
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Auxiliary Matrix ");
+	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocating %ix%i", data->sX(), data->sY());
+
+	cuMyMatrix testData(cuImg._sizeX, cuImg._sizeY);
 
 	//*******************************************
 	// Prueba de los resulados hasta aquí
@@ -56,6 +55,6 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	CHI2HD_destroyArray(&cu_chi_img);
 	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] cuMyArray2D Destroyed");
 
-	Chi2Lib::translatePeaks(&peaks, os);
-	return peaks;
+	vector<MyPeak> ret;
+	return ret;
 }

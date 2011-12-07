@@ -39,12 +39,6 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
 
-	/*******************************
-	 * Recordar borrar este segmento
-	 ********************************/
-	Chi2Lib::translatePeaks(&peaks, os);
-	return peaks;
-
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Auxiliary Matrix ");
 	MyLogger::log()->debug("[Chi2HDAlgorithm] >> Allocating %ix%i", data->sX(), data->sY());
@@ -53,6 +47,13 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyMatrix<int> over(data->sX(), data->sY());
 	MyLogger::log()->debug("[Chi2HDAlgorithm] >> Allocation Complete ");
 	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);	// ~170|200 -> |150 Milisegundos
+
+	/*******************************
+	 * Recordar borrar este segmento
+	 ********************************/
+	Chi2Lib::translatePeaks(&peaks, os);
+	return peaks;
+
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Compute Chi2 Difference ");

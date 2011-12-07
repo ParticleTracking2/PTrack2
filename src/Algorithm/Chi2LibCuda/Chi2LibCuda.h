@@ -10,10 +10,14 @@
 
 #include <cmath>
 #include "Chi2HD_Cuda.h"
+#include "../Chi2Lib/Chi2Lib.h"
+#include "../MyPeak.h"
 #include "../../Utils/MyLogger.h"
 #include "../../Container/MyMatrix.h"
 
 class Chi2LibCuda {
+private:
+	static cuPeakArray convertPeaks(vector<MyPeak>* peaks);
 public:
 	/**
 	 * Establece los valores necesarios dentro del dispositivo acorde a los datos entregados
@@ -34,6 +38,11 @@ public:
 	 * Obtener imagen de la particula ideal
 	 */
 	static cuMyArray2D generateKernel(unsigned int ss, unsigned int os, double d, double w);
+
+	/**
+	 *
+	 */
+	static cuPeakArray getPeaks(cuMyArray2D* arr, int threshold, int mindistance, int minsep);
 };
 
 #endif /* CHI2LIBCUDA_H_ */
