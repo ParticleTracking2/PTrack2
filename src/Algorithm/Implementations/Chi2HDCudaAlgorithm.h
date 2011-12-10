@@ -14,8 +14,8 @@
 #include "../Chi2LibCuda/Chi2LibCuda.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFT.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFTCache.h"
-#include "Chi2HD_Cuda.h"
-#include "Chi2HD_CudaContainer.h"
+#include "Container/cuMyMatrix.h"
+#include "Container/cuMyPeak.h"
 
 using namespace std;
 

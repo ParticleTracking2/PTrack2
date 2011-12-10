@@ -57,15 +57,15 @@ void FileUtils::writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, con
 	}
 }
 
-void FileUtils::writeToFileM(cuMyArray2D *arr, const char* file){
+void FileUtils::writeToFileM(cuMyMatrix *arr, const char* file){
 	if(MyLogger::logFileData()){
 		ofstream myfile;
 		myfile.open(file);
-		CHI2HD_copyToHost(arr);
+		arr->copyToHost();
 
 		myfile << fixed;
-		for(unsigned int x=0; x < arr->_sizeX; ++x){
-			for(unsigned int y=0; y < arr->_sizeY; ++y){
+		for(unsigned int x=0; x < arr->sizeX(); ++x){
+			for(unsigned int y=0; y < arr->sizeY(); ++y){
 				myfile << arr->getValueHost(x,y) << ";";
 			}
 			myfile << endl;

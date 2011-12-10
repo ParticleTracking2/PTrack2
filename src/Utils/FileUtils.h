@@ -7,7 +7,8 @@
 #include "../Container/MyMatrix.h"
 #include "../Algorithm/MyPeak.h"
 #include "MyLogger.h"
-#include "Chi2HD_Cuda.h"
+#include "Container/cuMyMatrix.h"
+
 #include <fftw3.h>
 #include <vector>
 #include <string>
@@ -26,7 +27,7 @@ public:
 
 	static void writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, const char* file);
 
-	static void writeToFileM(cuMyArray2D *arr, const char* file);
+	static void writeToFileM(cuMyMatrix *arr, const char* file);
 	static void writeToFileM(fftw_complex *arr, unsigned int size, const char* file);
 	static void writeToFileM(double *arr, unsigned int width, unsigned int height, const char* file);
 

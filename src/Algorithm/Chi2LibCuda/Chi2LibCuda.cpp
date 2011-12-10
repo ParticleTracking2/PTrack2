@@ -7,24 +7,24 @@
 
 #include "Chi2LibCuda.h"
 
-cuMyArray2D Chi2LibCuda::initializeData(MyMatrix<double>* data){
-	cuMyArray2D ret = CHI2HD_createArray(data->sX(), data->sY());
-	ret._host_array = data->getCopy();
-	CHI2HD_copyToDevice(&ret);
+cuMyMatrix Chi2LibCuda::initializeData(MyMatrix<double>* data){
+	float * copyedData = data->getCopy();
+	cuMyMatrix ret(copyedData, data->sX(), data->sY());
+	free(copyedData);
 	return ret;
 }
 
-pair<float, float> Chi2LibCuda::getHighLow(cuMyArray2D* arr){
+pair<float, float> Chi2LibCuda::getHighLow(cuMyMatrix* arr){
 	MyLogger::log()->debug("[Chi2LibCuda][getHighLow] Finding Maximum and Minimum values");
-	myPair mm = CHI2HD_minMax(arr);
-	pair<float, float> ret;
-	ret.first = mm.second;
-	ret.second = mm.first;
+	pair<float, float> ret = Chi2Libcu::minMax(arr);
+	float tmp = ret.first;
+	ret.first = ret.second;
+	ret.second = tmp;
 	MyLogger::log()->debug("[Chi2LibCuda][getHighLow] Maximum and Minimum values Found: %f and %f", ret.first, ret.second);
 	return ret;
 }
 
-void Chi2LibCuda::normalizeImage(cuMyArray2D* arr, double maximum, double minimum){
+void Chi2LibCuda::normalizeImage(cuMyMatrix* arr, double maximum, double minimum){
 	MyLogger::log()->debug("[Chi2LibCuda][normalizeImage] Normalizing data");
 	float min, max;
 	if(maximum == -1 && minimum == -1){
@@ -35,21 +35,20 @@ void Chi2LibCuda::normalizeImage(cuMyArray2D* arr, double maximum, double minimu
 		min = minimum;
 		max = maximum;
 	}
-	CHI2HD_normalize(arr, min, max);
+	Chi2Libcu::normalize(arr, min, max);
 	MyLogger::log()->debug("[Chi2LibCuda][normalizeImage] Data Normalized");
 }
 
-cuMyArray2D Chi2LibCuda::generateKernel(unsigned int ss, unsigned int os, double d, double w){
+cuMyMatrix Chi2LibCuda::generateKernel(unsigned int ss, unsigned int os, double d, double w){
 	MyLogger::log()->debug("[Chi2LibCuda][generateKernel] Building kernel with ss=%i; os=%i; d=%f; w=%f",ss,os,d,w);
-	cuMyArray2D ret = CHI2HD_gen_kernel(ss, os, (float) d, (float) w);
+	cuMyMatrix ret = Chi2Libcu::gen_kernel(ss, os, (float) d, (float) w);
 	MyLogger::log()->debug("[Chi2LibCuda][generateKernel] Kernel successfuly built");
-
 	return ret;
 }
 
-cuPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
-	cuPeakArray ret;
-	ret._host_array = (cuPeak*)malloc(peaks->size()*sizeof(cuPeak));
+cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
+	cuMyPeakArray ret;
+	ret._host_array = (cuMyPeak*)malloc(peaks->size()*sizeof(cuMyPeak));
 	ret.size = peaks->size();
 
 	for(unsigned int i=0; i < peaks->size(); ++i){
@@ -61,18 +60,18 @@ cuPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
 	return ret;
 }
 
-cuPeakArray Chi2LibCuda::getPeaks(cuMyArray2D* arr, int threshold, int mindistance, int minsep){
+cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep){
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Getting Image peaks");
 //	CHI2HD_getPeaks(arr,threshold, mindistance, minsep);
 
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Copying to Host");
-	CHI2HD_copyToHost(arr);
+	arr->copyToHost();
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Copying to MyMatrix");
-	MyMatrix<double> chi_img(arr->_host_array, arr->_sizeX, arr->_sizeY, true);
+	MyMatrix<double> chi_img(arr->hostPointer(), arr->sizeX(), arr->sizeY(), true);
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, true);
 
-	cuPeakArray ret = convertPeaks(&peaks);
-	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Peaks Detected %i of %i", peaks.size(), arr->getSize());
+	cuMyPeakArray ret = convertPeaks(&peaks);
+	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Peaks Detected %i of %i", peaks.size(), arr->size());
 
 	return ret;
 }

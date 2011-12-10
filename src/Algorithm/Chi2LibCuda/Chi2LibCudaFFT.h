@@ -8,8 +8,10 @@
 #ifndef CHI2LIBCUDAFFT_H_
 #define CHI2LIBCUDAFFT_H_
 
-#include "Chi2HD_Cuda.h"
-#include "Chi2HD_CudaFFT.h"
+#include "Container/cuMyMatrix.h"
+#include "Chi2LibcuMatrix.h"
+#include "Chi2LibcuFFT.h"
+
 #include "../../Utils/MyLogger.h"
 #include "Chi2LibCudaFFTCache.h"
 
@@ -25,7 +27,7 @@ private:
 		cached_third_term = 6
 	};
 public:
-	static void getChiImage(cuMyArray2D *kernel, cuMyArray2D *img, cuMyArray2D *out);
+	static void getChiImage(cuMyMatrix *kernel, cuMyMatrix *img, cuMyMatrix *out);
 };
 
 #endif /* CHI2LIBCUDAFFT_H_ */

@@ -16,13 +16,14 @@ Chi2LibCudaFFTCache *Chi2LibCudaFFTCache::instance = 0;
 Chi2LibCudaFFTCache::Chi2LibCudaFFTCache() {
 	for(unsigned int i = 0; i < capacity; ++i){
 		locked[i] = false;
+		_cache[i] = 0;
 	}
 }
 
 Chi2LibCudaFFTCache::~Chi2LibCudaFFTCache() {
 	for(unsigned int i = 0; i < capacity; ++i){
-		if(_cache[i]._device_array)
-			CHI2HD_destroyArray(&_cache[i]);
+		if(_cache[i])
+			delete _cache[i];
 	}
 }
 
@@ -36,8 +37,8 @@ void Chi2LibCudaFFTCache::erase(unsigned int slot){
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 	if(slot <= instance->capacity){
-		if(instance->_cache[slot]._device_array){
-			CHI2HD_destroyArray(&instance->_cache[slot]);
+		if(instance->_cache[slot]){
+			delete instance->_cache[slot];
 		}
 	}
 }
@@ -47,8 +48,8 @@ void Chi2LibCudaFFTCache::eraseAll(){
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 	for( unsigned int slot = 0; slot < instance->capacity; ++slot){
-		if(instance->_cache[slot]._device_array)
-			CHI2HD_destroyArray(&instance->_cache[slot]);
+		if(instance->_cache[slot])
+			delete instance->_cache[slot];
 	}
 }
 
@@ -57,10 +58,10 @@ void Chi2LibCudaFFTCache::dump(){
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 	for( unsigned int slot = 0; slot < instance->capacity; ++slot){
-		if(instance->_cache[slot]._device_array){
+		if(instance->_cache[slot]){
 			stringstream ss;
 			ss << "cuda-cache-" << slot << ".txt";
-			FileUtils::writeToFileM(&instance->_cache[slot], ss.str().c_str());
+			FileUtils::writeToFileM(instance->_cache[slot], ss.str().c_str());
 		}
 	}
 }
@@ -70,7 +71,7 @@ bool Chi2LibCudaFFTCache::empty(unsigned int slot){
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 	if(slot <= instance->capacity){
-		if(!instance->_cache[slot]._device_array)
+		if(!instance->_cache[slot])
 			return true;
 		else
 			return false;
@@ -97,27 +98,27 @@ void Chi2LibCudaFFTCache::lock(unsigned int slot, bool state){
 	}
 }
 
-cuMyArray2D *Chi2LibCudaFFTCache::cache(unsigned int slot){
+cuMyMatrix *Chi2LibCudaFFTCache::cache(unsigned int slot){
 	// Crear si no existe.
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 
 	if(slot <= instance->capacity)
-		return &instance->_cache[slot];
+		return instance->_cache[slot];
 	return 0;
 }
 
-void Chi2LibCudaFFTCache::cache(unsigned int slot, cuMyArray2D* data){
+void Chi2LibCudaFFTCache::cache(unsigned int slot, cuMyMatrix* data){
 	// Crear si no existe.
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 
 	if(slot <= instance->capacity){
 		// Borrar si existe
-		if(instance->_cache[slot]._device_array)
-			CHI2HD_destroyArray(&instance->_cache[slot]);
+		if(instance->_cache[slot])
+			delete instance->_cache[slot];
 
-		CHI2HD_createArrayPointer(data->_sizeX, data->_sizeY, &instance->_cache[slot]);
-		CHI2HD_copy(data, &instance->_cache[slot]);
+		instance->_cache[slot] = new cuMyMatrix(data->sizeX(), data->sizeY());
+		Chi2LibcuMatrix::copy(data, instance->_cache[slot]);
 	}
 }

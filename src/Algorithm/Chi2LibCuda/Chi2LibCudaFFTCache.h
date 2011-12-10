@@ -9,14 +9,16 @@
 #define CHI2LIBCUDAFFTCACHE_H_
 
 #include "../../Utils/FileUtils.h"
-#include "Chi2HD_Cuda.h"
+#include "Container/cuMyMatrix.h"
+#include "Chi2LibcuMatrix.h"
+
 #include <string>
 #include <sstream>
 
 class Chi2LibCudaFFTCache {
 private:
 	static const unsigned int capacity = 7;
-	cuMyArray2D _cache[capacity];
+	cuMyMatrix* _cache[capacity];
 	bool locked[capacity];
 
 	static Chi2LibCudaFFTCache *instance;
@@ -30,8 +32,8 @@ public:
 	static bool empty(unsigned int slot);
 	static bool lock(unsigned int slot);
 	static void lock(unsigned int slot, bool state);
-	static cuMyArray2D *cache(unsigned int slot);
-	static void cache(unsigned int slot, cuMyArray2D* data);
+	static cuMyMatrix *cache(unsigned int slot);
+	static void cache(unsigned int slot, cuMyMatrix* data);
 };
 
 #endif /* CHI2LIBCUDAFFTCACHE_H_ */
