@@ -74,6 +74,23 @@ void FileUtils::writeToFileM(cuMyMatrix *arr, const char* file){
 	}
 }
 
+void FileUtils::writeToFileM(cuMyMatrixi *arr, const char* file){
+	if(MyLogger::logFileData()){
+		ofstream myfile;
+		myfile.open(file);
+		arr->copyToHost();
+
+		myfile << fixed;
+		for(unsigned int x=0; x < arr->sizeX(); ++x){
+			for(unsigned int y=0; y < arr->sizeY(); ++y){
+				myfile << arr->getValueHost(x,y) << ";";
+			}
+			myfile << endl;
+		}
+		myfile.close();
+	}
+}
+
 void FileUtils::writeToFileM(fftw_complex *arr, unsigned int size, const char* file){
 	if(MyLogger::logFileData()){
 		ofstream myfile;

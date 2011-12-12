@@ -18,8 +18,8 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	if(pc->existParam("-w"))
 		w = (float)pc->getParamAsDouble("-w");
 
-	unsigned int ss = 2*floor(d/2 + 4*w/2)-1;
-	unsigned int os = (ss-1)/2;
+	int ss = 2*floor(d/2 + 4*w/2)-1;
+	int os = (ss-1)/2;
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Initializing Device Data ");
@@ -41,15 +41,23 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
 	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep);
 
-	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
-	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Auxiliary Matrix ");
-	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocating %ix%i", data->sX(), data->sY());
-
+//	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+//	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Auxiliary Matrix ");
+//	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocating %ix%i", data->sX(), data->sY());
+//	cuMyMatrix grid_x(data->sX(), data->sY());
+//	cuMyMatrix grid_y(data->sX(), data->sY());
+//	cuMyMatrixi over(data->sX(), data->sY());
+//	MyLogger::log()->debug("[Chi2HDAlgorithm] >> Allocation Complete ");
+//	Chi2LibCuda::generateGrid(&peaks, os, &cuImg, &grid_x, &grid_y, &over);
+//
+//	FileUtils::writeToFileM(&grid_x, "cugrid_x.txt");
+//	FileUtils::writeToFileM(&grid_y, "cugrid_y.txt");
+//	FileUtils::writeToFileM(&over, "cuover.txt");
 	//*******************************************
 	// Prueba de los resulados hasta aquí
 	//*******************************************
 
-
-	vector<MyPeak> ret;
+	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
+	Chi2LibCuda::translatePeaks(&ret, os);
 	return ret;
 }

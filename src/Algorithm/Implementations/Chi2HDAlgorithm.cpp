@@ -22,17 +22,17 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Normalize image ");
-	FileUtils::writeToFileM(data, "img.txt");
+//	FileUtils::writeToFileM(data, "img.txt");
 	Chi2Lib::normalizeImage(data);
-	FileUtils::writeToFileM(data, "img-normalized.txt");
+//	FileUtils::writeToFileM(data, "img-normalized.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Chi2 image ");
 	MyMatrix<double> kernel = Chi2Lib::generateKernel(ss,os,d,w);
 	MyMatrix<double> chi_img(data->sX()+kernel.sX()-1, data->sY()+kernel.sY()-1);
 	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img, use_threads);	// ~430|560 -> |290 Milisegundos
-	FileUtils::writeToFileM(&kernel, "kernel.txt");
-	FileUtils::writeToFileM(&chi_img, "chi_img.txt");
+//	FileUtils::writeToFileM(&kernel, "kernel.txt");
+//	FileUtils::writeToFileM(&chi_img, "chi_img.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtain peaks of Chi2 Image ");
@@ -48,6 +48,9 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->debug("[Chi2HDAlgorithm] >> Allocation Complete ");
 	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);	// ~170|200 -> |150 Milisegundos
 
+	FileUtils::writeToFileM(&grid_x, "grid_x.txt");
+	FileUtils::writeToFileM(&grid_y, "grid_y.txt");
+	FileUtils::writeToFileM(&over, "over.txt");
 	/*******************************
 	 * Recordar borrar este segmento
 	 ********************************/

@@ -43,9 +43,24 @@ public:
 	static cuMyMatrix generateKernel(unsigned int ss, unsigned int os, double d, double w);
 
 	/**
-	 *
+	 * Obtiene los Peaks de la imagen
 	 */
 	static cuMyPeakArray getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep);
+
+	/**
+	 * Copia los Peaks en CUDA y los pasa a vector
+	 */
+	static vector<MyPeak> convert(cuMyPeakArray* peaks);
+
+	/**
+	 * Genera las matrices auxiliares
+	 */
+	static void generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMatrix* grid_x, cuMyMatrix* grid_y, cuMyMatrixi* over);
+
+	/**
+	 * Traslada los Peaks a su posicion correcta
+	 */
+	static void translatePeaks(vector<MyPeak> *peaks, unsigned int ss);
 };
 
 #endif /* CHI2LIBCUDA_H_ */

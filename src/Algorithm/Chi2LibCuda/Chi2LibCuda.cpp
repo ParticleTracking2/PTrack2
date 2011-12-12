@@ -47,14 +47,23 @@ cuMyMatrix Chi2LibCuda::generateKernel(unsigned int ss, unsigned int os, double 
 }
 
 cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
-	cuMyPeakArray ret;
-	ret._host_array = (cuMyPeak*)malloc(peaks->size()*sizeof(cuMyPeak));
-	ret.size = peaks->size();
+	cuMyPeakArray ret(peaks->size());
+	ret.copyToHost();
 
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		ret._host_array[i].x = peaks->at(i).x;
-		ret._host_array[i].y = peaks->at(i).y;
-		ret._host_array[i].chi_intensity = peaks->at(i).intensity;
+		cuMyPeak tmp;
+		tmp.x = peaks->at(i).x;
+		tmp.y = peaks->at(i).y;
+		tmp.chi_intensity = peaks->at(i).intensity;
+		tmp.fx = peaks->at(i).x;
+		tmp.fy = peaks->at(i).y;
+		tmp.dfx = 0;
+		tmp.dfy = 0;
+		tmp.img_intensity = 0;
+		tmp.solid = false;
+		tmp.valid = true;
+		tmp.vor_area = 0;
+		ret.atHost(i) = tmp;
 	}
 
 	return ret;
@@ -62,16 +71,41 @@ cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
 
 cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep){
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Getting Image peaks");
-//	CHI2HD_getPeaks(arr,threshold, mindistance, minsep);
-
-	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Copying to Host");
-	arr->copyToHost();
-	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Copying to MyMatrix");
-	MyMatrix<double> chi_img(arr->hostPointer(), arr->sizeX(), arr->sizeY(), true);
-	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, true);
-
-	cuMyPeakArray ret = convertPeaks(&peaks);
-	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Peaks Detected %i of %i", peaks.size(), arr->size());
-
+	cuMyPeakArray ret = Chi2Libcu::getPeaks(arr, threshold, mindistance, minsep);
+	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Peaks Detected %i of %i", ret.size(), arr->size());
 	return ret;
+}
+
+vector<MyPeak> Chi2LibCuda::convert(cuMyPeakArray* peaks){
+	MyLogger::log()->debug("[Chi2LibCuda][convert] Converting Peaks to original format");
+	vector<MyPeak> ret;
+	ret.reserve(peaks->size());
+	peaks->copyToHost();
+
+	cuMyPeak* hpeaks = peaks->hostPointer();
+	for(unsigned int i=0; i< peaks->size(); ++i){
+		if(hpeaks[i].valid){
+			MyPeak tmp(hpeaks[i].x, hpeaks[i].y, hpeaks[i].chi_intensity);
+			ret.push_back(tmp);
+		}
+	}
+	MyLogger::log()->debug("[Chi2LibCuda][convert] Peaks Converted");
+	return ret;
+}
+
+void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMatrix* grid_x, cuMyMatrix* grid_y, cuMyMatrixi* over){
+	MyLogger::log()->debug("[Chi2LibCuda][generateGrid]  Generating Auxiliary Matrix");
+	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Grid Size: %ix%i", grid_x->sizeX(), grid_x->sizeY());
+	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
+	MyLogger::log()->debug("[Chi2LibCuda][generateGrid]  Generating Auxiliary Matrix Complete");
+}
+
+void Chi2LibCuda::translatePeaks(vector<MyPeak> *peaks, unsigned int ss){
+	MyLogger::log()->info("[Chi2LibCuda][transformPeaks] Transforming peaks");
+	for(unsigned int i=0; i < peaks->size(); ++i){
+		double tmp = peaks->at(i).py - ss+1;
+		peaks->at(i).py = peaks->at(i).px - ss+1;
+		peaks->at(i).px = tmp;
+	}
+	MyLogger::log()->info("[Chi2LibCuda][transformPeaks] Peaks transformed");
 }

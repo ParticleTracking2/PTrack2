@@ -28,6 +28,7 @@ public:
 	static void writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, const char* file);
 
 	static void writeToFileM(cuMyMatrix *arr, const char* file);
+	static void writeToFileM(cuMyMatrixi *arr, const char* file);
 	static void writeToFileM(fftw_complex *arr, unsigned int size, const char* file);
 	static void writeToFileM(double *arr, unsigned int width, unsigned int height, const char* file);
 
