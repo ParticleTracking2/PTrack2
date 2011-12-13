@@ -14,6 +14,7 @@
 #include "../Chi2LibCuda/Chi2LibCuda.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFT.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFTCache.h"
+#include "../Chi2LibCuda/Chi2LibCudaHighDensity.h"
 #include "Container/cuMyMatrix.h"
 #include "Container/cuMyPeak.h"
 

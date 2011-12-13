@@ -35,12 +35,12 @@ public:
 	/**
 	 * Normaliza la imágen y retorna el valor máximo y mínimo una vez normalizado.
 	 */
-	static void normalizeImage(cuMyMatrix* arr, double maximum = -1, double minimum = -1);
+	static void normalizeImage(cuMyMatrix* arr, float maximum = -1, float minimum = -1);
 
 	/**
 	 * Obtener imagen de la particula ideal
 	 */
-	static cuMyMatrix generateKernel(unsigned int ss, unsigned int os, double d, double w);
+	static cuMyMatrix generateKernel(unsigned int ss, unsigned int os, float d, float w);
 
 	/**
 	 * Obtiene los Peaks de la imagen
@@ -56,6 +56,11 @@ public:
 	 * Genera las matrices auxiliares
 	 */
 	static void generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMatrix* grid_x, cuMyMatrix* grid_y, cuMyMatrixi* over);
+
+	/**
+	 * Calcula la diferencia entre la Imagen Chi2 y la Imagen normal
+	 */
+	static float computeDifference(cuMyMatrix *img, cuMyMatrix *grid_x, cuMyMatrix *grid_y, float d, float w, cuMyMatrix *diffout);
 
 	/**
 	 * Traslada los Peaks a su posicion correcta

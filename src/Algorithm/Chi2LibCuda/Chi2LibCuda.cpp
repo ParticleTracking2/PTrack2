@@ -24,7 +24,7 @@ pair<float, float> Chi2LibCuda::getHighLow(cuMyMatrix* arr){
 	return ret;
 }
 
-void Chi2LibCuda::normalizeImage(cuMyMatrix* arr, double maximum, double minimum){
+void Chi2LibCuda::normalizeImage(cuMyMatrix* arr, float maximum, float minimum){
 	MyLogger::log()->debug("[Chi2LibCuda][normalizeImage] Normalizing data");
 	float min, max;
 	if(maximum == -1 && minimum == -1){
@@ -39,9 +39,9 @@ void Chi2LibCuda::normalizeImage(cuMyMatrix* arr, double maximum, double minimum
 	MyLogger::log()->debug("[Chi2LibCuda][normalizeImage] Data Normalized");
 }
 
-cuMyMatrix Chi2LibCuda::generateKernel(unsigned int ss, unsigned int os, double d, double w){
+cuMyMatrix Chi2LibCuda::generateKernel(unsigned int ss, unsigned int os, float d, float w){
 	MyLogger::log()->debug("[Chi2LibCuda][generateKernel] Building kernel with ss=%i; os=%i; d=%f; w=%f",ss,os,d,w);
-	cuMyMatrix ret = Chi2Libcu::gen_kernel(ss, os, (float) d, (float) w);
+	cuMyMatrix ret = Chi2Libcu::gen_kernel(ss, os, d, w);
 	MyLogger::log()->debug("[Chi2LibCuda][generateKernel] Kernel successfuly built");
 	return ret;
 }
@@ -72,7 +72,7 @@ cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
 cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep){
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Getting Image peaks");
 	cuMyPeakArray ret = Chi2Libcu::getPeaks(arr, threshold, mindistance, minsep);
-	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Peaks Detected %i of %i", ret.size(), arr->size());
+	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Valid Peaks Detected %i of %i", ret.size(), arr->size());
 	return ret;
 }
 
@@ -89,23 +89,29 @@ vector<MyPeak> Chi2LibCuda::convert(cuMyPeakArray* peaks){
 			ret.push_back(tmp);
 		}
 	}
-	MyLogger::log()->debug("[Chi2LibCuda][convert] Peaks Converted");
+	MyLogger::log()->debug("[Chi2LibCuda][convert] Peaks Converted, Total Valids : %i", ret.size());
 	return ret;
 }
 
 void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMatrix* grid_x, cuMyMatrix* grid_y, cuMyMatrixi* over){
-	MyLogger::log()->debug("[Chi2LibCuda][generateGrid]  Generating Auxiliary Matrix");
+	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix");
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Grid Size: %ix%i", grid_x->sizeX(), grid_x->sizeY());
 	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
-	MyLogger::log()->debug("[Chi2LibCuda][generateGrid]  Generating Auxiliary Matrix Complete");
+	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix Complete");
+}
+
+float Chi2LibCuda::computeDifference(cuMyMatrix *img, cuMyMatrix *grid_x, cuMyMatrix *grid_y, float d, float w, cuMyMatrix *diffout){
+	MyLogger::log()->debug("[Chi2LibCuda][computeDifference] Computing Chi2Difference");
+	float err = Chi2Libcu::computeDifference(img, grid_x, grid_y, d, w, diffout);
+	MyLogger::log()->debug("[Chi2LibCuda][computeDifference] Chi2Difference Computed: Chi2Error = %f", err);
+	return err;
 }
 
 void Chi2LibCuda::translatePeaks(vector<MyPeak> *peaks, unsigned int ss){
 	MyLogger::log()->info("[Chi2LibCuda][transformPeaks] Transforming peaks");
 	for(unsigned int i=0; i < peaks->size(); ++i){
-		double tmp = peaks->at(i).py - ss+1;
-		peaks->at(i).py = peaks->at(i).px - ss+1;
-		peaks->at(i).px = tmp;
+		peaks->at(i).py = peaks->at(i).py - ss+1;
+		peaks->at(i).px = peaks->at(i).px - ss+1;
 	}
 	MyLogger::log()->info("[Chi2LibCuda][transformPeaks] Peaks transformed");
 }

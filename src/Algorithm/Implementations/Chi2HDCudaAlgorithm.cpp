@@ -47,12 +47,71 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	cuMyMatrix grid_x(data->sX(), data->sY());
 	cuMyMatrix grid_y(data->sX(), data->sY());
 	cuMyMatrixi over(data->sX(), data->sY());
-	MyLogger::log()->debug("[Chi2HDAlgorithm] >> Allocation Complete ");
+	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocation Complete ");
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+//	FileUtils::writeToFileM(&grid_x, "cugrid_x.txt");
+//	FileUtils::writeToFileM(&grid_y, "cugrid_y.txt");
+//	FileUtils::writeToFileM(&over, "cuover.txt");
 
-	FileUtils::writeToFileM(&grid_x, "cugrid_x.txt");
-	FileUtils::writeToFileM(&grid_y, "cugrid_y.txt");
-	FileUtils::writeToFileM(&over, "cuover.txt");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Compute Chi2 Difference ");
+	cuMyMatrix chi2diff(data->sX(), data->sY());
+	float currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+//	FileUtils::writeToFileM(&chi2diff, "cuchi2diff.txt");
+
+	//*******************************************
+	// Falta sumar el error Chi2
+	//*******************************************
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Add missed points ");
+	unsigned int chi_cut = 2;
+	if(pc->existParam("-chicut"))
+		chi_cut = pc->getParamAsInt("-chicut");
+	unsigned int total_found = 0;
+	cuMyMatrix normaldata_chi(data->sX(), data->sY());
+
+	unsigned int _maxIterations = 10, iterations = 0;
+	while(iterations <= _maxIterations){
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generating Scaled Image ");
+		Chi2LibCudaHighDensity::generateScaledImage(&chi2diff, &normaldata_chi);
+//		FileUtils::writeToFileM(&normaldata_chi, "cunormaldata_chi.txt");
+
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new CHi2 Image ");
+		Chi2LibCudaFFT::getChiImage(&cuKernel, &normaldata_chi, &cu_chi_img);
+		FileUtils::writeToFileM(&cu_chi_img, "cu_chi_img2.txt");
+		//*******************************************
+		// No se si esta muy bien la convolucion
+		// Puede ser problemas de presicion como siempre
+		//*******************************************
+
+		//*******************************************
+		// Hasta Aquí OK
+		//*******************************************
+
+		break;
+//
+//		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new Peaks ");
+//		vector<MyPeak> new_peaks = Chi2Lib::getPeaks(&chi_img, chi_cut, mindistance, minsep, use_threads); // ~7 Milisegundos
+//
+//		unsigned int old_size = peaks.size();
+//		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Checking inside image peaks ");
+//		unsigned int found = Chi2LibHighDensity::checkInsidePeaks(&peaks, &new_peaks, data, os); // 0 Milisegundos
+//		total_found += found;
+//
+//		if(found <= 0)
+//			break;
+//
+//		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generating Auxiliary Matrix ");
+//		Chi2Lib::generateGrid(&peaks,os, data, &grid_x, &grid_y, &over, use_threads); // ~200 Milisegundos
+//
+//		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Computing Chi2 Difference ");
+//		currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads); // ~80 Milisegundos
+//
+//		MyLogger::log()->info("[Chi2HDAlgorithm] >> Original No of Points: %i, +%i; Total Found = %i", old_size, found, total_found);
+
+		iterations++;
+	}
 	//*******************************************
 	// Prueba de los resulados hasta aquí
 	//*******************************************
