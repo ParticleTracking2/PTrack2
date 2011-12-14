@@ -73,13 +73,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtaining new CHi2 Image ");
 		Chi2LibFFTW::getChiImage(&kernel, &normaldata_chi, &chi_img, use_threads); // ~390|500 -> |220 Milisegundos
-		FileUtils::writeToFileM(&chi_img, "chi_img2.txt");
-
-		/*******************************
-		 * Recordar borrar este segmento
-		 ********************************/
-		Chi2Lib::translatePeaks(&peaks, os);
-		return peaks;
+//		FileUtils::writeToFileM(&chi_img, "chi_img2.txt");
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtaining new Peaks ");
 		vector<MyPeak> new_peaks = Chi2Lib::getPeaks(&chi_img, chi_cut, mindistance, minsep, use_threads); // ~7 Milisegundos
@@ -141,6 +135,12 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
+
+	/*******************************
+	 * Recordar borrar este segmento
+	 ********************************/
+	Chi2Lib::translatePeaks(&peaks, os);
+	return peaks;
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Checking particles by pixel intensity and voronoi area Tom's algorithm ");

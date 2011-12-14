@@ -19,6 +19,11 @@ public:
 	 * Genera una imagen aumentada, invertida y normalizada.
 	 */
 	static void generateScaledImage(cuMyMatrix *diff, cuMyMatrix *out);
+
+	/**
+	 * Chequea si los Peaks encontrados se ubican en el interior de la imagen y los agrega al antiguo arreglo.
+	 */
+	static unsigned int checkInsidePeaks(cuMyPeakArray *old_peaks, cuMyPeakArray *new_peaks, cuMyMatrix *img, unsigned int os);
 };
 
 #endif /* CHI2LIBCUDAHIGHDENSITY_H_ */
