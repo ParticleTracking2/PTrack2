@@ -63,6 +63,11 @@ public:
 	static float computeDifference(cuMyMatrix *img, cuMyMatrix *grid_x, cuMyMatrix *grid_y, float d, float w, cuMyMatrix *diffout);
 
 	/**
+	 * Trata de mejorar el centro de las particulas mediante el metodo de newton
+	 */
+	static void newtonCenter(cuMyMatrixi *over, cuMyMatrix *diff, cuMyPeakArray *peaks, int shift, double D, double w, double dp, double maxdr = 20.0);
+
+	/**
 	 * Traslada los Peaks a su posicion correcta
 	 */
 	static void translatePeaks(vector<MyPeak> *peaks, unsigned int ss);

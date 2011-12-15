@@ -98,13 +98,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 
 		iterations++;
 	}
-	//*******************************************
-	// Hasta Aquí OK
-	//*******************************************
-
-	//*******************************************
-	// Prueba de los resulados hasta aquí
-	//*******************************************
+	peaks.sortByChiIntensity();
 	Chi2LibCudaFFTCache::eraseAll();
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
@@ -125,15 +119,8 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	if(pc->existParam("-maxchi2miniter"))
 		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
-//		Chi2Lib::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0, use_threads); // ~400 -> ~250 Milisegundos
-//
-//		for(unsigned int i=0; i < peaks.size(); ++i){
-//			peaks.at(i).px = peaks.at(i).px + peaks.at(i).dpx;
-//			peaks.at(i).py = peaks.at(i).py + peaks.at(i).dpy;
-//
-//			peaks.at(i).x = (unsigned int)rint(peaks.at(i).px);
-//			peaks.at(i).y = (unsigned int)rint(peaks.at(i).py);
-//		}
+		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0);
+		peaks.includeDeltas();
 
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 		chi2diff.reset(0);
@@ -143,6 +130,22 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
+	//*******************************************
+	// Hasta Aquí OK
+	//*******************************************
+
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Checking particles by pixel intensity and voronoi area Tom's algorithm ");
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Remove outside image peaks");
+	Chi2LibCudaHighDensity::filterPeaksOutside(&peaks, &cuImg, os);
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Apply Gaussian Fit ");
+	pair<double,double> mypair = Chi2LibCudaHighDensity::gaussianFit(&peaks,&cuImg, os);
+	double mu = mypair.first;
+	double sigma = mypair.second;
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Total peaks: %i; MU=%f; SIGMA=%f", peaks.size(), mu, sigma);
 
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
 	Chi2LibCuda::translatePeaks(&ret, os);

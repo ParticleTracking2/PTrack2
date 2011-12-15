@@ -59,7 +59,6 @@ cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
 		tmp.fy = peaks->at(i).y;
 		tmp.dfx = 0;
 		tmp.dfy = 0;
-		tmp.img_intensity = 0;
 		tmp.solid = false;
 		tmp.valid = true;
 		tmp.vor_area = 0;
@@ -86,6 +85,10 @@ vector<MyPeak> Chi2LibCuda::convert(cuMyPeakArray* peaks){
 	for(unsigned int i=0; i< peaks->size(); ++i){
 		if(hpeaks[i].valid){
 			MyPeak tmp(hpeaks[i].x, hpeaks[i].y, hpeaks[i].chi_intensity);
+			tmp.px = hpeaks[i].fx;
+			tmp.py = hpeaks[i].fy;
+			tmp.dpx = hpeaks[i].dfx;
+			tmp.dpy = hpeaks[i].dfy;
 			ret.push_back(tmp);
 		}
 	}
@@ -105,6 +108,12 @@ float Chi2LibCuda::computeDifference(cuMyMatrix *img, cuMyMatrix *grid_x, cuMyMa
 	float err = Chi2Libcu::computeDifference(img, grid_x, grid_y, d, w, diffout);
 	MyLogger::log()->debug("[Chi2LibCuda][computeDifference] Chi2Difference Computed: Chi2Error = %f", err);
 	return err;
+}
+
+void Chi2LibCuda::newtonCenter(cuMyMatrixi *over, cuMyMatrix *diff, cuMyPeakArray *peaks, int shift, double D, double w, double dp, double maxdr){
+	MyLogger::log()->debug("[Chi2LibCuda][newtonCenter] Calculating Newton Center");
+	Chi2Libcu::newtonCenter(over, diff, peaks, shift, (float)D, (float)w, (float)dp, (float)maxdr);
+	MyLogger::log()->debug("[Chi2LibCuda][newtonCenter] Calculation Complete");
 }
 
 void Chi2LibCuda::translatePeaks(vector<MyPeak> *peaks, unsigned int ss){
