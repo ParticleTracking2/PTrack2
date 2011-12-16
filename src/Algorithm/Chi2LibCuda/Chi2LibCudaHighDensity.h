@@ -34,6 +34,11 @@ public:
 	 * Encuantra los parametros Mu y Sigma para un ajuste gausiano
 	 */
 	static pair<double, double> gaussianFit(cuMyPeakArray *peaks, cuMyMatrix *img, unsigned int ss);
+
+	/**
+	 * Remueve los Peaks erroneos por Intensidad y Area de voronoi
+	 */
+	static void removeBadPeaks(cuMyPeakArray *peaks, cuMyMatrix *img, double vor_threshold, double par_threshold, unsigned int ss);
 };
 
 #endif /* CHI2LIBCUDAHIGHDENSITY_H_ */

@@ -136,12 +136,6 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		iterations++;
 	}
 
-	/*******************************
-	 * Recordar borrar este segmento
-	 ********************************/
-	Chi2Lib::translatePeaks(&peaks, os);
-	return peaks;
-
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Checking particles by pixel intensity and voronoi area Tom's algorithm ");
 
@@ -164,6 +158,12 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", vor_thresh, par_thresh);
 	Chi2LibHighDensity::removeBadPeaks(&peaks, data, vor_thresh, par_thresh, os);
+
+	/*******************************
+	 * Recordar borrar este segmento
+	 ********************************/
+	Chi2Lib::translatePeaks(&peaks, os);
+	return peaks;
 
 	if(pc->existParam("-2filteri")){
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Second Filter 'Bad' Peaks using intensity");

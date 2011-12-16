@@ -6,6 +6,7 @@
  */
 
 #include "Chi2LibCudaHighDensity.h"
+#include "Chi2LibCudaQhull.h"
 
 void Chi2LibCudaHighDensity::generateScaledImage(cuMyMatrix *diff, cuMyMatrix *out){
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][generateScaledImage] Scaling ");
@@ -45,4 +46,25 @@ pair<double, double> Chi2LibCudaHighDensity::gaussianFit(cuMyPeakArray *peaks, c
 	pair<double, double> ret = Chi2LibcuHighDensity::gaussianFit(peaks,img,ss);
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][gassianFit] Returning MU=%f; SIGMA=%f", ret.first, ret.second);
 	return ret;
+}
+
+void Chi2LibCudaHighDensity::removeBadPeaks(cuMyPeakArray *peaks, cuMyMatrix *img, double vor_threshold, double par_threshold, unsigned int ss){
+	MyLogger::log()->debug("[Chi2LibCudaHighDensity][removeBadPeaks] Starting removing peaks by Area < %f and Intensity < %f", vor_threshold, par_threshold);
+	Chi2LibCudaQhull::addVoronoiAreas(peaks);
+	img->copyToHost();
+
+	int xx = 0, yy = 0;
+	for(unsigned int i=0; i < peaks->size(); ++i){
+		xx = peaks->getHostValue(i).x - ss;
+		yy = peaks->getHostValue(i).y - ss;
+		if(img->getValueHost(xx,yy) < par_threshold && 0 < peaks->getHostValue(i).vor_area && peaks->getHostValue(i).vor_area < vor_threshold){
+			// Remove Peak element at this position
+			MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] >> Deleting Peak: Index=%i , X=%i, Y=%i, Intensity=%f, VoronoiArea=%f", i, peaks->getHostValue(i).x, peaks->getHostValue(i).y, img->getValueHost(xx,yy), peaks->getHostValue(i).vor_area );
+			peaks->atHost(i).valid = false;
+		}
+	}
+	peaks->copyToDevice();
+	peaks->keepValids();
+
+	MyLogger::log()->debug("[Chi2LibCudaHighDensity][removeBadPeaks] Removing complete");
 }

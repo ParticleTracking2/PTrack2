@@ -109,6 +109,10 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
 	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
 
+	//*******************************************
+	// Hasta Aquí OK?
+	//*******************************************
+
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
 	unsigned int _minChi2Delta = 1;
@@ -130,10 +134,6 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
-	//*******************************************
-	// Hasta Aquí OK
-	//*******************************************
-
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Checking particles by pixel intensity and voronoi area Tom's algorithm ");
@@ -146,6 +146,19 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	double mu = mypair.first;
 	double sigma = mypair.second;
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Total peaks: %i; MU=%f; SIGMA=%f", peaks.size(), mu, sigma);
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	double par_thresh = mu-3.0*sigma;
+	double vor_thresh = 50.0;
+	if(pc->existParam("-vorcut"))
+		vor_thresh = pc->getParamAsDouble("-vorcut");
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", vor_thresh, par_thresh);
+	Chi2LibCudaHighDensity::removeBadPeaks(&peaks, &cuImg, vor_thresh, par_thresh, os);
+
+	//*******************************************
+	// Pruebas
+	//*******************************************
 
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
 	Chi2LibCuda::translatePeaks(&ret, os);
