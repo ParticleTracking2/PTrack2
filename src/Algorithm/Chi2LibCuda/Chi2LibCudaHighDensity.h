@@ -39,6 +39,16 @@ public:
 	 * Remueve los Peaks erroneos por Intensidad y Area de voronoi
 	 */
 	static void removeBadPeaks(cuMyPeakArray *peaks, cuMyMatrix *img, double vor_threshold, double par_threshold, unsigned int ss);
+
+	/**
+	 * Remueve los Peaks erroneos solamente por intensidad de imagen
+	 */
+	static void removeBadIntensityPeaks(cuMyPeakArray *peaks, cuMyMatrix *img, double par_threshold, unsigned int ss);
+
+	/**
+	 * Remueve los Peaks erroneos solamente por Area de voronoi
+	 */
+	static void removeBadVoronoiPeaks(cuMyPeakArray *peaks, cuMyMatrix *img, double vor_threshold, unsigned int ss);
 };
 
 #endif /* CHI2LIBCUDAHIGHDENSITY_H_ */

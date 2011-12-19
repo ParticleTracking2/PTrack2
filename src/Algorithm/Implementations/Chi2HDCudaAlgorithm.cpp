@@ -109,10 +109,6 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
 	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
 
-	//*******************************************
-	// Hasta Aquí OK?
-	//*******************************************
-
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
 	unsigned int _minChi2Delta = 1;
@@ -130,6 +126,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		chi2diff.reset(0);
 
 		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
@@ -156,11 +153,65 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", vor_thresh, par_thresh);
 	Chi2LibCudaHighDensity::removeBadPeaks(&peaks, &cuImg, vor_thresh, par_thresh, os);
 
+	if(pc->existParam("-2filteri")){
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Second Filter 'Bad' Peaks using intensity");
+		unsigned int old_total  = peaks.size();
+		Chi2LibCudaHighDensity::removeBadIntensityPeaks(&peaks, &cuImg, pc->getParamAsDouble("-2filteri"), os);
+		unsigned int new_total  = peaks.size();
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> New Number of peaks: %i, Filtered :%i", new_total, (old_total - new_total));
+	}
+
+	if(pc->existParam("-2filterv")){
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Second Filter 'Bad' Peaks using Voronoi Area");
+		unsigned int old_total  = peaks.size();
+		Chi2LibCudaHighDensity::removeBadVoronoiPeaks(&peaks, &cuImg, pc->getParamAsDouble("-2filterv"), os);
+		unsigned int new_total  = peaks.size();
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> New Number of peaks: %i, Filtered :%i", new_total, (old_total - new_total));
+	}
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix and Chi2 Difference");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix");
+	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
+	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+	chi2Delta = 1000000.0;
+	iterations = 0;
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
+	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
+		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0);
+		peaks.includeDeltas();
+
+		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+		chi2diff.reset(0);
+
+		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
+		chi2Delta = currentChi2Error - newChi2Err;
+		currentChi2Error = currentChi2Error-chi2Delta;
+		iterations++;
+	}
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recomputing Voronoi areas ");
+	Chi2LibCudaQhull::addVoronoiAreas(&peaks);
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Translating coordenates ");
+	Chi2LibCuda::translatePeaks(&peaks, os);
+
+	float vor_areaSL = 75.0;
+	if(pc->existParam("-vorsl"))
+		vor_areaSL = (float)pc->getParamAsDouble("-vorsl");
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Adding State ");
+	Chi2LibCuda::addState(&peaks, vor_areaSL);
+
 	//*******************************************
 	// Pruebas
 	//*******************************************
 
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector ");
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
-	Chi2LibCuda::translatePeaks(&ret, os);
 	return ret;
 }

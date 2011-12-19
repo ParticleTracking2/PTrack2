@@ -70,7 +70,12 @@ public:
 	/**
 	 * Traslada los Peaks a su posicion correcta
 	 */
-	static void translatePeaks(vector<MyPeak> *peaks, unsigned int ss);
+	static void translatePeaks(cuMyPeakArray *peaks, unsigned int ss);
+
+	/**
+	 * Establece el limite de Peaks entre solido y liquido
+	 */
+	static void addState(cuMyPeakArray *peaks, float vor_areaSL);
 };
 
 #endif /* CHI2LIBCUDA_H_ */

@@ -22,17 +22,13 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Normalize image ");
-//	FileUtils::writeToFileM(data, "img.txt");
 	Chi2Lib::normalizeImage(data);
-//	FileUtils::writeToFileM(data, "img-normalized.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Generate Chi2 image ");
 	MyMatrix<double> kernel = Chi2Lib::generateKernel(ss,os,d,w);
 	MyMatrix<double> chi_img(data->sX()+kernel.sX()-1, data->sY()+kernel.sY()-1);
 	Chi2LibFFTW::getChiImage(&kernel, data, &chi_img, use_threads);	// ~430|560 -> |290 Milisegundos
-//	FileUtils::writeToFileM(&kernel, "kernel.txt");
-//	FileUtils::writeToFileM(&chi_img, "chi_img.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtain peaks of Chi2 Image ");
@@ -47,15 +43,11 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	MyMatrix<int> over(data->sX(), data->sY());
 	MyLogger::log()->debug("[Chi2HDAlgorithm] >> Allocation Complete ");
 	Chi2Lib::generateGrid(&peaks, os, data, &grid_x, &grid_y, &over, use_threads);	// ~170|200 -> |150 Milisegundos
-//	FileUtils::writeToFileM(&grid_x, "grid_x.txt");
-//	FileUtils::writeToFileM(&grid_y, "grid_y.txt");
-//	FileUtils::writeToFileM(&over, "over.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Compute Chi2 Difference ");
 	MyMatrix<double> chi2diff(data->sX(), data->sY());
 	double currentChi2Error = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads); // ~70|80 -> |50 Milisegundos
-//	FileUtils::writeToFileM(&chi2diff, "chi2diff.txt");
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Add missed points ");
@@ -69,11 +61,9 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 	while(iterations <= _maxIterations){
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Generating Scaled Image ");
 		Chi2LibHighDensity::generateScaledImage(&chi2diff, &normaldata_chi); // ~ 15 Milisegundos
-//		FileUtils::writeToFileM(&normaldata_chi, "normaldata_chi.txt");
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtaining new CHi2 Image ");
 		Chi2LibFFTW::getChiImage(&kernel, &normaldata_chi, &chi_img, use_threads); // ~390|500 -> |220 Milisegundos
-//		FileUtils::writeToFileM(&chi_img, "chi_img2.txt");
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtaining new Peaks ");
 		vector<MyPeak> new_peaks = Chi2Lib::getPeaks(&chi_img, chi_cut, mindistance, minsep, use_threads); // ~7 Milisegundos
@@ -131,6 +121,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		chi2diff.reset(0);
 
 		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
@@ -158,12 +149,6 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", vor_thresh, par_thresh);
 	Chi2LibHighDensity::removeBadPeaks(&peaks, data, vor_thresh, par_thresh, os);
-
-	/*******************************
-	 * Recordar borrar este segmento
-	 ********************************/
-	Chi2Lib::translatePeaks(&peaks, os);
-	return peaks;
 
 	if(pc->existParam("-2filteri")){
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Second Filter 'Bad' Peaks using intensity");
@@ -207,6 +192,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(ParameterContainer *pc){
 		chi2diff.reset(0);
 
 		double newChi2Err = Chi2Lib::computeDifference(data, &grid_x, &grid_y, d, w, &chi2diff, use_threads);
+		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;

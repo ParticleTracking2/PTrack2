@@ -13,6 +13,7 @@
 #include "../Chi2Lib/Chi2Lib.h"
 #include "../Chi2LibCuda/Chi2LibCuda.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFT.h"
+#include "../Chi2LibCuda/Chi2LibCudaQhull.h"
 #include "../Chi2LibCuda/Chi2LibCudaFFTCache.h"
 #include "../Chi2LibCuda/Chi2LibCudaHighDensity.h"
 #include "Container/cuMyMatrix.h"
