@@ -20,7 +20,20 @@
 
 class Chi2LibCuda {
 private:
+	/**
+	 * Convierte los MyPeaks de un vector a un arreglo de cuMyPeak
+	 */
 	static cuMyPeakArray convertPeaks(vector<MyPeak>* peaks);
+
+	struct GridPartition{
+		cuMyPeakArray *peaks;
+		int x1, x2, y1, y2;
+		unsigned int shift;
+		cuMyMatrix *grid_x;
+		cuMyMatrix *grid_y;
+		cuMyMatrixi *over;
+	};
+
 public:
 	/**
 	 * Establece los valores necesarios dentro del dispositivo acorde a los datos entregados

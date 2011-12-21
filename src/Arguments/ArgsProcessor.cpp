@@ -119,6 +119,10 @@ ArgsProcessor::ArgsProcessor() {
 	KeyTreat one_validation; one_validation.key = "-validateones"; one_validation.description = "Validate peaks minimum distance only Ones.";
 	one_validation.treat.push_back(Exist_Treat);
 	chi2hdcuda.keys_treats.push_back(one_validation);
+	// -device
+	KeyTreat device; device.key = "-device"; device.description = "Stablish the CUDA device to use.";
+	device.treat.push_back(Followed_Int_Treat);
+	chi2hdcuda.keys_treats.push_back(device);
 
 	vParams.push_back(chi2hdcuda);
 

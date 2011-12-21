@@ -10,6 +10,13 @@
 vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2HD CUDA Algorithm");
 
+	if(pc->existParam("-device")){
+		int dev = pc->getParamAsInt("-device");
+		Chi2Libcu::setDevice(dev);
+		MyLogger::log()->notice("[Chi2HDCudaAlgorithm] ***************************** ");
+		MyLogger::log()->notice("[Chi2Algorithm] Setting CUDA Device %i = %s", dev, Chi2Libcu::getProps().name);
+	}
+
 	float d = 9.87;
 	if(pc->existParam("-d"))
 		d = (float)pc->getParamAsDouble("-d");
@@ -219,7 +226,8 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	// Pruebas
 	//*******************************************
 
-	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector ");
+
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector : %i", peaks.size());
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
 	return ret;
 }
