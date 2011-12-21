@@ -108,6 +108,17 @@ ArgsProcessor::ArgsProcessor() {
 	chi2hdcuda.keys_treats.push_back(img);
 	chi2hdcuda.keys_treats.push_back(d);
 	chi2hdcuda.keys_treats.push_back(w);
+	chi2hdcuda.keys_treats.push_back(cut);
+	chi2hdcuda.keys_treats.push_back(maxchi2miniter);
+	chi2hdcuda.keys_treats.push_back(chi_cut);
+	chi2hdcuda.keys_treats.push_back(vor_cut);
+	chi2hdcuda.keys_treats.push_back(vor_sl);
+	chi2hdcuda.keys_treats.push_back(filter2i);
+	chi2hdcuda.keys_treats.push_back(filter2v);
+	// -onevalidation
+	KeyTreat one_validation; one_validation.key = "-validateones"; one_validation.description = "Validate peaks minimum distance only Ones.";
+	one_validation.treat.push_back(Exist_Treat);
+	chi2hdcuda.keys_treats.push_back(one_validation);
 
 	vParams.push_back(chi2hdcuda);
 

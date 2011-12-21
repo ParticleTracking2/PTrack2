@@ -45,7 +45,7 @@ public:
 	/**
 	 * Obtiene los Peaks de la imagen
 	 */
-	static cuMyPeakArray getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep);
+	static cuMyPeakArray getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep, bool validate = true);
 
 	/**
 	 * Copia los Peaks en CUDA y los pasa a vector

@@ -8,8 +8,12 @@
 #include "Chi2LibCuda.h"
 
 cuMyMatrix Chi2LibCuda::initializeData(MyMatrix<double>* data){
+	MyLogger::log()->debug("[Chi2LibCuda][initializeData] Getting 1 Dimension Copy of MyMatrix");
 	float * copyedData = data->getCopy();
+	MyLogger::log()->debug("[Chi2LibCuda][initializeData] 1 Dimension copy aquired");
+	MyLogger::log()->debug("[Chi2LibCuda][initializeData] Creating cuMyMatrix");
 	cuMyMatrix ret(copyedData, data->sX(), data->sY());
+	MyLogger::log()->debug("[Chi2LibCuda][initializeData] cuMyMatrix successfully");
 	free(copyedData);
 	return ret;
 }
@@ -68,10 +72,14 @@ cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
 	return ret;
 }
 
-cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep){
+cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep, bool validate){
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Getting Image peaks");
 	cuMyPeakArray ret = Chi2Libcu::getPeaks(arr, threshold, mindistance, minsep);
-	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Valid Peaks Detected %i of %i", ret.size(), arr->size());
+	if(validate){
+		MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Validating");
+		Chi2Libcu::validatePeaks(&ret, mindistance);
+	}
+	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Peaks Detected %i of %i", ret.size(), arr->size());
 	return ret;
 }
 
@@ -83,16 +91,14 @@ vector<MyPeak> Chi2LibCuda::convert(cuMyPeakArray* peaks){
 
 	cuMyPeak* hpeaks = peaks->hostPointer();
 	for(unsigned int i=0; i< peaks->size(); ++i){
-		if(hpeaks[i].valid){
-			MyPeak tmp(hpeaks[i].x, hpeaks[i].y, hpeaks[i].chi_intensity);
-			tmp.px = hpeaks[i].fx;
-			tmp.py = hpeaks[i].fy;
-			tmp.dpx = hpeaks[i].dfx;
-			tmp.dpy = hpeaks[i].dfy;
-			tmp.solid = hpeaks[i].solid;
-			tmp.vor_area = hpeaks[i].vor_area;
-			ret.push_back(tmp);
-		}
+		MyPeak tmp(hpeaks[i].x, hpeaks[i].y, hpeaks[i].chi_intensity);
+		tmp.px = hpeaks[i].fx;
+		tmp.py = hpeaks[i].fy;
+		tmp.dpx = hpeaks[i].dfx;
+		tmp.dpy = hpeaks[i].dfy;
+		tmp.solid = hpeaks[i].solid;
+		tmp.vor_area = hpeaks[i].vor_area;
+		ret.push_back(tmp);
 	}
 	MyLogger::log()->debug("[Chi2LibCuda][convert] Peaks Converted, Total Valids : %i", ret.size());
 	return ret;
@@ -102,46 +108,6 @@ void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMat
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix");
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Grid Size: %ix%i", grid_x->sizeX(), grid_x->sizeY());
 	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
-//
-//
-//	peaks->copyToHost();
-//	grid_x->copyToHost();
-//	grid_y->copyToHost();
-//	over->copyToHost();
-//	unsigned int half=(shift+2);
-//	int currentX, currentY;
-//	float currentDistance = 0.0;
-//	float currentDistanceAux = 0.0;
-//
-//	if(peaks->size() != 0){
-//		for(int idx = peaks->size()-1; idx >= 0; idx--)
-//		for(unsigned int localX=0; localX < 2*half+1; ++localX){
-//			for(unsigned int localY=0; localY < 2*half+1; ++localY){
-//				cuMyPeak currentPeak = peaks->atHost(idx);
-//				currentX = (int)round(currentPeak.fx) - shift + (localX - half);
-//				currentY = (int)round(currentPeak.fy) - shift + (localY - half);
-//
-//				if( 0 <= currentX && currentX < (int)grid_x->sizeX() && 0 <= currentY && currentY < (int)grid_x->sizeY() ){
-//					int index = currentX+grid_x->sizeY()*currentY;
-//					currentDistance =
-//							sqrt(grid_x->atHost(index)*grid_x->atHost(index) + grid_y->atHost(index)*grid_y->atHost(index));
-//
-//					currentDistanceAux =
-//							sqrt(1.0f*(1.0f*localX-half+currentPeak.x - currentPeak.fx)*(1.0f*localX-half+currentPeak.x - currentPeak.fx) +
-//								  1.0f*(1.0f*localY-half+currentPeak.y - currentPeak.fy)*(1.0f*localY-half+currentPeak.y - currentPeak.fy));
-//
-//					if(currentDistance >= currentDistanceAux){
-//						over->atHost(index) = idx+1;
-//						grid_x->atHost(index) = (1.0f*localX-half+currentPeak.x)-currentPeak.fx;
-//						grid_y->atHost(index) = (1.0f*localY-half+currentPeak.y)-currentPeak.fy;
-//					}
-//				}
-//			}
-//		}
-//	}
-//	grid_x->copyToDevice();
-//	grid_y->copyToDevice();
-//	over->copyToDevice();
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix Complete");
 }
 

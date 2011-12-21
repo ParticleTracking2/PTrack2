@@ -27,8 +27,9 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Normalize image ");
-	Chi2LibCuda::normalizeImage(&cuImg);
-	Chi2Lib::normalizeImage(data);
+	pair<double, double> hilo = Chi2Lib::getHighLow(data);
+	Chi2LibCuda::normalizeImage(&cuImg, hilo.first, hilo.second);
+	Chi2Lib::normalizeImage(data, hilo.first, hilo.second);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Chi2 image ");
@@ -39,7 +40,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
-	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep);
+	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep, !pc->existParam("-validateones"));
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Auxiliary Matrix ");
@@ -78,7 +79,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 //		FileUtils::writeToFileM(&cu_chi_img, "cu_chi_img2.txt");
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new Peaks ");
-		cuMyPeakArray new_peaks = Chi2LibCuda::getPeaks(&cu_chi_img, chi_cut, mindistance, minsep);
+		cuMyPeakArray new_peaks = Chi2LibCuda::getPeaks(&cu_chi_img, chi_cut, mindistance, minsep, !pc->existParam("-validateones"));
 
 		unsigned int old_size = peaks.size();
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Checking inside image peaks ");
@@ -130,6 +131,14 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
+	}
+
+	if(pc->existParam("-validateones")){
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] Validating Peaks obtained so far ");
+		unsigned int old_size = peaks.size();
+		Chi2Libcu::validatePeaks(&peaks, mindistance);
+		MyLogger::log()->info("[Chi2HDCudaAlgorithm] Peaks deleted : %i, New Peaks Size : %i ", old_size-peaks.size(), peaks.size());
 	}
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
@@ -209,7 +218,6 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	//*******************************************
 	// Pruebas
 	//*******************************************
-
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector ");
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
