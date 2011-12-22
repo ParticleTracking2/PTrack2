@@ -148,6 +148,8 @@ void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMat
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix");
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Grid Size: %ix%i", grid_x->sizeX(), grid_x->sizeY());
 //	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
+
+
 	float maxval = grid_x->sizeX() > grid_x->sizeY() ? grid_x->sizeX() : grid_x->sizeY();
 	grid_x->reset(maxval);
 	grid_y->reset(maxval);
@@ -158,32 +160,40 @@ void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMat
 	grid_y->copyToHost();
 	over->copyToHost();
 
+
 	/************
 	 * Threads
 	 ***********/
-	GridPartition part1;
-	part1.shift = shift;
-	part1.peaks = peaks;
-	part1.grid_x = grid_x;	part1.grid_y = grid_y;	part1.over = over;
-	part1.x1 = 0;	part1.x2 = grid_x->sizeX();
-	part1.y1 = 0;	part1.y2 = grid_x->sizeY();
-
-	GridPartition part2;
-	part2.shift = shift;
-	part2.peaks = peaks;
-	part2.grid_x = grid_x;	part2.grid_y = grid_y;	part2.over = over;
-	part2.x1 = grid_x->sizeX()/2;	part2.x2 = grid_x->sizeX();
-	part2.y1 = 0;	part2.y2 = grid_x->sizeY();
-
-	pthread_t thread1, thread2;
-	pthread_create(&thread1, NULL, generateGridThread, (void *)&part1);
-	pthread_create(&thread2, NULL, generateGridThread, (void *)&part2);
-
-	pthread_join(thread1, NULL);
-	pthread_join(thread2, NULL);
+//	GridPartition part1;
+//	part1.shift = shift;
+//	part1.peaks = peaks;
+//	part1.grid_x = grid_x;	part1.grid_y = grid_y;	part1.over = over;
+//	part1.x1 = 0;	part1.x2 = grid_x->sizeX();
+//	part1.y1 = 0;	part1.y2 = grid_x->sizeY();
+//
+//	GridPartition part2;
+//	part2.shift = shift;
+//	part2.peaks = peaks;
+//	part2.grid_x = grid_x;	part2.grid_y = grid_y;	part2.over = over;
+//	part2.x1 = grid_x->sizeX()/2;	part2.x2 = grid_x->sizeX();
+//	part2.y1 = 0;	part2.y2 = grid_x->sizeY();
+//
+//	pthread_t thread1, thread2;
+//	pthread_create(&thread1, NULL, generateGridThread, (void *)&part1);
+//	pthread_create(&thread2, NULL, generateGridThread, (void *)&part2);
+//
+//	pthread_join(thread1, NULL);
+//	pthread_join(thread2, NULL);
 	/************
 	 * End Threads
 	 ***********/
+	GridPartition part0;
+	part0.shift = shift;
+	part0.peaks = peaks;
+	part0.grid_x = grid_x;	part0.grid_y = grid_y;	part0.over = over;
+	part0.x1 = 0;	part0.x2 = grid_x->sizeX();
+	part0.y1 = 0;	part0.y2 = grid_x->sizeY();
+	generateGridPart(&part0);
 
 	grid_x->copyToDevice();
 	grid_y->copyToDevice();
