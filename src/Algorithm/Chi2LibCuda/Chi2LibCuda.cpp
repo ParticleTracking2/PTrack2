@@ -104,17 +104,51 @@ vector<MyPeak> Chi2LibCuda::convert(cuMyPeakArray* peaks){
 	return ret;
 }
 
+void Chi2LibCuda::generateGridPart(GridPartition* gp){
+	unsigned int half=(gp->shift+2);
+	int currentX, currentY;
+	double currentDistance = 0.0;
+	double currentDistanceAux = 0.0;
+
+	if(gp->peaks->size() != 0)
+	for(int npks = gp->peaks->size()-1; npks >= 0; npks--){
+		for(unsigned int localX=0; localX < 2*half+1; ++localX)
+			for(unsigned int localY=0; localY < 2*half+1; ++localY){
+				cuMyPeak currentPeak = gp->peaks->getHostValue(npks);
+				currentX = (int)round(currentPeak.fx) - gp->shift + (localX - half);
+				currentY = (int)round(currentPeak.fy) - gp->shift + (localY - half);
+
+				if( gp->x1 <= currentX && currentX < gp->x2 && gp->y1 <= currentY && currentY < gp->y2 ){
+					currentDistance =
+							sqrt( gp->grid_x->getValueHost(currentX, currentY)*gp->grid_x->getValueHost(currentX, currentY)
+								+ gp->grid_y->getValueHost(currentX, currentY)*gp->grid_y->getValueHost(currentX, currentY));
+
+					currentDistanceAux =
+							sqrt(1.0*(1.0*localX-half+currentPeak.x - currentPeak.fx)*(1.0*localX-half+currentPeak.x - currentPeak.fx) +
+								 1.0*(1.0*localY-half+currentPeak.y - currentPeak.fy)*(1.0*localY-half+currentPeak.y - currentPeak.fy));
+
+					if(currentDistance >= currentDistanceAux){
+						gp->over->atHost(currentX, currentY) = npks+1;
+						gp->grid_x->atHost(currentX, currentY) = (1.0*localX-half+currentPeak.x)-currentPeak.fx;
+						gp->grid_y->atHost(currentX, currentY) = (1.0*localY-half+currentPeak.y)-currentPeak.fy;
+					}
+				}
+
+			}
+	}
+}
+
+void* Chi2LibCuda::generateGridThread(void* ptr){
+	GridPartition* prt = (GridPartition*)ptr;
+	generateGridPart(prt);
+	return 0;
+}
+
 void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMatrix* grid_x, cuMyMatrix* grid_y, cuMyMatrixi* over){
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix");
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Grid Size: %ix%i", grid_x->sizeX(), grid_x->sizeY());
 //	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
-	unsigned int half=(shift+2);
-	unsigned int counter = 0;
-	int currentX, currentY;
-	double currentDistance = 0.0;
-	double currentDistanceAux = 0.0;
 	float maxval = grid_x->sizeX() > grid_x->sizeY() ? grid_x->sizeX() : grid_x->sizeY();
-
 	grid_x->reset(maxval);
 	grid_y->reset(maxval);
 	over->reset(0);
@@ -124,39 +158,38 @@ void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMat
 	grid_y->copyToHost();
 	over->copyToHost();
 
-	if(peaks->size() != 0)
-	for(int npks = peaks->size()-1; npks >= 0; npks--){
-		for(unsigned int localX=0; localX < 2*half+1; ++localX)
-			for(unsigned int localY=0; localY < 2*half+1; ++localY){
-				cuMyPeak currentPeak = peaks->getHostValue(npks);
-//				MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Peak[i]: fx=%f; fy=%f", npks, currentPeak.fx, currentPeak.fy);
-				currentX = (int)round(currentPeak.fx) - shift + (localX - half);
-				currentY = (int)round(currentPeak.fy) - shift + (localY - half);
+	/************
+	 * Threads
+	 ***********/
+	GridPartition part1;
+	part1.shift = shift;
+	part1.peaks = peaks;
+	part1.grid_x = grid_x;	part1.grid_y = grid_y;	part1.over = over;
+	part1.x1 = 0;	part1.x2 = grid_x->sizeX();
+	part1.y1 = 0;	part1.y2 = grid_x->sizeY();
 
-				if( 0 <= currentX && currentX < (int)grid_x->sizeX() && 0 <= currentY && currentY < (int)grid_x->sizeY() ){
-					currentDistance =
-							sqrt(grid_x->getValueHost(currentX, currentY)*grid_x->getValueHost(currentX, currentY)
-								+ grid_y->getValueHost(currentX, currentY)*grid_y->getValueHost(currentX, currentY));
+	GridPartition part2;
+	part2.shift = shift;
+	part2.peaks = peaks;
+	part2.grid_x = grid_x;	part2.grid_y = grid_y;	part2.over = over;
+	part2.x1 = grid_x->sizeX()/2;	part2.x2 = grid_x->sizeX();
+	part2.y1 = 0;	part2.y2 = grid_x->sizeY();
 
-					currentDistanceAux =
-							sqrt(1.0*(1.0*localX-half+currentPeak.x - currentPeak.fx)*(1.0*localX-half+currentPeak.x - currentPeak.fx) +
-								 1.0*(1.0*localY-half+currentPeak.y - currentPeak.fy)*(1.0*localY-half+currentPeak.y - currentPeak.fy));
+	pthread_t thread1, thread2;
+	pthread_create(&thread1, NULL, generateGridThread, (void *)&part1);
+	pthread_create(&thread2, NULL, generateGridThread, (void *)&part2);
 
-					if(currentDistance >= currentDistanceAux){
-						over->atHost(currentX, currentY) = npks+1;
-						grid_x->atHost(currentX, currentY) = (1.0*localX-half+currentPeak.x)-currentPeak.fx;
-						grid_y->atHost(currentX, currentY) = (1.0*localY-half+currentPeak.y)-currentPeak.fy;
-						counter++;
-					}
-				}
+	pthread_join(thread1, NULL);
+	pthread_join(thread2, NULL);
+	/************
+	 * End Threads
+	 ***********/
 
-			}
-	}
 	grid_x->copyToDevice();
 	grid_y->copyToDevice();
 	over->copyToDevice();
 
-	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix Complete, Counter =%i", counter);
+	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix Complete");
 }
 
 float Chi2LibCuda::computeDifference(cuMyMatrix *img, cuMyMatrix *grid_x, cuMyMatrix *grid_y, float d, float w, cuMyMatrix *diffout){

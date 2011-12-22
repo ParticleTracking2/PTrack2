@@ -34,6 +34,16 @@ private:
 		cuMyMatrixi *over;
 	};
 
+	/**
+	 * Ejecución de la generacion de matrices auxiliares
+	 */
+	static void generateGridPart(GridPartition* gp);
+
+	/**
+	 * Lanzamiento de la generacion de matrices auxiliares
+	 */
+	static void* generateGridThread(void* ptr);
+
 public:
 	/**
 	 * Establece los valores necesarios dentro del dispositivo acorde a los datos entregados
