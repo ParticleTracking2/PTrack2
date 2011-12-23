@@ -25,25 +25,6 @@ private:
 	 */
 	static cuMyPeakArray convertPeaks(vector<MyPeak>* peaks);
 
-	struct GridPartition{
-		cuMyPeakArray *peaks;
-		int x1, x2, y1, y2;
-		unsigned int shift;
-		cuMyMatrix *grid_x;
-		cuMyMatrix *grid_y;
-		cuMyMatrixi *over;
-	};
-
-	/**
-	 * Ejecución de la generacion de matrices auxiliares
-	 */
-	static void generateGridPart(GridPartition* gp);
-
-	/**
-	 * Lanzamiento de la generacion de matrices auxiliares
-	 */
-	static void* generateGridThread(void* ptr);
-
 public:
 	/**
 	 * Establece los valores necesarios dentro del dispositivo acorde a los datos entregados

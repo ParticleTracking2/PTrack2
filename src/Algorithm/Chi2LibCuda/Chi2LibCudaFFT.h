@@ -17,6 +17,9 @@
 
 class Chi2LibCudaFFT {
 private:
+	/**
+	 * Enumeracion de los elementos a usar del cache, para un mejor entendimiento.
+	 */
 	enum cached{
 		cached_kernel = 0,
 		cached_kernel2 = 1,
@@ -27,6 +30,9 @@ private:
 		cached_third_term = 6
 	};
 public:
+	/**
+	 * Obtiene la imagen Chi2 a partir del kernel e img. La salida se almacena en out.
+	 */
 	static void getChiImage(cuMyMatrix *kernel, cuMyMatrix *img, cuMyMatrix *out);
 };
 

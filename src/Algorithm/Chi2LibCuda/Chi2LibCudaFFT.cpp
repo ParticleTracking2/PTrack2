@@ -14,37 +14,37 @@ void Chi2LibCudaFFT::getChiImage(cuMyMatrix *kernel, cuMyMatrix *img, cuMyMatrix
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Kernel Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_kernel2)){ //Kernel2
-		cuMyMatrix kernel_img2(kernel->sizeX(), kernel->sizeY());
-		Chi2LibcuMatrix::copy(kernel, &kernel_img2);
-		Chi2LibcuMatrix::squareIt(&kernel_img2);
-		Chi2LibCudaFFTCache::cache(cached_kernel2, &kernel_img2);
+		cuMyMatrix* kernel_img2 = new cuMyMatrix(kernel->sizeX(), kernel->sizeY());
+		Chi2LibcuMatrix::copy(kernel, kernel_img2);
+		Chi2LibcuMatrix::squareIt(kernel_img2);
+		Chi2LibCudaFFTCache::cache(cached_kernel2, kernel_img2);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Kernel^2 Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_kernel3)){ //Kernel3
-		cuMyMatrix kernel_img3(kernel->sizeX(), kernel->sizeY());
-		Chi2LibcuMatrix::copy(kernel, &kernel_img3);
-		Chi2LibcuMatrix::cubeIt(&kernel_img3);
-		Chi2LibCudaFFTCache::cache(cached_kernel3, &kernel_img3);
+		cuMyMatrix* kernel_img3 = new cuMyMatrix(kernel->sizeX(), kernel->sizeY());
+		Chi2LibcuMatrix::copy(kernel, kernel_img3);
+		Chi2LibcuMatrix::cubeIt(kernel_img3);
+		Chi2LibCudaFFTCache::cache(cached_kernel3, kernel_img3);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Kernel^3 Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_blank)){ //Blank
-		cuMyMatrix blank(img->sizeX(), img->sizeY(), 1.0f);
-		Chi2LibCudaFFTCache::cache(cached_blank, &blank);
+		cuMyMatrix* blank = new cuMyMatrix(img->sizeX(), img->sizeY(), 1.0f);
+		Chi2LibCudaFFTCache::cache(cached_blank, blank);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Blank Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_first_term)){ //First Term -> conv2d_fft( normaldata, ipf*ipf )
-		cuMyMatrix first_term(img->sizeX()+kernel->sizeX()-1, img->sizeY()+kernel->sizeY()-1, 0.0f);
-		Chi2LibCudaFFTCache::cache(cached_first_term, &first_term);
+		cuMyMatrix* first_term = new cuMyMatrix(img->sizeX()+kernel->sizeX()-1, img->sizeY()+kernel->sizeY()-1, 0.0f);
+		Chi2LibCudaFFTCache::cache(cached_first_term, first_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] First Term Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_second_term)){ //Second Term -> conv2d_fft( normaldata*normaldata, ipf )
-		cuMyMatrix second_term(img->sizeX()+kernel->sizeX()-1, img->sizeY()+kernel->sizeY()-1, 0.0f);
-		Chi2LibCudaFFTCache::cache(cached_second_term, &second_term);
+		cuMyMatrix* second_term = new cuMyMatrix(img->sizeX()+kernel->sizeX()-1, img->sizeY()+kernel->sizeY()-1, 0.0f);
+		Chi2LibCudaFFTCache::cache(cached_second_term, second_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Second Term Cached");
 	}
 	if(Chi2LibCudaFFTCache::empty(cached_third_term)){ //Third Term -> conv2d_fft( blank, ipf*ipf*ipf )
-		cuMyMatrix third_term(img->sizeX()+kernel->sizeX()-1, img->sizeY()+kernel->sizeY()-1, 0.0f);
-		Chi2LibCudaFFTCache::cache(cached_third_term, &third_term);
+		cuMyMatrix* third_term = new cuMyMatrix(img->sizeX()+kernel->sizeX()-1, img->sizeY()+kernel->sizeY()-1, 0.0f);
+		Chi2LibCudaFFTCache::cache(cached_third_term, third_term);
 		MyLogger::log()->debug("[Chi2LibCudaFFT][getChiImage] Third Term Cached");
 	}
 

@@ -57,15 +57,11 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	cuMyMatrixi over(data->sX(), data->sY());
 	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocation Complete ");
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
-//	FileUtils::writeToFileM(&grid_x, "cugrid_x.txt");
-//	FileUtils::writeToFileM(&grid_y, "cugrid_y.txt");
-//	FileUtils::writeToFileM(&over, "cuover.txt");
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Compute Chi2 Difference ");
 	cuMyMatrix chi2diff(data->sX(), data->sY());
 	float currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
-//	FileUtils::writeToFileM(&chi2diff, "cuchi2diff.txt");
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Add missed points ");
@@ -79,11 +75,9 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	while(iterations <= _maxIterations){
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generating Scaled Image ");
 		Chi2LibCudaHighDensity::generateScaledImage(&chi2diff, &normaldata_chi);
-//		FileUtils::writeToFileM(&normaldata_chi, "cunormaldata_chi.txt");
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new CHi2 Image ");
 		Chi2LibCudaFFT::getChiImage(&cuKernel, &normaldata_chi, &cu_chi_img);
-//		FileUtils::writeToFileM(&cu_chi_img, "cu_chi_img2.txt");
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new Peaks ");
 		cuMyPeakArray new_peaks = Chi2LibCuda::getPeaks(&cu_chi_img, chi_cut, mindistance, minsep, !pc->existParam("-validateones"));
@@ -108,6 +102,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	}
 	peaks.sortByChiIntensity();
 	Chi2LibCudaFFTCache::eraseAll();
+	normaldata_chi.~cuMyMatrix();
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix and Chi2 Difference ");
@@ -221,10 +216,6 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		vor_areaSL = (float)pc->getParamAsDouble("-vorsl");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Adding State ");
 	Chi2LibCuda::addState(&peaks, vor_areaSL);
-
-	//*******************************************
-	// Pruebas
-	//*******************************************
 
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector : %i", peaks.size());

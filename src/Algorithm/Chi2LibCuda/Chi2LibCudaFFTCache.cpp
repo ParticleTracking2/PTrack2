@@ -23,7 +23,7 @@ Chi2LibCudaFFTCache::Chi2LibCudaFFTCache() {
 Chi2LibCudaFFTCache::~Chi2LibCudaFFTCache() {
 	for(unsigned int i = 0; i < capacity; ++i){
 		if(_cache[i])
-			delete _cache[i];
+			_cache[i]->~cuMyMatrix();
 	}
 }
 
@@ -38,7 +38,7 @@ void Chi2LibCudaFFTCache::erase(unsigned int slot){
 		instance = new Chi2LibCudaFFTCache();
 	if(slot <= instance->capacity){
 		if(instance->_cache[slot]){
-			delete instance->_cache[slot];
+			instance->_cache[slot]->~cuMyMatrix();
 		}
 	}
 }
@@ -48,8 +48,10 @@ void Chi2LibCudaFFTCache::eraseAll(){
 	if(!instance)
 		instance = new Chi2LibCudaFFTCache();
 	for( unsigned int slot = 0; slot < instance->capacity; ++slot){
-		if(instance->_cache[slot])
-			delete instance->_cache[slot];
+		if(instance->_cache[slot]){
+			instance->_cache[slot]->~cuMyMatrix();
+			instance->_cache[slot] = 0;
+		}
 	}
 }
 
@@ -116,9 +118,10 @@ void Chi2LibCudaFFTCache::cache(unsigned int slot, cuMyMatrix* data){
 	if(slot <= instance->capacity){
 		// Borrar si existe
 		if(instance->_cache[slot])
-			delete instance->_cache[slot];
+			instance->_cache[slot]->~cuMyMatrix();
 
-		instance->_cache[slot] = new cuMyMatrix(data->sizeX(), data->sizeY());
-		Chi2LibcuMatrix::copy(data, instance->_cache[slot]);
+		instance->_cache[slot] = data;
+//		instance->_cache[slot] = new cuMyMatrix(data->sizeX(), data->sizeY());
+//		Chi2LibcuMatrix::copy(data, instance->_cache[slot]);
 	}
 }
