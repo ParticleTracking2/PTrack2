@@ -1,6 +1,6 @@
 /*
  * ConnectorOutput.h
- *
+ *	Implementacion teorica de Output para una salida de red.
  *  Created on: 13-06-2011
  *      Author: juanin
  */

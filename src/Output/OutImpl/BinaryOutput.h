@@ -1,6 +1,6 @@
 /*
  * BinaryOutput.h
- *
+ *	Implmentacion de Output para un archivo en formato binario.
  *  Created on: 13-06-2011
  *      Author: juanin
  */

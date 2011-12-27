@@ -1,6 +1,6 @@
 /*
  * StandarOutput.h
- *
+ *	Implmementacion de Output para salida estandar.
  *  Created on: 13/10/2011
  *      Author: ptrack
  */
