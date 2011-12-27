@@ -37,8 +37,9 @@ unsigned int Chi2LibCudaHighDensity::checkInsidePeaks(cuMyPeakArray *old_peaks, 
 
 void Chi2LibCudaHighDensity::filterPeaksOutside(cuMyPeakArray *peaks, cuMyMatrix *img, unsigned int os){
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][filterPeaksOutside] Filtering peaks outside image ");
+	unsigned int old_size = peaks->size();
 	Chi2LibcuHighDensity::filterPeaksOutside(peaks, img, os);
-	MyLogger::log()->debug("[Chi2LibCudaHighDensity][filterPeaksOutside] Filtering peaks outside image ");
+	MyLogger::log()->debug("[Chi2LibCudaHighDensity][filterPeaksOutside] Peaks Filtered %i of %i", old_size, peaks->size());
 }
 
 pair<double, double> Chi2LibCudaHighDensity::gaussianFit(cuMyPeakArray *peaks, cuMyMatrix *img, unsigned int ss){

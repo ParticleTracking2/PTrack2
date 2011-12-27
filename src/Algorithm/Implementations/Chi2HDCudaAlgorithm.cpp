@@ -10,12 +10,14 @@
 vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2HD CUDA Algorithm");
 
+
 	if(pc->existParam("-device")){
 		int dev = pc->getParamAsInt("-device");
 		Chi2Libcu::setDevice(dev);
-		MyLogger::log()->notice("[Chi2HDCudaAlgorithm] ***************************** ");
-		MyLogger::log()->notice("[Chi2Algorithm] Setting CUDA Device %i = %s", dev, Chi2Libcu::getProps().name);
 	}
+	DeviceProps props = Chi2Libcu::getProps();
+	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] ***************************** ");
+	MyLogger::log()->notice("[Chi2Algorithm] Setting CUDA Device %i = %s", props.device, props.name);
 
 	float d = 9.87;
 	if(pc->existParam("-d"))
@@ -57,6 +59,9 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	cuMyMatrixi over(data->sX(), data->sY());
 	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocation Complete ");
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+	FileUtils::writeToFileM(&grid_x, "grid_x-cuda.txt");
+	FileUtils::writeToFileM(&grid_y, "grid_y-cuda.txt");
+	FileUtils::writeToFileM(&over, "over-cuda.txt");
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Compute Chi2 Difference ");
@@ -102,7 +107,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	}
 	peaks.sortByChiIntensity();
 	Chi2LibCudaFFTCache::eraseAll();
-	normaldata_chi.~cuMyMatrix();
+	normaldata_chi.deallocate();
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix and Chi2 Difference ");
@@ -216,7 +221,6 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		vor_areaSL = (float)pc->getParamAsDouble("-vorsl");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Adding State ");
 	Chi2LibCuda::addState(&peaks, vor_areaSL);
-
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector : %i", peaks.size());
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);

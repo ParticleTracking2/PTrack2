@@ -56,17 +56,19 @@ unsigned int Chi2LibHighDensity::checkInsidePeaks(vector<MyPeak> *old_peaks, vec
 
 void Chi2LibHighDensity::filterPeaksOutside(vector<MyPeak> *peaks, MyMatrix<double> *img, unsigned int ss){
 	MyLogger::log()->debug("[Chi2Algorithm][filterPeaksOutside] Filtering peaks outside image");
+	unsigned int old_size = peaks->size();
 	int iss = (int)(ss);
 	for(unsigned int i=0; i < peaks->size(); ++i){
 		if( 0 <= (peaks->at(i).x - iss) && (peaks->at(i).x - iss) < (int)img->sX() &&
 			0 <= (peaks->at(i).y - iss) && (peaks->at(i).y - iss) < (int)img->sY()){
 			// Esta adentro, no se hace nada.
+
 		}else{
 			peaks->erase(peaks->begin()+i);
 			--i;
 		}
 	}
-	MyLogger::log()->debug("[Chi2Algorithm][filterPeaksOutside] Filtering complete");
+	MyLogger::log()->debug("[Chi2Algorithm][filterPeaksOutside] Filtering complete %i of %i", old_size, peaks->size());
 }
 
 pair<double,double> Chi2LibHighDensity::gaussianFit(vector<MyPeak> *peaks, MyMatrix<double> *img, unsigned int ss){
