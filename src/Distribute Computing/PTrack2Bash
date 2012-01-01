@@ -28,7 +28,13 @@ then
 
 	for(( index=0; index<${#SERVER[@]}; ++index))
 	do
-		echo ">> Server: ${SERVER[$index]} -> ${PARALLEL_LIMIT[$index]}"
+		echo -n ">> Server: ${SERVER[$index]} -> ${PARALLEL_LIMIT[$index]}"
+		if [[ "$CUDA[$index]" -ge 1 ]]
+		then
+			echo " CUDA Enabled"
+		else
+			echo ""
+		fi
 	done
 
 	echo ">> Host: $HOST"
@@ -57,19 +63,43 @@ mkdir $DEST
 # Recuperar los datos del servidor
 # Parametro $1: IP del servidor
 # Parametro $2: Imagen a procesar con nombre de archivo completo
+# Parametro $3: CUDA Habilitado
+# Parametro $4: Dispositivos de cuda [0,1,...] (0 No existe)
 #-------------------------------------
 function doServer {
-	echo ">> [$1]: Processing Image: $2"
+	echo ">> [$1]: Processing Image: $2 - CUDA=$3 - CUDA Device=$4"
 	local myfile=$2	
 	local OUTFILE='xysl'${myfile:6:4}
 	if [[ "$1" != "$HOST" ]]
 	then
 		scp $FOLDER/$2 $USER@$1:/Users/ptrack
 		echo ">> [$1]: Data transfer complete"
-		ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
+		
+		if [[ "$3" -eq 1 ]]
+		then
+			if [[ "$4" -eq 0 ]]
+			then
+				#ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
+			else
+				#ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -device $4 -outbin ./Out/$OUTFILE; exit;" &
+			fi
+		else
+			#ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
+		fi
+		
 		local my_pid=$!
 	else
-		PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
+		if [[ "$3" -eq 1 ]]
+		then
+			if [[ "$4" -eq 0 ]]
+			then
+				#PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
+			else
+				#PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -device $4 -out $DEST/$OUTFILE &
+			fi
+		else
+			#PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
+		fi
 		local my_pid=$!
 	fi
 
@@ -112,12 +142,25 @@ function timeToKill {
 #-------------------------------------
 # Itera sobre los archivos asignados a procesar para el servidor
 # Parametro $1: IP del servidor
-# Parametro $2+: Imagen a procesar con nombre de archivo completo
+# Parametro $2: CUDA Habilitado
+# Parametro $3: Dispositivos CUDA
+# Parametro $4+: Imagen a procesar con nombre de archivo completo
 #-------------------------------------
 function iterateServer {
-	for file in ${*:2}
+	local cudadev=0
+	for file in ${*:4}
 	do
-		doServer $1 $file &
+		if [[ $2 -eq 0 ]]
+		then
+			doServer $1 $file 0 0 &
+		else
+			doServer $1 $file 1 $cudadev &
+			let "cudadev=$cudadev+1"
+			if [[ $cudadev -ge $3 ]]
+			then
+				cudadev=0
+			fi
+		fi
 	done
 	echo ">> [$1] Waiting server"
 	wait 
@@ -162,7 +205,7 @@ function main {
 				min=0
 			fi
 
-			iterateServer ${SERVER[$i]} ${STACK[@]:$min:$STACK_SIZE} &
+			iterateServer ${SERVER[$i]} ${CUDA[$i]} ${CUDA_DEV[$i]} ${STACK[@]:$min:$STACK_SIZE} &
 
 			for img in ${STACK[@]:$min:$STACK_SIZE}
 			do
