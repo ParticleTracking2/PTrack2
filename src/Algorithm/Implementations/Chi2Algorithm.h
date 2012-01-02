@@ -15,8 +15,17 @@
 
 using namespace std;
 
+/**
+ * Implementacion de algoritmo Chi Cuadrado.
+ */
 class Chi2Algorithm: public Algorithm {
 public:
+
+	/**
+	 * Ejecuta el algoritmo de minimos cuadrados para detectar Peaks.
+	 * @param pc Parametros que ocupa el algoritmo para correr.
+	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
+	 */
 	vector<MyPeak> run(ParameterContainer *pc);
 };
 

@@ -15,6 +15,10 @@ using namespace std;
 #ifndef PARAMETERCONTAINER
 #define PARAMETERCONTAINER
 
+/**
+ * Clase contenedora de parametros.
+ * La implementacion se realiza con un Map de una llave como String y su valor como Un contenedor de datos de distintos tipos.
+ */
 class ParameterContainer {
 private:
 	map<string, Container*> my_data;

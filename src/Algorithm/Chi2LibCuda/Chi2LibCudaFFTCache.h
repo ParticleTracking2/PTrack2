@@ -15,6 +15,10 @@
 #include <string>
 #include <sstream>
 
+/**
+ * Clase Singleton de almacenamiento de datos para uso de FFTW.
+ * Evita reserva y liberacion de memoria intensivamente. Esta clase solo almacena Punteros por lo que estos no se deben liberar afuera de la clase.
+ */
 class Chi2LibCudaFFTCache {
 private:
 	/**
@@ -23,17 +27,18 @@ private:
 	static const unsigned int capacity = 7;
 
 	/**
-	 * Arreglo de punteros.
+	 * Punteros a las Matrices almacenadas en Cache.
 	 */
 	cuMyMatrix* _cache[capacity];
 
 	/**
-	 * Arreglo de locks para impedir o chequear la existencia inalterable de un elemento del cache.
+	 * Bloquedo de datos para impedir modificaciones.
+	 * Es solo una bandera, no un bloqueo imperativo.
 	 */
 	bool locked[capacity];
 
 	/**
-	 * Singleton para este objeto.
+	 * Unica instancia de la clase.
 	 */
 	static Chi2LibCudaFFTCache *instance;
 
@@ -43,12 +48,13 @@ private:
 	Chi2LibCudaFFTCache();
 public:
 	/**
-	 * Destructor virtual.
+	 * Destructor de la clase.
 	 */
 	virtual ~Chi2LibCudaFFTCache();
 
 	/**
-	 * Elimina un elemento del cache.
+	 * Elimina un elemento en el cache indicado por slot.
+	 * @param slot Espacio de datos a borrar.
 	 */
 	static void erase(unsigned int slot);
 
@@ -64,26 +70,33 @@ public:
 
 	/**
 	 * Chequea si un slot dentro del contenedor esta vacio.
+	 * @param slot Espacio de datos a chequear.
 	 */
 	static bool empty(unsigned int slot);
 
 	/**
-	 * Bloquea un elemento para no ser modificado.
+	 * Verifica si un elemento puede ser modificado.
+	 * @param slot Espacio de datos a verificar bloqueo.
 	 */
 	static bool lock(unsigned int slot);
 
 	/**
 	 * Establece el bloqueo de un elemento para ser o no modificado.
+	 * @param slot Espacio de datos a bloquear.
 	 */
 	static void lock(unsigned int slot, bool state);
 
 	/**
 	 * Retorna el cache del determinado slot.
+	 * @param slot Espacio de datos a recuperar.
+	 * @return Puntero de Matriz de datos almacenada.
 	 */
 	static cuMyMatrix *cache(unsigned int slot);
 
 	/**
 	 * Establece los datos del slot. (Solo copia la referencia por motivos de performance, esta no debe ser borrada afuera de la clase)
+	 * @param slot Espacio donde guardar los datos
+	 * @para data puntero de datos a almacenar.
 	 */
 	static void cache(unsigned int slot, cuMyMatrix* data);
 };

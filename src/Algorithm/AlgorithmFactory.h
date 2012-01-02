@@ -16,8 +16,17 @@
 
 using namespace std;
 
+/**
+ * Clase Factory para construir algoritmos segun su tipo.
+ */
 class AlgorithmFactory {
 public:
+
+	/**
+	 * Construye un algoritmo segun el tipo entregado.
+	 * @param type Tipo de algoritmo a construir.
+	 * @return Algoritmo construido.
+	 */
 	static Algorithm *select(AlgorithmType type);
 };
 

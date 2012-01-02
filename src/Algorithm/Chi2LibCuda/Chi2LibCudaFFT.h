@@ -15,6 +15,13 @@
 #include "../../Utils/MyLogger.h"
 #include "Chi2LibCudaFFTCache.h"
 
+/**
+ * Clase para realizar convolucion de imagen mediante cuFFT.
+ * Esta clase ocupa cuFFTW probado y funcionando en version de API 4.0.
+ * Además para evitar reserva y liberacion de memoria constantemente, usa Cache de datos.
+ * Para evitar calculos redundantes, estos se calculan una sola vez y se almacenan para posterior uso.
+ * En su primer uso se ejecutan 3 calculos de cuFFT y luego solo se ejecutan 2 pues un resultado es constante.
+ */
 class Chi2LibCudaFFT {
 private:
 	/**
@@ -30,8 +37,12 @@ private:
 		cached_third_term = 6
 	};
 public:
+
 	/**
-	 * Obtiene la imagen Chi2 a partir del kernel e img. La salida se almacena en out.
+	 * Obtiene una Imagen Chi2 a partir de un trio de imagenes de convolucion.
+	 * @param kernel Imagen de particula ideal.
+	 * @param img Imagen original en base a la cual generar la imagen Chi2.
+	 * @param out Imagen Chi2 generada a partir de los datos.
 	 */
 	static void getChiImage(cuMyMatrix *kernel, cuMyMatrix *img, cuMyMatrix *out);
 };

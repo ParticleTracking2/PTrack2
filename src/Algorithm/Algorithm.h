@@ -1,7 +1,6 @@
 /*
  * Algorithm.h
- * Clase base para implementar algoritmos en base a Imagenes usando estructura MyMatrix<double>*.
- * Puede modificarse a futuro. Se debe implementar al menos la funcion "vector<MyPeak> run(ParameterContainer *pc);"
+ *
  *  Created on: 12-06-2011
  *      Author: juanin
  */
@@ -28,6 +27,10 @@ enum AlgorithmType{
 	None_Algorithm
 };
 
+/**
+ * Clase base para implementar algoritmos en base a Imagenes usando estructura MyMatrix<double>*.
+ * Puede modificarse a futuro. Se debe implementar al menos la funcion "vector<MyPeak> run(ParameterContainer *pc);"
+ */
 class Algorithm {
 public:
 	/**
@@ -52,22 +55,28 @@ public:
 
 	/**
 	 * Obtiene un string representativo de un tipo de algoritmo y devuelve ese tipo.
+	 * @param alg String representando un tipo de algoritmo.
+	 * @return Tipo de algoritmo.
 	 */
 	static AlgorithmType translate(string alg);
 
 	/**
 	 * Establece los datos para ser procesados.
+	 * @param data Datos a ser procesados en forma de Matriz.
 	 */
 	void setData(MyMatrix<double>* data);
 
 	/**
 	 * Establece el uso de threads en CPU.
+	 * @param use Uso de Threads (True) o ejecucion lineal (False).
 	 */
 	void setThreads(bool use);
 
 	/**
 	 * Principal funcion a implementar. Se ingresa un puntero a un objeto ParameterContainer con los parametros
 	 * necesarios para la ejecucion optima del algoritmo.
+	 * @param pc Parametros que ocupa el algoritmo para correr.
+	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
 	 */
 	virtual vector<MyPeak> run(ParameterContainer *pc);
 };

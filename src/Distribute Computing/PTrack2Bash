@@ -29,12 +29,24 @@ then
 	for(( index=0; index<${#SERVER[@]}; ++index))
 	do
 		echo -n ">> Server: ${SERVER[$index]} -> ${PARALLEL_LIMIT[$index]}"
-		if [[ "$CUDA[$index]" -ge 1 ]]
+		if [[ ${CUDA[$index]} -ge 1 ]]
 		then
 			echo " CUDA Enabled"
 		else
-			echo ""
+			echo " "
 		fi
+			ping ${SERVER[$index]} -w 10 -c 5 >> /tmp/pingTests.txt 
+			alive=$?
+			if [[ $alive -eq 1 ]]
+			then
+				echo ">> Server ${SERVER[$index]} is not responding, discarding"
+			else
+				echo ">> Server ${SERVER[$index]} is Alive"
+				MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
+				MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
+				MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
+				MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
+			fi
 	done
 
 	echo ">> Host: $HOST"
@@ -67,7 +79,14 @@ mkdir $DEST
 # Parametro $4: Dispositivos de cuda [0,1,...] (0 No existe)
 #-------------------------------------
 function doServer {
-	echo ">> [$1]: Processing Image: $2 - CUDA=$3 - CUDA Device=$4"
+	echo -n ">> [$1]: Processing Image: $2 "
+	if [[ "$3" -eq 1 ]]
+	then
+		echo "- CUDA Device $4"
+	else
+		echo ""
+	fi
+	
 	local myfile=$2	
 	local OUTFILE='xysl'${myfile:6:4}
 	if [[ "$1" != "$HOST" ]]
@@ -79,12 +98,12 @@ function doServer {
 		then
 			if [[ "$4" -eq 0 ]]
 			then
-				#ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
+				ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
 			else
-				#ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -device $4 -outbin ./Out/$OUTFILE; exit;" &
+				ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -device $4 -outbin ./Out/$OUTFILE; exit;" &
 			fi
 		else
-			#ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
+			ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
 		fi
 		
 		local my_pid=$!
@@ -93,12 +112,12 @@ function doServer {
 		then
 			if [[ "$4" -eq 0 ]]
 			then
-				#PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
+				PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -outbin $DEST/$OUTFILE &
 			else
-				#PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -device $4 -out $DEST/$OUTFILE &
+				PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -device $4 -outbin $DEST/$OUTFILE &
 			fi
 		else
-			#PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -out $DEST/$OUTFILE &
+			PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -outbin $DEST/$OUTFILE &
 		fi
 		local my_pid=$!
 	fi
@@ -195,9 +214,9 @@ function main {
 	STACK_SIZE=${#STACK[@]}
 	while [[ "$STACK_SIZE" -gt 0 ]]
 	do
-		for(( i=0; i<${#SERVER[@]} && 0<$STACK_SIZE; ++i))
+		for(( i=0; i<${#MYSERVERS[@]} && 0<$STACK_SIZE; ++i))
 		do
-			let "init=$STACK_SIZE-${PARALLEL_LIMIT[$i]}"
+			let "init=$STACK_SIZE-${MYPARALLEL_LIMIT[$i]}"
 			if (( $init > 0 ))
 			then
 				min=$init
@@ -205,14 +224,14 @@ function main {
 				min=0
 			fi
 
-			iterateServer ${SERVER[$i]} ${CUDA[$i]} ${CUDA_DEV[$i]} ${STACK[@]:$min:$STACK_SIZE} &
+			iterateServer ${MYSERVERS[$i]} ${MYCUDA[$i]} ${MYCUDA_DEV[$i]} ${STACK[@]:$min:$STACK_SIZE} &
 
 			for img in ${STACK[@]:$min:$STACK_SIZE}
 			do
 				CHECK_STACK[${#CHECK_STACK[*]}]=$img
 			done
 
-			for (( k=0; k<${PARALLEL_LIMIT[$i]} && 0<$STACK_SIZE; ++k ))
+			for (( k=0; k<${MYPARALLEL_LIMIT[$i]} && 0<$STACK_SIZE; ++k ))
 			do
 				unset STACK[${#STACK[@]}-1]
 				STACK_SIZE=${#STACK[@]}
@@ -224,10 +243,10 @@ function main {
 		#-------------------------------------
 		# Recolectar informacion y limpiar
 		#-------------------------------------
-		for(( i=1; i<${#SERVER[@]}; ++i))
+		for(( i=1; i<${#MYSERVERS[@]}; ++i))
 		do
-			echo ">> Retrieving data from ${SERVER[$i]}"
-			retrieveData ${SERVER[$i]}
+			echo ">> Retrieving data from ${MYSERVERS[$i]}"
+			retrieveData ${MYSERVERS[$i]}
 		done
 		wait
 		#----------------------------------------------

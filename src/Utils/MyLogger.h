@@ -1,7 +1,6 @@
 /*
  * MyLogger.h
- *	Clase para Escribir en pantalla todo lo necesario ajustando niveles de importancia.
- *	Esta clase es un Singleton por lo que solo se instancia una vez.
+ *
  *  Created on: 02/10/2011
  *      Author: juanin
  */
@@ -16,6 +15,20 @@
 
 using namespace std;
 
+/**
+ * Clase para Escribir en pantalla todo lo necesario ajustando niveles de importancia.
+ * Esta clase es un Singleton por lo que solo se instancia una vez y utiliza log4cpp para escribir los datos.
+ * Un ejemplo de instancia y uso es la siguiente:
+ *
+ * MyLogger *mylog = MyLogger::getInstance();
+ * mylog->setPriority(log4cpp::Priority::NOTICE);
+ *
+ * -- Este mensaje se muestra en pantalla.
+ * mylog->log()->notice("Hola Mundo!");
+ *
+ * -- Este mensaje no, debido a la prioridad establecida antes.
+ * mylog->log()->debug("Hola Debug");
+ */
 class MyLogger {
 private:
 	/**
@@ -45,41 +58,39 @@ private:
 	 */
 	bool fileData;
 public:
+
 	/**
-	 * Genera la Única instancia de la clase y la retorna.
+	 * Genera una Única instancia de la clase con todos los parametros necesarios para poder ocuparla y la retorna.
+	 * @return Única instancia de MyLogger
 	 */
 	static MyLogger *getInstance();
 
 	/**
 	 * Establece la prioridad de escritura que persistira en todas las llamadas.
 	 * Estos niveles puede ser los siguientes en orden de importancia:
-	 * EMERG  = 0,
-	 * FATAL  = 0,
-	 * ALERT  = 100,
-	 * CRIT   = 200,
-	 * ERROR  = 300,
-	 * WARN   = 400,
-	 * NOTICE = 500,
-	 * INFO   = 600,
-	 * DEBUG  = 700,
-	 * NOTSET = 800
+	 * EMERG, FATAL, ALERT, CRIT, ERROR, WARN, NOTICE, INFO, DEBUG, NOTSET.
+	 * @param prior La prioridad de escritura de la clase.
 	 */
 	static void setPriority(log4cpp::Priority::PriorityLevel prior);
 
 	/**
 	 * Retorna el objeto log4cpp::Category para escribir en los distintos niveles posibles.
+	 * @return Objeto log4cpp::Category
 	 */
 	static log4cpp::Category* log();
 
 	/**
 	 * Retorna si se escribe en un archivo o en la salida estandar.
-	 * No implemetado.
+	 * No implemetado, Sin embargo se utiliza como flag para escribir en archivos de debug usando la clase FileUtils.
+	 * @see FileUtils
+	 * @return bool representando si se escribe en un archivo o no.
 	 */
 	static bool logFileData();
 
 	/**
 	 * Establece si se escribe en un archivo o en la salida estandar.
-	 * No implementado.
+	 * No implementado, Sin embargo se utiliza como flag para escribir en archivos de debug usando la clase FileUtils.
+	 * @param data Parametro que determina si escribir en un archivo o salida estandar.
 	 */
 	static void logFileData(bool data);
 };

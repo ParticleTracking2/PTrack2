@@ -61,7 +61,3 @@ MyImage TIFFImageReader::decodeImageGray(string file){
 MyImage TIFFImageReader::decodeImageGray(string file, unsigned int cut){
 	return ImageReader::decodeImageGray(file, cut);
 }
-
-MyImage TIFFImageReader::decodeImageGray(string file, unsigned int top, unsigned int bottom, unsigned int left, unsigned int right){
-	return ImageReader::decodeImageGray(file, top, bottom, left, right);
-}

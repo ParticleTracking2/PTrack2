@@ -125,109 +125,12 @@ void *Chi2LibFFTW::conv2d_fftThread(void * ptr){
 /*****************
  * Version DOUBLE
  *****************/
-//void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img, MyMatrix<double> *output){
-//	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Generating Convolution using FFTW");
-//	fftw_complex	*fft_image, *fft_kernel;
-//	fftw_plan       plan_forward_image, plan_forward_kernel, plan_backward;
-//	//auxiliary structures are necessary because fftw3 optimization plan will destroy it!
-//	double 			*ifft_result, *data, *kernel;
-//	int nwidth 	=	(int)(img->sX()+kernel_img->sX()-1);
-//	int nheight	=	(int)(img->sY()+kernel_img->sY()-1);
-//
-//	pthread_mutex_lock( &mutex1 );
-//	// FFTW Allocs
-//	size_t size = (size_t)(nwidth * nheight);
-//	//the new size includes zero padding space
-//	data 		= fftw_alloc_real(size);
-//	kernel 		= fftw_alloc_real(size);
-//	ifft_result = fftw_alloc_real(size);
-//
-//	//fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2
-//	size = (size_t)(nwidth*(floor(nheight/2) + 1));
-//	fft_image	= fftw_alloc_complex(size);
-//	fft_kernel	= fftw_alloc_complex(size);
-//
-//	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
-//	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
-//	plan_backward		= fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
-//
-//	pthread_mutex_unlock( &mutex1 );
-//
-//	//populate kernel and shift input
-//	for(unsigned int x = 0 ; x < (unsigned int)nwidth ; ++x ){
-//		unsigned int xnw = x*nwidth;
-//		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
-//			if(x < kernel_img->sX() && y < kernel_img->sY())
-//				kernel[xnw+ y] = kernel_img->getValue(x,y);
-//			else
-//				kernel[xnw+ y] = 0;
-//		}
-//	}
-//
-//	for(unsigned int x = 0 ; x < (unsigned int)nwidth ; ++x ){
-//		unsigned int xnw = x*nwidth;
-//		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
-//			if(x < img->sX() && y < img->sY())
-//				data[xnw+ y] = img->getValue(x,y);
-//			else
-//				data[xnw+ y] = 0;
-//		}
-//	}
-//
-//	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Starting FFTW");
-//	/** FFT Execute */
-//		//fft of image
-//		fftw_execute( plan_forward_image );
-//		//fft of kernel
-//		fftw_execute( plan_forward_kernel );
-//
-//		//convolution in fourier domain
-//		double f1, f2;
-//		double nwnh = (double)(nwidth*nheight);
-//		unsigned int limit = (unsigned int)(nwidth * (floor(nheight/2) + 1));
-//		for(unsigned int i=0; i< limit; ++i){
-//			f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
-//			f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];
-//
-//			fft_image[i][0]=f1/nwnh;
-//			fft_image[i][1]=f2/nwnh;
-//		}
-//
-//		//ifft of the product
-//		fftw_execute( plan_backward );
-//	/** FFT Execute */
-//	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] FFTW Finished");
-//
-//	if(output->sX() == (unsigned int)nwidth && output->sY() == (unsigned int)nheight)
-//	for(unsigned int x = 0 ; x < output->sX() ; ++x ){
-//		unsigned int xnw = x*nwidth;
-//		for(unsigned int y = 0 ; y < output->sY() ; ++y ){
-//			output->at(x,y) = ifft_result[xnw+y];
-//		}
-//	}
-//
-//    /* free memory */
-//    fftw_destroy_plan( plan_forward_image );
-//    fftw_destroy_plan( plan_forward_kernel );
-//    fftw_destroy_plan( plan_backward );
-//
-//    fftw_free( data );
-//    fftw_free( kernel );
-//    fftw_free( ifft_result );
-//
-//    fftw_free( fft_image );
-//    fftw_free( fft_kernel );
-//}
-
-/*****************
- * Version FLOAT
- *****************/
 void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img, MyMatrix<double> *output){
 	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Generating Convolution using FFTW");
-	fftwf_complex	*fft_image, *fft_kernel;
-	fftwf_plan       plan_forward_image, plan_forward_kernel, plan_backward;
+	fftw_complex	*fft_image, *fft_kernel;
+	fftw_plan       plan_forward_image, plan_forward_kernel, plan_backward;
 	//auxiliary structures are necessary because fftw3 optimization plan will destroy it!
-	float 			*ifft_result, *data, *kernel;
+	double 			*ifft_result, *data, *kernel;
 	int nwidth 	=	(int)(img->sX()+kernel_img->sX()-1);
 	int nheight	=	(int)(img->sY()+kernel_img->sY()-1);
 
@@ -235,18 +138,18 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	// FFTW Allocs
 	size_t size = (size_t)(nwidth * nheight);
 	//the new size includes zero padding space
-	data 		= fftwf_alloc_real(size);
-	kernel 		= fftwf_alloc_real(size);
-	ifft_result = fftwf_alloc_real(size);
+	data 		= fftw_alloc_real(size);
+	kernel 		= fftw_alloc_real(size);
+	ifft_result = fftw_alloc_real(size);
 
 	//fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2
 	size = (size_t)(nwidth*(floor(nheight/2) + 1));
-	fft_image	= fftwf_alloc_complex(size);
-	fft_kernel	= fftwf_alloc_complex(size);
+	fft_image	= fftw_alloc_complex(size);
+	fft_kernel	= fftw_alloc_complex(size);
 
-	plan_forward_image	= fftwf_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
-	plan_forward_kernel	= fftwf_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
-	plan_backward		= fftwf_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
+	plan_forward_image	= fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
+	plan_forward_kernel	= fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
+	plan_backward		= fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
 
 	pthread_mutex_unlock( &mutex1 );
 
@@ -255,7 +158,7 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 		unsigned int xnw = x*nwidth;
 		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
 			if(x < kernel_img->sX() && y < kernel_img->sY())
-				kernel[xnw+ y] = (float)kernel_img->getValue(x,y);
+				kernel[xnw+ y] = kernel_img->getValue(x,y);
 			else
 				kernel[xnw+ y] = 0;
 		}
@@ -265,7 +168,7 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 		unsigned int xnw = x*nwidth;
 		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
 			if(x < img->sX() && y < img->sY())
-				data[xnw+ y] = (float)img->getValue(x,y);
+				data[xnw+ y] = img->getValue(x,y);
 			else
 				data[xnw+ y] = 0;
 		}
@@ -274,13 +177,13 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Starting FFTW");
 	/** FFT Execute */
 		//fft of image
-		fftwf_execute( plan_forward_image );
+		fftw_execute( plan_forward_image );
 		//fft of kernel
-		fftwf_execute( plan_forward_kernel );
+		fftw_execute( plan_forward_kernel );
 
 		//convolution in fourier domain
-		float f1, f2;
-		float nwnh = (float)(nwidth*nheight);
+		double f1, f2;
+		double nwnh = (double)(nwidth*nheight);
 		unsigned int limit = (unsigned int)(nwidth * (floor(nheight/2) + 1));
 		for(unsigned int i=0; i< limit; ++i){
 			f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
@@ -291,7 +194,7 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 		}
 
 		//ifft of the product
-		fftwf_execute( plan_backward );
+		fftw_execute( plan_backward );
 	/** FFT Execute */
 	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] FFTW Finished");
 
@@ -304,14 +207,111 @@ void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img
 	}
 
     /* free memory */
-    fftwf_destroy_plan( plan_forward_image );
-    fftwf_destroy_plan( plan_forward_kernel );
-    fftwf_destroy_plan( plan_backward );
+    fftw_destroy_plan( plan_forward_image );
+    fftw_destroy_plan( plan_forward_kernel );
+    fftw_destroy_plan( plan_backward );
 
-    fftwf_free( data );
-    fftwf_free( kernel );
-    fftwf_free( ifft_result );
+    fftw_free( data );
+    fftw_free( kernel );
+    fftw_free( ifft_result );
 
-    fftwf_free( fft_image );
-    fftwf_free( fft_kernel );
+    fftw_free( fft_image );
+    fftw_free( fft_kernel );
 }
+
+/*****************
+ * Version FLOAT
+ *****************/
+//void Chi2LibFFTW::conv2d_fft(MyMatrix<double> *img, MyMatrix<double> *kernel_img, MyMatrix<double> *output){
+//	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Generating Convolution using FFTW");
+//	fftwf_complex	*fft_image, *fft_kernel;
+//	fftwf_plan       plan_forward_image, plan_forward_kernel, plan_backward;
+//	//auxiliary structures are necessary because fftw3 optimization plan will destroy it!
+//	float 			*ifft_result, *data, *kernel;
+//	int nwidth 	=	(int)(img->sX()+kernel_img->sX()-1);
+//	int nheight	=	(int)(img->sY()+kernel_img->sY()-1);
+//
+//	pthread_mutex_lock( &mutex1 );
+//	// FFTW Allocs
+//	size_t size = (size_t)(nwidth * nheight);
+//	//the new size includes zero padding space
+//	data 		= fftwf_alloc_real(size);
+//	kernel 		= fftwf_alloc_real(size);
+//	ifft_result = fftwf_alloc_real(size);
+//
+//	//fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2
+//	size = (size_t)(nwidth*(floor(nheight/2) + 1));
+//	fft_image	= fftwf_alloc_complex(size);
+//	fft_kernel	= fftwf_alloc_complex(size);
+//
+//	plan_forward_image	= fftwf_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
+//	plan_forward_kernel	= fftwf_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
+//	plan_backward		= fftwf_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
+//
+//	pthread_mutex_unlock( &mutex1 );
+//
+//	//populate kernel and shift input
+//	for(unsigned int x = 0 ; x < (unsigned int)nwidth ; ++x ){
+//		unsigned int xnw = x*nwidth;
+//		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
+//			if(x < kernel_img->sX() && y < kernel_img->sY())
+//				kernel[xnw+ y] = (float)kernel_img->getValue(x,y);
+//			else
+//				kernel[xnw+ y] = 0;
+//		}
+//	}
+//
+//	for(unsigned int x = 0 ; x < (unsigned int)nwidth ; ++x ){
+//		unsigned int xnw = x*nwidth;
+//		for(unsigned int y=0; y < (unsigned int)nheight; ++y){
+//			if(x < img->sX() && y < img->sY())
+//				data[xnw+ y] = (float)img->getValue(x,y);
+//			else
+//				data[xnw+ y] = 0;
+//		}
+//	}
+//
+//	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] Starting FFTW");
+//	/** FFT Execute */
+//		//fft of image
+//		fftwf_execute( plan_forward_image );
+//		//fft of kernel
+//		fftwf_execute( plan_forward_kernel );
+//
+//		//convolution in fourier domain
+//		float f1, f2;
+//		float nwnh = (float)(nwidth*nheight);
+//		unsigned int limit = (unsigned int)(nwidth * (floor(nheight/2) + 1));
+//		for(unsigned int i=0; i< limit; ++i){
+//			f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
+//			f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];
+//
+//			fft_image[i][0]=f1/nwnh;
+//			fft_image[i][1]=f2/nwnh;
+//		}
+//
+//		//ifft of the product
+//		fftwf_execute( plan_backward );
+//	/** FFT Execute */
+//	MyLogger::log()->debug("[Chi2LibFFTW][conv2d_fft] FFTW Finished");
+//
+//	if(output->sX() == (unsigned int)nwidth && output->sY() == (unsigned int)nheight)
+//	for(unsigned int x = 0 ; x < output->sX() ; ++x ){
+//		unsigned int xnw = x*nwidth;
+//		for(unsigned int y = 0 ; y < output->sY() ; ++y ){
+//			output->at(x,y) = ifft_result[xnw+y];
+//		}
+//	}
+//
+//    /* free memory */
+//    fftwf_destroy_plan( plan_forward_image );
+//    fftwf_destroy_plan( plan_forward_kernel );
+//    fftwf_destroy_plan( plan_backward );
+//
+//    fftwf_free( data );
+//    fftwf_free( kernel );
+//    fftwf_free( ifft_result );
+//
+//    fftwf_free( fft_image );
+//    fftwf_free( fft_kernel );
+//}

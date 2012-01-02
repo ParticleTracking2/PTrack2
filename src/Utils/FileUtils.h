@@ -1,6 +1,6 @@
 /*
  * FILEUTILS.h
- *	Clase con Utilidades varias para hacer Debug en archivos de distintos tipos de datos.
+ *
  *  Created on: 02/10/2011
  *      Author: ptrack
  */
@@ -20,6 +20,9 @@
 
 using namespace std;
 
+/**
+ * Clase con Utilidades varias para hacer Debug en archivos de distintos tipos de datos.
+ */
 class FileUtils {
 public:
 	static void writeToFile(string str, const char* file);

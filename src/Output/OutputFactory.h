@@ -1,6 +1,6 @@
 /*
  * OutputFactory.h
- *	Clase Factory para crear objetos de escritura de salida para el programa.
+ *
  *  Created on: 13/10/2011
  *      Author: ptrack
  */
@@ -13,10 +13,16 @@
 #ifndef OUTPUTFACTORY
 #define OUTPUTFACTORY
 
+/**
+ * Clase Factory para crear objetos de salida de datos.
+ */
 class OutputFactory {
 public:
+
 	/**
-	 * Genera un objeto de escritura de salida de datos segun el tipo entregado.
+	 * Genera un objeto de salida de datos segun el tipo entregado.
+	 * @param otype Tipo de objeto a crear.
+	 * @return Objeto de salida de datos heredado de la clase Output
 	 */
 	static Output *makeOutputGenerator(OutputType otype);
 };

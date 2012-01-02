@@ -10,6 +10,9 @@ using namespace std;
 #ifndef CONTAINER
 #define CONTAINER
 
+/**
+ * Clase contenedora de datos basicos
+ */
 class Container {
 private:
 	void* mydata;
