@@ -243,10 +243,13 @@ function main {
 		#-------------------------------------
 		# Recolectar informacion y limpiar
 		#-------------------------------------
-		for(( i=1; i<${#MYSERVERS[@]}; ++i))
+		for(( i=0; i<${#MYSERVERS[@]}; ++i))
 		do
-			echo ">> Retrieving data from ${MYSERVERS[$i]}"
-			retrieveData ${MYSERVERS[$i]}
+			if [[ "${MYSERVERS[$i]}" != "$HOST" ]]
+			then
+				echo ">> Retrieving data from ${MYSERVERS[$i]}"
+				retrieveData ${MYSERVERS[$i]}
+			fi
 		done
 		wait
 		#----------------------------------------------
