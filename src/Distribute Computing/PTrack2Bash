@@ -35,13 +35,16 @@ then
 		else
 			echo " "
 		fi
+		
+		if [ "${SERVER[$index]}" != "$HOST" ]
+		then
 			ping -t 10 -c 5 ${SERVER[$index]} >> /tmp/pingTests.txt 
 			alive=$?
 			if [[ $alive -eq 0 ]]
 			then
 				echo -n ">> Server ${SERVER[$index]} is Alive. "
 				
-				ssh -q -o "BatchMode=yes" ptrack@${SERVER[$index]} "echo 2>&1"
+				ssh -q -o "BatchMode=yes" $USER@${SERVER[$index]} "echo 2>&1"
 				sshalive=$?
 				if [[ $sshalive -eq 0 ]]
 				then
@@ -57,6 +60,12 @@ then
 			else
 				echo ">> Server ${SERVER[$index]} is not responding, discarding server."
 			fi
+		else
+			MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
+			MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
+			MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
+			MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
+		fi
 	done
 
 	echo ">> Host: $HOST"
@@ -101,7 +110,7 @@ function doServer {
 	local OUTFILE='xysl'${myfile:6:4}
 	if [[ "$1" != "$HOST" ]]
 	then
-		scp $FOLDER/$2 $USER@$1:/Users/ptrack
+		scp $FOLDER/$2 $USER@$1:/Users/$USER
 		echo ">> [$1]: Data transfer complete"
 		
 		if [[ "$3" -eq 1 ]]
@@ -201,7 +210,7 @@ function iterateServer {
 # Parametro $1: IP del servidor
 #-------------------------------------
 function retrieveData {
-	scp -q -o "BatchMode=yes" -r $USER@$1:/Users/ptrack/Out/* $DEST/
+	scp -q -o "BatchMode=yes" -r $USER@$1:/Users/$USER/Out/* $DEST/
 	echo ">> Data retrieved from $1"
 	ssh -q -o "BatchMode=yes" $USER@$1 "rm *.tif; rm Out/*; killall PTrack2;"
 	echo ">> Images and data deleted from $1"
@@ -209,6 +218,15 @@ function retrieveData {
 
 #Main Loop
 function main {
+	
+	if [ "$(ls -A $FOLDER)" ]
+	then
+		 echo ">> Image Directory is OK"
+	else
+		echo ">> Image Directory $FOLDER is empty or is not present"
+		exit
+	fi
+	
 	#-------------------------------------
 	# Agregar todas las imagenes al STACK
 	#-------------------------------------
@@ -216,7 +234,8 @@ function main {
 	do
 		STACK[${#STACK[*]}]=${file: -14}
 	done
-
+	echo ">> ${#STACK[@]} Images to process"
+	
 	#-------------------------------------
 	# Pasar imagenes a los servidores
 	# y procesar
