@@ -39,13 +39,23 @@ then
 			alive=$?
 			if [[ $alive -eq 0 ]]
 			then
-				echo ">> Server ${SERVER[$index]} is Alive"
-				MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
-				MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
-				MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
-				MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
+				echo -n ">> Server ${SERVER[$index]} is Alive. "
+				
+				ssh -q -o "BatchMode=yes" ptrack@${SERVER[$index]} "echo 2>&1"
+				sshalive=$?
+				if [[ $sshalive -eq 0 ]]
+				then
+					echo " SSH is responding. Server OK!"
+					
+					MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
+					MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
+					MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
+					MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
+				else
+					echo " SSH is not responding or is not properly configured, discarding server."
+				fi				
 			else
-				echo ">> Server ${SERVER[$index]} is not responding, discarding"
+				echo ">> Server ${SERVER[$index]} is not responding, discarding server."
 			fi
 	done
 
@@ -191,9 +201,9 @@ function iterateServer {
 # Parametro $1: IP del servidor
 #-------------------------------------
 function retrieveData {
-	scp -r $USER@$1:/Users/ptrack/Out/* $DEST/
+	scp -q -o "BatchMode=yes" -r $USER@$1:/Users/ptrack/Out/* $DEST/
 	echo ">> Data retrieved from $1"
-	ssh $USER@$1 "rm *.tif; rm Out/*; rm /tmp/tmp*; killall PTrack2;"
+	ssh -q -o "BatchMode=yes" $USER@$1 "rm *.tif; rm Out/*; killall PTrack2;"
 	echo ">> Images and data deleted from $1"
 }
 
