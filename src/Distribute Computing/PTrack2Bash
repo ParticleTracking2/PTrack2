@@ -35,17 +35,17 @@ then
 		else
 			echo " "
 		fi
-			ping ${SERVER[$index]} -w 10 -c 5 >> /tmp/pingTests.txt 
+			ping -t 10 -c 5 ${SERVER[$index]} >> /tmp/pingTests.txt 
 			alive=$?
-			if [[ $alive -eq 1 ]]
+			if [[ $alive -eq 0 ]]
 			then
-				echo ">> Server ${SERVER[$index]} is not responding, discarding"
-			else
 				echo ">> Server ${SERVER[$index]} is Alive"
 				MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
 				MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
 				MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
 				MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
+			else
+				echo ">> Server ${SERVER[$index]} is not responding, discarding"
 			fi
 	done
 

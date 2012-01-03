@@ -1,0 +1,209 @@
+#!/bin/bash
+# probando probando
+
+if [[ "${#*}" -lt 5 ]]
+then
+	echo "---------------------------------------------------------------"
+	echo "Uso: PTrack2FolderCuda [Carpeta] [Carpeta Destino] [D] [W] [Parallel] "
+	echo "-Carpeta: Carpeta donde ubicar las imagenes"
+	echo "-Carpeta Destino: Carpeta de destino de los datos"
+	echo "-D: Parametro de diametro de PTrack"
+	echo "-W: Parametro de peso de PTrack"
+	echo "-Parallel: Cantidad de procesos en paralelo"
+	echo "--------------------------------------------------------"
+	exit
+fi
+
+#-------------------------------------
+# - Carpeta fuente de imagenes;
+# - Destino de los datos procesados;
+# - Diametro para PTrack2
+# - Peso para PTrack2
+# - Cantidad de procesos en paralelo
+#-------------------------------------
+FOLDER=$1
+DEST=$2
+DE=$3
+WU=$4
+PARALLEL_LIMIT=$5
+
+TIME_OUT=30
+mkdir $DEST
+
+#-------------------------------------
+# Recuperar los datos del servidor
+# Parametro $1: Imagen a procesar con nombre de archivo completo
+#-------------------------------------
+DEVICE_INT=0
+function doServer {
+	echo ">> Processing Image: $1"
+	local myfile=$1
+	local OUTFILE='xysl'${myfile:6:4}
+	
+	if [[ $ret -eq 0 ]]
+	then
+		PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$OUTFILE &
+		DEVICE_INT=1
+	else
+		PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$OUTFILE -device 1 &
+		DEVICE_INT=0
+	fi
+	
+	local my_pid=$!
+
+	timeToKill $TIME_OUT $my_pid $myfile &
+	local killer_id=$!
+
+	wait $my_pid
+	disown $killer_id
+	kill $killer_id
+
+	echo ">> $1 Data Processing Complete"
+}
+
+#-------------------------------------
+# Genera el tiempo de espera para que
+#  se complete el proceso
+# Parametro $1: Tiempo de espera
+# Parametro $2: Proceso a esperar
+# Parametro $3: Imagen a procesar
+#-------------------------------------
+function timeToKill {
+	local mytime=$1
+	local mypid=$2
+	local myimage=$3
+
+	sleep $mytime
+	kill -0 $mypid
+	local ret=$?
+
+	if [[ $ret -eq 0 ]]
+	then
+		kill $mypid
+		echo "Error: Killed task ID $mypid [$myimage] due to timeout $mytime exceeded, returned $ret"
+		echo "Error: Killed task ID $mypid [$myimage] due to timeout $mytime exceeded, returned $ret" >> $DEST/proc-log.txt
+	fi
+}
+
+#-------------------------------------
+# Itera sobre los archivos asignados a procesar para el servidor
+# Parametro $1+: Imagen a procesar con nombre de archivo completo
+#-------------------------------------
+function iterateServer {
+	for file in ${*:1}
+	do
+		doServer $file &
+	done
+	echo ">> Waiting Iteration"
+	wait 
+	echo ">> Done"
+}
+
+#Main Loop
+function main {
+	#-------------------------------------
+	# Agregar todas las imagenes al STACK
+	#-------------------------------------
+	for file in $FOLDER/*.tif
+	do
+		STACK[${#STACK[*]}]=${file: -14}
+	done
+
+	#-------------------------------------
+	# Pasar imagenes a los servidores
+	# y procesar
+	#-------------------------------------
+	STACK_SIZE=${#STACK[@]}
+	while [[ "$STACK_SIZE" -gt 0 ]]
+	do
+		let "init=$STACK_SIZE-$PARALLEL_LIMIT"
+		if (( $init > 0 ))
+		then
+			min=$init
+		else
+			min=0
+		fi
+
+		iterateServer ${STACK[@]:$min:$STACK_SIZE} &
+
+		for img in ${STACK[@]:$min:$STACK_SIZE}
+		do
+			CHECK_STACK[${#CHECK_STACK[*]}]=$img
+		done
+
+		for (( k=0; k<$PARALLEL_LIMIT && 0<$STACK_SIZE; ++k ))
+		do
+			unset STACK[${#STACK[@]}-1]
+			STACK_SIZE=${#STACK[@]}
+		done
+		echo ">> Waiting Iterations"
+		wait
+	
+		#----------------------------------------------
+		# Chequear que se hayan procesado correctamente
+		#----------------------------------------------
+		echo ">> Checking corresponding output data with image data"
+		for img in ${CHECK_STACK[*]}
+		do
+			imgNum='xysl'${img:6:4}
+			found=0
+			
+			#--------------------------------
+			# Encontrar correspondencia entre 
+			# la imagen y los datos
+			#--------------------------------
+			for data in $DEST/*
+			do
+				if [[ "$data" == "$DEST/$imgNum" ]]
+				then
+					found=1
+					break
+				fi
+			done
+			
+			#----------------------------
+			# Colocar denuevo en el STACK
+			#----------------------------
+			if [[ "$found" -eq 0 ]]
+			then
+				echo ">> $img failed to process, trying to re process"
+				echo ">> $img failed to process, trying to re process" >> $DEST/failed-img-log.txt
+				HISTORY_STACK[${#HISTORY_STACK[*]}]=$img
+				
+				hcounter=0
+				for himg in ${HISTORY_STACK[*]}
+				do
+					if [[ "$img" == "$himg" ]]
+					then
+						let hcounter=$hcounter+1
+					fi
+				done
+				echo ">> $img failed to process $hcounter times"
+				if [[ "$hcounter" -lt "$TRY_LIMIT" ]]
+				then
+					STACK[${#STACK[*]}]=$img
+					STACK_SIZE=${#STACK[@]}
+				else
+					echo ">> $img failed to process. Limit $TRY_LIMIT reached"
+					echo ">> $img failed to process. Limit $TRY_LIMIT reached" >> $DEST/failed-img-log.txt
+				fi
+			fi
+		done
+		echo ">> Corresponding output data with image data Checked"		
+		#----------------------------
+		# Vaciar stack de chequeo
+		#----------------------------
+		CHECK_STACK=( )
+		
+		echo ">> Iterations complete"
+	done
+}
+
+#-------------------------------------
+# Medir el tiempo y ejecutar
+#-------------------------------------
+(time main > $DEST/process-log.txt) 2> $DEST/time-log.txt
+#time main
+
+echo "------- All jobs done! -------"
+

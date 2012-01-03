@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Referencia de la Clase Output</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Clases</span></a></li>
+      <li><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Lista&#160;de&#160;clases</span></a></li>
+      <li><a href="classes.html"><span>Índice&#160;de&#160;clases</span></a></li>
+      <li><a href="inherits.html"><span>Jerarquía&#160;de&#160;la&#160;clase</span></a></li>
+      <li><a href="functions.html"><span>Miembros&#160;de&#160;las&#160;clases</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Métodos públicos</a> &#124;
+<a href="#pub-static-methods">Métodos públicos estáticos</a>  </div>
+  <div class="headertitle">
+<div class="title">Referencia de la Clase Output</div>  </div>
+</div>
+<div class="contents">
+<!-- doxytag: class="Output" -->
+<p><code>#include &lt;<a class="el" href="_output_8h_source.html">Output.h</a>&gt;</code></p>
+<div class="dynheader">
+Diagrama de herencias de Output</div>
+<div class="dyncontent">
+<div class="center"><img src="class_output__inherit__graph.png" border="0" usemap="#_output_inherit__map" alt="Inheritance graph"/></div>
+<map name="_output_inherit__map" id="_output_inherit__map">
+<area shape="rect" id="node3" href="class_binary_output.html" title="BinaryOutput" alt="" coords="5,83,104,112"/><area shape="rect" id="node5" href="class_connector_output.html" title="ConnectorOutput" alt="" coords="128,83,248,112"/><area shape="rect" id="node7" href="class_plain_output.html" title="PlainOutput" alt="" coords="272,83,363,112"/><area shape="rect" id="node9" href="class_standar_output.html" title="StandarOutput" alt="" coords="387,83,493,112"/></map>
+<center><span class="legend">[<a href="graph_legend.html">significado de colores y flechas</a>]</span></center></div>
+
+<p><a href="class_output-members.html">Lista de todos los miembros.</a></p>
+<table class="memberdecls">
+<tr><td colspan="2"><h2><a name="pub-methods"></a>
+Métodos públicos</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_output.html#a0162ebdc8e5b13917788692fa9a753a0">~Output</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_output.html#a58ba572449ae5e2778c681ed4ec11e57">writeData</a> (vector&lt; <a class="el" href="class_my_peak.html">MyPeak</a> &gt; *peaks, string file)</td></tr>
+<tr><td colspan="2"><h2><a name="pub-static-methods"></a>
+Métodos públicos estáticos</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static <a class="el" href="_output_8h.html#a4e0517338e6c4a31a2addafc06d4f3a3">OutputType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_output.html#abeb5d6a043a630b78c6cf3f5a60fb989">translate</a> (string out)</td></tr>
+</table>
+<hr/><a name="details" id="details"></a><h2>Descripción detallada</h2>
+<div class="textblock"><p>Clase para implementar una salida de datos del programa. El único metodo importante a implementar es "virtual void writeData(vector&lt;MyPeak&gt; *peaks, string file);" </p>
+
+<p>Definición en la línea <a class="el" href="_output_8h_source.html#l00033">33</a> del archivo <a class="el" href="_output_8h_source.html">Output.h</a>.</p>
+</div><hr/><h2>Documentación del constructor y destructor</h2>
+<a class="anchor" id="a0162ebdc8e5b13917788692fa9a753a0"></a><!-- doxytag: member="Output::~Output" ref="a0162ebdc8e5b13917788692fa9a753a0" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual Output::~Output </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td><code> [inline, virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Destructor vacio. </p>
+
+<p>Definición en la línea <a class="el" href="_output_8h_source.html#l00045">45</a> del archivo <a class="el" href="_output_8h_source.html">Output.h</a>.</p>
+
+</div>
+</div>
+<hr/><h2>Documentación de las funciones miembro</h2>
+<a class="anchor" id="abeb5d6a043a630b78c6cf3f5a60fb989"></a><!-- doxytag: member="Output::translate" ref="abeb5d6a043a630b78c6cf3f5a60fb989" args="(string out)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_output_8h.html#a4e0517338e6c4a31a2addafc06d4f3a3">OutputType</a> Output::translate </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>out</em></td><td>)</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Traductor de un String a un tipo de salida de datos. </p>
+<dl><dt><b>Parámetros:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">out</td><td>Tipo de salida de datos como un string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Devuelve:</b></dt><dd>Tipo de salida de datos </dd></dl>
+
+<p>Definición en la línea <a class="el" href="_output_8cpp_source.html#l00010">10</a> del archivo <a class="el" href="_output_8cpp_source.html">Output.cpp</a>.</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas para esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_output_abeb5d6a043a630b78c6cf3f5a60fb989_cgraph.png" border="0" usemap="#class_output_abeb5d6a043a630b78c6cf3f5a60fb989_cgraph" alt=""/></div>
+<map name="class_output_abeb5d6a043a630b78c6cf3f5a60fb989_cgraph" id="class_output_abeb5d6a043a630b78c6cf3f5a60fb989_cgraph">
+<area shape="rect" id="node3" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="173,5,277,35"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas a esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_output_abeb5d6a043a630b78c6cf3f5a60fb989_icgraph.png" border="0" usemap="#class_output_abeb5d6a043a630b78c6cf3f5a60fb989_icgraph" alt=""/></div>
+<map name="class_output_abeb5d6a043a630b78c6cf3f5a60fb989_icgraph" id="class_output_abeb5d6a043a630b78c6cf3f5a60fb989_icgraph">
+<area shape="rect" id="node3" href="class_args_processor.html#a572d1103886066173d5646c7c08438ee" title="ArgsProcessor::setArgs" alt="" coords="175,5,335,35"/><area shape="rect" id="node5" href="_ptrack2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="384,5,435,35"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a58ba572449ae5e2778c681ed4ec11e57"></a><!-- doxytag: member="Output::writeData" ref="a58ba572449ae5e2778c681ed4ec11e57" args="(vector&lt; MyPeak &gt; *peaks, string file)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Output::writeData </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_my_peak.html">MyPeak</a> &gt; *&#160;</td>
+          <td class="paramname"><em>peaks</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>file</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [virtual]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Metodo que se ingresa un vector de MyPeaks y un String dando como resultado un archivo de nombre del string cuyo contenido se representa el vector. </p>
+<dl><dt><b>Parámetros:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">peaks</td><td>Vector de datos <a class="el" href="class_my_peak.html">MyPeak</a> a ser representados </td></tr>
+    <tr><td class="paramname">file</td><td>Nombre del archivo de salida </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplementado en <a class="el" href="class_binary_output.html#a0a2bde0e21d76d79a380ab144b599c7d">BinaryOutput</a>, <a class="el" href="class_connector_output.html#a86166eccf524af716c2e0225e8655ddd">ConnectorOutput</a>, <a class="el" href="class_plain_output.html#aab173112ab5f49b78a94a06e53601ff8">PlainOutput</a> y <a class="el" href="class_standar_output.html#a12d56d14db9655bf81f94bdabbb96d71">StandarOutput</a>.</p>
+
+<p>Definición en la línea <a class="el" href="_output_8cpp_source.html#l00030">30</a> del archivo <a class="el" href="_output_8cpp_source.html">Output.cpp</a>.</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas para esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_output_a58ba572449ae5e2778c681ed4ec11e57_cgraph.png" border="0" usemap="#class_output_a58ba572449ae5e2778c681ed4ec11e57_cgraph" alt=""/></div>
+<map name="class_output_a58ba572449ae5e2778c681ed4ec11e57_cgraph" id="class_output_a58ba572449ae5e2778c681ed4ec11e57_cgraph">
+<area shape="rect" id="node3" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="179,5,283,35"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas a esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_output_a58ba572449ae5e2778c681ed4ec11e57_icgraph.png" border="0" usemap="#class_output_a58ba572449ae5e2778c681ed4ec11e57_icgraph" alt=""/></div>
+<map name="class_output_a58ba572449ae5e2778c681ed4ec11e57_icgraph" id="class_output_a58ba572449ae5e2778c681ed4ec11e57_icgraph">
+<area shape="rect" id="node3" href="_ptrack2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="179,5,229,35"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<hr/>La documentación para esta clase fue generada a partir de los siguientes ficheros:<ul>
+<li>src/Output/<a class="el" href="_output_8h_source.html">Output.h</a></li>
+<li>src/Output/<a class="el" href="_output_8cpp_source.html">Output.cpp</a></li>
+</ul>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:20 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

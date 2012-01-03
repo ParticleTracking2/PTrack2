@@ -1,0 +1,5 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_chi2_lib_cuda_qhull.html#a3b7ee2ee19f20535a520e0cea0ba99a8" title="Chi2LibCudaQhull::addVoronoiAreas" alt="" coords="248,32,483,61"/>
+<area shape="rect" id="node5" href="$class_chi2_lib_cuda_high_density.html#a19bc7bff0e897c8d41c1e04c791eae39" title="Chi2LibCudaHighDensity::removeBadPeaks" alt="" coords="531,5,811,35"/>
+<area shape="rect" id="node7" href="$class_chi2_h_d_cuda_algorithm.html#a60d6c46d691c6a1ea47f35b9c57c45e8" title="Chi2HDCudaAlgorithm::run" alt="" coords="859,32,1040,61"/>
+</map>

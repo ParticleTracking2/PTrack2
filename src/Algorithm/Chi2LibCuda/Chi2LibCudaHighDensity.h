@@ -32,6 +32,7 @@ public:
 	 * @param new_peaks Contenedor de peaks nuevos en GPU.
 	 * @param img Imagen original.
 	 * @param os Tamaño /2 de la particula ideal.
+	 * @return Cantidad de peaks nuevos agregados al contenedor antiguo.
 	 */
 	static unsigned int checkInsidePeaks(cuMyPeakArray *old_peaks, cuMyPeakArray *new_peaks, cuMyMatrix *img, unsigned int os);
 

@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Fichero Fuente src/Container/Container.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+      <li><a href="globals.html"><span>Miembros&#160;de&#160;los&#160;ficheros</span></a></li>
+    </ul>
+  </div>
+  <div id="nav-path" class="navpath">
+    <ul>
+      <li class="navelem"><a class="el" href="dir_6843526ecfe91d74c51ab8083199d582.html">src</a>      </li>
+      <li class="navelem"><a class="el" href="dir_d1b12e5c6bc18c6a97fcda67fc602072.html">Container</a>      </li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">Container.cpp</div>  </div>
+</div>
+<div class="contents">
+<a href="_container_8cpp.html">Ir a la documentación de este archivo.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * Container.cpp</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> *  Created on: 12-06-2011</span>
+<a name="l00005"></a>00005 <span class="comment"> *      Author: juanin</span>
+<a name="l00006"></a>00006 <span class="comment"> */</span>
+<a name="l00007"></a>00007 
+<a name="l00008"></a>00008 <span class="preprocessor">#include &quot;<a class="code" href="_container_8h.html">Container.h</a>&quot;</span>
+<a name="l00009"></a>00009 
+<a name="l00015"></a><a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">00015</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>() {
+<a name="l00016"></a>00016         <span class="comment">// Do nothing</span>
+<a name="l00017"></a>00017 }
+<a name="l00018"></a><a class="code" href="class_container.html#aac1f1f2b94346923b3338d9d609902bc">00018</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>(<span class="keywordtype">int</span> integer){
+<a name="l00019"></a>00019         myint = integer;
+<a name="l00020"></a>00020 }
+<a name="l00021"></a>00021 
+<a name="l00022"></a><a class="code" href="class_container.html#a570f5f6f1607d5c5a480bdee57bc0ae4">00022</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>(<span class="keywordtype">double</span> dou){
+<a name="l00023"></a>00023         mydouble = dou;
+<a name="l00024"></a>00024 }
+<a name="l00025"></a>00025 
+<a name="l00026"></a><a class="code" href="class_container.html#a495cb5feda12048a19db4b2bbb04b80e">00026</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>(<span class="keywordtype">string</span> str){
+<a name="l00027"></a>00027         mystring = str;
+<a name="l00028"></a>00028 }
+<a name="l00029"></a>00029 
+<a name="l00030"></a><a class="code" href="class_container.html#a7c5108a480199bd909f2937746f21070">00030</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>(<span class="keywordtype">char</span>* str){
+<a name="l00031"></a>00031         mystring = str;
+<a name="l00032"></a>00032 }
+<a name="l00033"></a>00033 
+<a name="l00034"></a><a class="code" href="class_container.html#a01beaaf6402702e6f8e81d758d154d1b">00034</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>(<span class="keywordtype">void</span>* data){
+<a name="l00035"></a>00035         mydata = data;
+<a name="l00036"></a>00036 }
+<a name="l00037"></a>00037 
+<a name="l00038"></a><a class="code" href="class_container.html#a9069124535ca5ca1cb072ed29399d543">00038</a> <a class="code" href="class_container.html#a1b0c5515d6863c1bc98cc93b65952f42">Container::Container</a>(<span class="keywordtype">void</span>** data){
+<a name="l00039"></a>00039         mydata2 = data;
+<a name="l00040"></a>00040 }
+<a name="l00041"></a>00041 
+<a name="l00042"></a><a class="code" href="class_container.html#ae9f5d07bfc3defda274aa06091c19f56">00042</a> <a class="code" href="class_container.html#ae9f5d07bfc3defda274aa06091c19f56">Container::~Container</a>() {
+<a name="l00043"></a>00043         <span class="comment">// Do Nothing</span>
+<a name="l00044"></a>00044 }
+<a name="l00045"></a>00045 
+<a name="l00051"></a><a class="code" href="class_container.html#af022f3a90dc684a4bdb30158e1f068e0">00051</a> <span class="keywordtype">void</span> <a class="code" href="class_container.html#af022f3a90dc684a4bdb30158e1f068e0">Container::setData</a>(<span class="keywordtype">int</span> integer){
+<a name="l00052"></a>00052         myint = integer;
+<a name="l00053"></a>00053 }
+<a name="l00054"></a>00054 
+<a name="l00055"></a><a class="code" href="class_container.html#ae4a012b031609cd3c933c82b67ecccb9">00055</a> <span class="keywordtype">void</span> <a class="code" href="class_container.html#af022f3a90dc684a4bdb30158e1f068e0">Container::setData</a>(<span class="keywordtype">double</span> dou){
+<a name="l00056"></a>00056         mydouble = dou;
+<a name="l00057"></a>00057 }
+<a name="l00058"></a>00058 
+<a name="l00059"></a><a class="code" href="class_container.html#a84c91e226908543d8dcb0b65ec4802d4">00059</a> <span class="keywordtype">void</span> <a class="code" href="class_container.html#af022f3a90dc684a4bdb30158e1f068e0">Container::setData</a>(<span class="keywordtype">string</span> str){
+<a name="l00060"></a>00060         mystring = str;
+<a name="l00061"></a>00061 }
+<a name="l00062"></a>00062 
+<a name="l00063"></a><a class="code" href="class_container.html#a0dc59d3888bc2f70a6762e9a22b7e48e">00063</a> <span class="keywordtype">void</span> <a class="code" href="class_container.html#af022f3a90dc684a4bdb30158e1f068e0">Container::setData</a>(<span class="keywordtype">void</span>* data){
+<a name="l00064"></a>00064         mydata = data;
+<a name="l00065"></a>00065 }
+<a name="l00066"></a>00066 
+<a name="l00067"></a><a class="code" href="class_container.html#a39d33e7c3e4c3503a4f1968398a6e88f">00067</a> <span class="keywordtype">void</span> <a class="code" href="class_container.html#af022f3a90dc684a4bdb30158e1f068e0">Container::setData</a>(<span class="keywordtype">void</span>** data){
+<a name="l00068"></a>00068         mydata2 = data;
+<a name="l00069"></a>00069 }
+<a name="l00070"></a>00070 
+<a name="l00071"></a><a class="code" href="class_container.html#af02e94c915e2f8cde38de562cc5b0646">00071</a> <span class="keywordtype">void</span> <a class="code" href="class_container.html#af02e94c915e2f8cde38de562cc5b0646">Container::setDescription</a>(<span class="keywordtype">string</span> desc){
+<a name="l00072"></a>00072         _description = desc;
+<a name="l00073"></a>00073 }
+<a name="l00074"></a>00074 
+<a name="l00075"></a><a class="code" href="class_container.html#ad9406305842bd078863197ddcd8b6c1f">00075</a> <span class="keywordtype">void</span>* <a class="code" href="class_container.html#ad9406305842bd078863197ddcd8b6c1f">Container::getData</a>(){
+<a name="l00076"></a>00076         <span class="keywordflow">return</span> mydata;
+<a name="l00077"></a>00077 }
+<a name="l00078"></a>00078 
+<a name="l00079"></a><a class="code" href="class_container.html#a8e502efe791eba089a95694d76c54b12">00079</a> <span class="keywordtype">void</span>** <a class="code" href="class_container.html#a8e502efe791eba089a95694d76c54b12">Container::getData2</a>(){
+<a name="l00080"></a>00080         <span class="keywordflow">return</span> mydata2;
+<a name="l00081"></a>00081 }
+<a name="l00082"></a>00082 
+<a name="l00083"></a><a class="code" href="class_container.html#a7ed9c192ca958cb5940d6c3973728138">00083</a> <span class="keywordtype">int</span> <a class="code" href="class_container.html#a7ed9c192ca958cb5940d6c3973728138">Container::getDataInt</a>(){
+<a name="l00084"></a>00084         <span class="keywordflow">return</span> myint;
+<a name="l00085"></a>00085 }
+<a name="l00086"></a>00086 
+<a name="l00087"></a><a class="code" href="class_container.html#afb007d43de2b7efd9c65d928dd34a754">00087</a> <span class="keywordtype">double</span> <a class="code" href="class_container.html#afb007d43de2b7efd9c65d928dd34a754">Container::getDataDouble</a>(){
+<a name="l00088"></a>00088         <span class="keywordflow">return</span> mydouble;
+<a name="l00089"></a>00089 }
+<a name="l00090"></a>00090 
+<a name="l00091"></a><a class="code" href="class_container.html#a29ada44caa2802b31f02faa1069756ac">00091</a> <span class="keywordtype">string</span> <a class="code" href="class_container.html#a29ada44caa2802b31f02faa1069756ac">Container::getDataString</a>(){
+<a name="l00092"></a>00092         <span class="keywordflow">return</span> mystring;
+<a name="l00093"></a>00093 }
+<a name="l00094"></a>00094 
+<a name="l00095"></a><a class="code" href="class_container.html#adc32d2fb4ba86c02f7c8d249f8fe6fc0">00095</a> <span class="keywordtype">string</span> <a class="code" href="class_container.html#adc32d2fb4ba86c02f7c8d249f8fe6fc0">Container::getDescription</a>(){
+<a name="l00096"></a>00096         <span class="keywordflow">return</span> _description;
+<a name="l00097"></a>00097 }
+<a name="l00098"></a>00098 
+</pre></div></div>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:19 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

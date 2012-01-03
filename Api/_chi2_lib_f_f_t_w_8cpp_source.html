@@ -1,0 +1,407 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Fichero Fuente src/Algorithm/Chi2Lib/Chi2LibFFTW.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+      <li><a href="globals.html"><span>Miembros&#160;de&#160;los&#160;ficheros</span></a></li>
+    </ul>
+  </div>
+  <div id="nav-path" class="navpath">
+    <ul>
+      <li class="navelem"><a class="el" href="dir_6843526ecfe91d74c51ab8083199d582.html">src</a>      </li>
+      <li class="navelem"><a class="el" href="dir_39de92efa378cb35af6ae8b91ad9b8a9.html">Algorithm</a>      </li>
+      <li class="navelem"><a class="el" href="dir_6fd8b478e99276d2f896baa45cb8d73f.html">Chi2Lib</a>      </li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">Chi2LibFFTW.cpp</div>  </div>
+</div>
+<div class="contents">
+<a href="_chi2_lib_f_f_t_w_8cpp.html">Ir a la documentación de este archivo.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * Chi2LibFFTW.cpp</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> *  Created on: 02/10/2011</span>
+<a name="l00005"></a>00005 <span class="comment"> *      Author: juanin</span>
+<a name="l00006"></a>00006 <span class="comment"> */</span>
+<a name="l00007"></a>00007 
+<a name="l00008"></a>00008 <span class="preprocessor">#include &quot;<a class="code" href="_chi2_lib_f_f_t_w_8h.html">Chi2LibFFTW.h</a>&quot;</span>
+<a name="l00009"></a>00009 pthread_mutex_t Chi2LibFFTW::mutex1 = PTHREAD_MUTEX_INITIALIZER;
+<a name="l00010"></a>00010 
+<a name="l00011"></a><a class="code" href="class_chi2_lib_f_f_t_w.html#a7675134437cf2b8ef0c524443116e74f">00011</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_f_f_t_w.html#a7675134437cf2b8ef0c524443116e74f">Chi2LibFFTW::getChiImage</a>(<a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *kernel, <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *img, <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *out, <span class="keywordtype">bool</span> use_thread){
+<a name="l00012"></a>00012         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Using cache&quot;</span>);
+<a name="l00013"></a>00013         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_kernel)){ <span class="comment">//Kernel</span>
+<a name="l00014"></a>00014                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *kernel_img = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(kernel-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), kernel-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00015"></a>00015                 <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(kernel, kernel_img);
+<a name="l00016"></a>00016                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel, kernel_img);
+<a name="l00017"></a>00017                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Kernel Cached&quot;</span>);
+<a name="l00018"></a>00018         }
+<a name="l00019"></a>00019         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_kernel2)){ <span class="comment">//Kernel2</span>
+<a name="l00020"></a>00020                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *kernel_img2 = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(kernel-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), kernel-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00021"></a>00021                 <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(kernel, kernel_img2);
+<a name="l00022"></a>00022                 <a class="code" href="class_chi2_lib_matrix.html#ae5dd5b127b83ec44e7be8ae9925bfc7f">Chi2LibMatrix::squareIt</a>(kernel_img2);
+<a name="l00023"></a>00023                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel2, kernel_img2);
+<a name="l00024"></a>00024                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Kernel^2 Cached&quot;</span>);
+<a name="l00025"></a>00025         }
+<a name="l00026"></a>00026         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_kernel3)){ <span class="comment">//Kernel3</span>
+<a name="l00027"></a>00027                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *kernel_img3 = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(kernel-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), kernel-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00028"></a>00028                 <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(kernel, kernel_img3);
+<a name="l00029"></a>00029                 <a class="code" href="class_chi2_lib_matrix.html#aab0b89430c857bc0451cf833592a975b">Chi2LibMatrix::cubeIt</a>(kernel_img3);
+<a name="l00030"></a>00030                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel3, kernel_img3);
+<a name="l00031"></a>00031                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Kernel^3 Cached&quot;</span>);
+<a name="l00032"></a>00032         }
+<a name="l00033"></a>00033         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_blank)){ <span class="comment">//Blank</span>
+<a name="l00034"></a>00034                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *blank = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>(), 1.0);
+<a name="l00035"></a>00035                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_blank, blank);
+<a name="l00036"></a>00036                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Blank Cached&quot;</span>);
+<a name="l00037"></a>00037         }
+<a name="l00038"></a>00038         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_first_term)){ <span class="comment">//First Term -&gt; conv2d_fft( normaldata, ipf*ipf )</span>
+<a name="l00039"></a>00039                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *first_term = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()+kernel-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()-1, img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()+kernel-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()-1);
+<a name="l00040"></a>00040                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_first_term, first_term);
+<a name="l00041"></a>00041                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] First Term Cached&quot;</span>);
+<a name="l00042"></a>00042         }
+<a name="l00043"></a>00043         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_second_term)){ <span class="comment">//Second Term -&gt; conv2d_fft( normaldata*normaldata, ipf )</span>
+<a name="l00044"></a>00044                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *second_term = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()+kernel-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()-1, img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()+kernel-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()-1);
+<a name="l00045"></a>00045                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_second_term, second_term);
+<a name="l00046"></a>00046                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Second Term Cached&quot;</span>);
+<a name="l00047"></a>00047         }
+<a name="l00048"></a>00048         <span class="keywordflow">if</span>(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30">Chi2LibFFTWCache::empty</a>(cached_third_term)){ <span class="comment">//Third Term -&gt; conv2d_fft( blank, ipf*ipf*ipf )</span>
+<a name="l00049"></a>00049                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *third_term = <span class="keyword">new</span> <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a>(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()+kernel-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()-1, img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()+kernel-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()-1);
+<a name="l00050"></a>00050                 <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_third_term, third_term);
+<a name="l00051"></a>00051                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][getChiImage] Third Term Cached&quot;</span>);
+<a name="l00052"></a>00052         }
+<a name="l00053"></a>00053 
+<a name="l00054"></a>00054         <span class="keywordflow">if</span>(use_thread){
+<a name="l00055"></a>00055                 PartitionFFT p1;
+<a name="l00056"></a>00056                 p1.img = img;
+<a name="l00057"></a>00057                 p1.kernel_img = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel2);
+<a name="l00058"></a>00058                 p1.output = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_first_term);
+<a name="l00059"></a>00059 
+<a name="l00060"></a>00060                 PartitionFFT p2;
+<a name="l00061"></a>00061                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> img2(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00062"></a>00062                 <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(img, &amp;img2);
+<a name="l00063"></a>00063                 <a class="code" href="class_chi2_lib_matrix.html#ae5dd5b127b83ec44e7be8ae9925bfc7f">Chi2LibMatrix::squareIt</a>(&amp;img2);
+<a name="l00064"></a>00064                 p2.img = &amp;img2;
+<a name="l00065"></a>00065                 p2.kernel_img = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel);
+<a name="l00066"></a>00066                 p2.output = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_second_term);
+<a name="l00067"></a>00067 
+<a name="l00068"></a>00068                 pthread_t thread1, thread2, thread3;
+<a name="l00069"></a>00069                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Generating First Convolution&quot;</span>);
+<a name="l00070"></a>00070                 pthread_create(&amp;thread1, NULL, conv2d_fftThread, (<span class="keywordtype">void</span> *)&amp;p1);
+<a name="l00071"></a>00071                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Generating Second Convolution&quot;</span>);
+<a name="l00072"></a>00072                 pthread_create(&amp;thread2, NULL, conv2d_fftThread, (<span class="keywordtype">void</span> *)&amp;p2);
+<a name="l00073"></a>00073 
+<a name="l00074"></a>00074                 <span class="keywordflow">if</span>(!<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#ae5eb971b629dd1c850ad90015b6acd49">Chi2LibFFTWCache::lock</a>(cached_third_term)){
+<a name="l00075"></a>00075                         PartitionFFT p3;
+<a name="l00076"></a>00076                         p3.img = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_blank);
+<a name="l00077"></a>00077                         p3.kernel_img = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel3);
+<a name="l00078"></a>00078                         p3.output = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_third_term);
+<a name="l00079"></a>00079 
+<a name="l00080"></a>00080                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Generating Third Convolution&quot;</span>);
+<a name="l00081"></a>00081                         pthread_create(&amp;thread3, NULL, conv2d_fftThread, (<span class="keywordtype">void</span> *)&amp;p3);
+<a name="l00082"></a>00082 
+<a name="l00083"></a>00083                         pthread_join(thread3, NULL);
+<a name="l00084"></a>00084                         <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#ae5eb971b629dd1c850ad90015b6acd49">Chi2LibFFTWCache::lock</a>(cached_third_term, <span class="keyword">true</span>);
+<a name="l00085"></a>00085                 }
+<a name="l00086"></a>00086 
+<a name="l00087"></a>00087                 pthread_join(thread1, NULL);
+<a name="l00088"></a>00088                 pthread_join(thread2, NULL);
+<a name="l00089"></a>00089 
+<a name="l00090"></a>00090         }<span class="keywordflow">else</span>{
+<a name="l00091"></a>00091                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Generating First Convolution&quot;</span>);
+<a name="l00092"></a>00092                 conv2d_fft(img, <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel2), <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_first_term));   <span class="comment">// ~200 Milisegundos</span>
+<a name="l00093"></a>00093 
+<a name="l00094"></a>00094                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Generating Second Convolution&quot;</span>);
+<a name="l00095"></a>00095                 <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> img2(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00096"></a>00096                 <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(img, &amp;img2);
+<a name="l00097"></a>00097                 <a class="code" href="class_chi2_lib_matrix.html#ae5dd5b127b83ec44e7be8ae9925bfc7f">Chi2LibMatrix::squareIt</a>(&amp;img2);
+<a name="l00098"></a>00098                 conv2d_fft(&amp;img2, <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel), <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_second_term)); <span class="comment">// ~180 Milisegundos</span>
+<a name="l00099"></a>00099 
+<a name="l00100"></a>00100                 <span class="keywordflow">if</span>(!<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#ae5eb971b629dd1c850ad90015b6acd49">Chi2LibFFTWCache::lock</a>(cached_third_term)){
+<a name="l00101"></a>00101                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Generating Third Convolution&quot;</span>);
+<a name="l00102"></a>00102                         conv2d_fft(<a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_blank), <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_kernel3), <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_third_term)); <span class="comment">// ~170 Milisegundos</span>
+<a name="l00103"></a>00103                         <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#ae5eb971b629dd1c850ad90015b6acd49">Chi2LibFFTWCache::lock</a>(cached_third_term, <span class="keyword">true</span>);
+<a name="l00104"></a>00104                 }
+<a name="l00105"></a>00105         }
+<a name="l00106"></a>00106 
+<a name="l00107"></a>00107         <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *first_term = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_first_term);
+<a name="l00108"></a>00108         <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *second_term = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_second_term);
+<a name="l00109"></a>00109         <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *third_term = <a class="code" href="class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b">Chi2LibFFTWCache::cache</a>(cached_third_term);
+<a name="l00110"></a>00110 
+<a name="l00111"></a>00111         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Computing result&quot;</span>);
+<a name="l00112"></a>00112         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x=0; x &lt; first_term-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(); ++x)
+<a name="l00113"></a>00113                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y=0; y &lt; first_term-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>(); ++y){
+<a name="l00114"></a>00114                         out-&gt;<a class="code" href="class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba">at</a>(x,y) = 1.0/(1.0+ (-2.0*first_term-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y) +second_term-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y))/third_term-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y));
+<a name="l00115"></a>00115                 }
+<a name="l00116"></a>00116         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW] Result Computed&quot;</span>);
+<a name="l00117"></a>00117 }
+<a name="l00118"></a>00118 
+<a name="l00119"></a>00119 <span class="keywordtype">void</span> *Chi2LibFFTW::conv2d_fftThread(<span class="keywordtype">void</span> * ptr){
+<a name="l00120"></a>00120         PartitionFFT *part = (PartitionFFT*)ptr;
+<a name="l00121"></a>00121         conv2d_fft(part-&gt;img, part-&gt;kernel_img, part-&gt;output);
+<a name="l00122"></a>00122         <span class="keywordflow">return</span> 0;
+<a name="l00123"></a>00123 }
+<a name="l00124"></a>00124 
+<a name="l00125"></a>00125 <span class="comment">/*****************</span>
+<a name="l00126"></a>00126 <span class="comment"> * Version DOUBLE</span>
+<a name="l00127"></a>00127 <span class="comment"> *****************/</span>
+<a name="l00128"></a>00128 <span class="keywordtype">void</span> Chi2LibFFTW::conv2d_fft(<a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *img, <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *kernel_img, <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *output){
+<a name="l00129"></a>00129         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][conv2d_fft] Generating Convolution using FFTW&quot;</span>);
+<a name="l00130"></a>00130         fftw_complex    *fft_image, *fft_kernel;
+<a name="l00131"></a>00131         fftw_plan       plan_forward_image, plan_forward_kernel, plan_backward;
+<a name="l00132"></a>00132         <span class="comment">//auxiliary structures are necessary because fftw3 optimization plan will destroy it!</span>
+<a name="l00133"></a>00133         <span class="keywordtype">double</span>                  *ifft_result, *data, *kernel;
+<a name="l00134"></a>00134         <span class="keywordtype">int</span> nwidth      =       (int)(img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()+kernel_img-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>()-1);
+<a name="l00135"></a>00135         <span class="keywordtype">int</span> nheight     =       (int)(img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()+kernel_img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>()-1);
+<a name="l00136"></a>00136 
+<a name="l00137"></a>00137         pthread_mutex_lock( &amp;mutex1 );
+<a name="l00138"></a>00138         <span class="comment">// FFTW Allocs</span>
+<a name="l00139"></a>00139         <span class="keywordtype">size_t</span> size = (size_t)(nwidth * nheight);
+<a name="l00140"></a>00140         <span class="comment">//the new size includes zero padding space</span>
+<a name="l00141"></a>00141         data            = fftw_alloc_real(size);
+<a name="l00142"></a>00142         kernel          = fftw_alloc_real(size);
+<a name="l00143"></a>00143         ifft_result = fftw_alloc_real(size);
+<a name="l00144"></a>00144 
+<a name="l00145"></a>00145         <span class="comment">//fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2</span>
+<a name="l00146"></a>00146         size = (size_t)(nwidth*(floor(nheight/2) + 1));
+<a name="l00147"></a>00147         fft_image       = fftw_alloc_complex(size);
+<a name="l00148"></a>00148         fft_kernel      = fftw_alloc_complex(size);
+<a name="l00149"></a>00149 
+<a name="l00150"></a>00150         plan_forward_image      = fftw_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );
+<a name="l00151"></a>00151         plan_forward_kernel     = fftw_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );
+<a name="l00152"></a>00152         plan_backward           = fftw_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );
+<a name="l00153"></a>00153 
+<a name="l00154"></a>00154         pthread_mutex_unlock( &amp;mutex1 );
+<a name="l00155"></a>00155 
+<a name="l00156"></a>00156         <span class="comment">//populate kernel and shift input</span>
+<a name="l00157"></a>00157         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x = 0 ; x &lt; (<span class="keywordtype">unsigned</span> int)nwidth ; ++x ){
+<a name="l00158"></a>00158                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> xnw = x*nwidth;
+<a name="l00159"></a>00159                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y=0; y &lt; (<span class="keywordtype">unsigned</span> int)nheight; ++y){
+<a name="l00160"></a>00160                         <span class="keywordflow">if</span>(x &lt; kernel_img-&gt;sX() &amp;&amp; y &lt; kernel_img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>())
+<a name="l00161"></a>00161                                 kernel[xnw+ y] = kernel_img-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y);
+<a name="l00162"></a>00162                         <span class="keywordflow">else</span>
+<a name="l00163"></a>00163                                 kernel[xnw+ y] = 0;
+<a name="l00164"></a>00164                 }
+<a name="l00165"></a>00165         }
+<a name="l00166"></a>00166 
+<a name="l00167"></a>00167         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x = 0 ; x &lt; (<span class="keywordtype">unsigned</span> int)nwidth ; ++x ){
+<a name="l00168"></a>00168                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> xnw = x*nwidth;
+<a name="l00169"></a>00169                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y=0; y &lt; (<span class="keywordtype">unsigned</span> int)nheight; ++y){
+<a name="l00170"></a>00170                         <span class="keywordflow">if</span>(x &lt; img-&gt;sX() &amp;&amp; y &lt; img-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>())
+<a name="l00171"></a>00171                                 data[xnw+ y] = img-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y);
+<a name="l00172"></a>00172                         <span class="keywordflow">else</span>
+<a name="l00173"></a>00173                                 data[xnw+ y] = 0;
+<a name="l00174"></a>00174                 }
+<a name="l00175"></a>00175         }
+<a name="l00176"></a>00176 
+<a name="l00177"></a>00177         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][conv2d_fft] Starting FFTW&quot;</span>);
+<a name="l00179"></a>00179                 <span class="comment">//fft of image</span>
+<a name="l00180"></a>00180                 fftw_execute( plan_forward_image );
+<a name="l00181"></a>00181                 <span class="comment">//fft of kernel</span>
+<a name="l00182"></a>00182                 fftw_execute( plan_forward_kernel );
+<a name="l00183"></a>00183 
+<a name="l00184"></a>00184                 <span class="comment">//convolution in fourier domain</span>
+<a name="l00185"></a>00185                 <span class="keywordtype">double</span> f1, f2;
+<a name="l00186"></a>00186                 <span class="keywordtype">double</span> nwnh = (double)(nwidth*nheight);
+<a name="l00187"></a>00187                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> limit = (<span class="keywordtype">unsigned</span> int)(nwidth * (floor(nheight/2) + 1));
+<a name="l00188"></a>00188                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0; i&lt; limit; ++i){
+<a name="l00189"></a>00189                         f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];
+<a name="l00190"></a>00190                         f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];
+<a name="l00191"></a>00191 
+<a name="l00192"></a>00192                         fft_image[i][0]=f1/nwnh;
+<a name="l00193"></a>00193                         fft_image[i][1]=f2/nwnh;
+<a name="l00194"></a>00194                 }
+<a name="l00195"></a>00195 
+<a name="l00196"></a>00196                 <span class="comment">//ifft of the product</span>
+<a name="l00197"></a>00197                 fftw_execute( plan_backward );
+<a name="l00199"></a>00199         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibFFTW][conv2d_fft] FFTW Finished&quot;</span>);
+<a name="l00200"></a>00200 
+<a name="l00201"></a>00201         <span class="keywordflow">if</span>(output-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>() == (<span class="keywordtype">unsigned</span> int)nwidth &amp;&amp; output-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>() == (<span class="keywordtype">unsigned</span> int)nheight)
+<a name="l00202"></a>00202         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x = 0 ; x &lt; output-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>() ; ++x ){
+<a name="l00203"></a>00203                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> xnw = x*nwidth;
+<a name="l00204"></a>00204                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y = 0 ; y &lt; output-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>() ; ++y ){
+<a name="l00205"></a>00205                         output-&gt;<a class="code" href="class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba">at</a>(x,y) = ifft_result[xnw+y];
+<a name="l00206"></a>00206                 }
+<a name="l00207"></a>00207         }
+<a name="l00208"></a>00208 
+<a name="l00209"></a>00209     <span class="comment">/* free memory */</span>
+<a name="l00210"></a>00210     fftw_destroy_plan( plan_forward_image );
+<a name="l00211"></a>00211     fftw_destroy_plan( plan_forward_kernel );
+<a name="l00212"></a>00212     fftw_destroy_plan( plan_backward );
+<a name="l00213"></a>00213 
+<a name="l00214"></a>00214     fftw_free( data );
+<a name="l00215"></a>00215     fftw_free( kernel );
+<a name="l00216"></a>00216     fftw_free( ifft_result );
+<a name="l00217"></a>00217 
+<a name="l00218"></a>00218     fftw_free( fft_image );
+<a name="l00219"></a>00219     fftw_free( fft_kernel );
+<a name="l00220"></a>00220 }
+<a name="l00221"></a>00221 
+<a name="l00222"></a>00222 <span class="comment">/*****************</span>
+<a name="l00223"></a>00223 <span class="comment"> * Version FLOAT</span>
+<a name="l00224"></a>00224 <span class="comment"> *****************/</span>
+<a name="l00225"></a>00225 <span class="comment">//void Chi2LibFFTW::conv2d_fft(MyMatrix&lt;double&gt; *img, MyMatrix&lt;double&gt; *kernel_img, MyMatrix&lt;double&gt; *output){</span>
+<a name="l00226"></a>00226 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibFFTW][conv2d_fft] Generating Convolution using FFTW&quot;);</span>
+<a name="l00227"></a>00227 <span class="comment">//      fftwf_complex   *fft_image, *fft_kernel;</span>
+<a name="l00228"></a>00228 <span class="comment">//      fftwf_plan       plan_forward_image, plan_forward_kernel, plan_backward;</span>
+<a name="l00229"></a>00229 <span class="comment">//      //auxiliary structures are necessary because fftw3 optimization plan will destroy it!</span>
+<a name="l00230"></a>00230 <span class="comment">//      float                   *ifft_result, *data, *kernel;</span>
+<a name="l00231"></a>00231 <span class="comment">//      int nwidth      =       (int)(img-&gt;sX()+kernel_img-&gt;sX()-1);</span>
+<a name="l00232"></a>00232 <span class="comment">//      int nheight     =       (int)(img-&gt;sY()+kernel_img-&gt;sY()-1);</span>
+<a name="l00233"></a>00233 <span class="comment">//</span>
+<a name="l00234"></a>00234 <span class="comment">//      pthread_mutex_lock( &amp;mutex1 );</span>
+<a name="l00235"></a>00235 <span class="comment">//      // FFTW Allocs</span>
+<a name="l00236"></a>00236 <span class="comment">//      size_t size = (size_t)(nwidth * nheight);</span>
+<a name="l00237"></a>00237 <span class="comment">//      //the new size includes zero padding space</span>
+<a name="l00238"></a>00238 <span class="comment">//      data            = fftwf_alloc_real(size);</span>
+<a name="l00239"></a>00239 <span class="comment">//      kernel          = fftwf_alloc_real(size);</span>
+<a name="l00240"></a>00240 <span class="comment">//      ifft_result = fftwf_alloc_real(size);</span>
+<a name="l00241"></a>00241 <span class="comment">//</span>
+<a name="l00242"></a>00242 <span class="comment">//      //fftw handle real fft avoiding redundancy in the complex plane, therefore the nheight/2</span>
+<a name="l00243"></a>00243 <span class="comment">//      size = (size_t)(nwidth*(floor(nheight/2) + 1));</span>
+<a name="l00244"></a>00244 <span class="comment">//      fft_image       = fftwf_alloc_complex(size);</span>
+<a name="l00245"></a>00245 <span class="comment">//      fft_kernel      = fftwf_alloc_complex(size);</span>
+<a name="l00246"></a>00246 <span class="comment">//</span>
+<a name="l00247"></a>00247 <span class="comment">//      plan_forward_image      = fftwf_plan_dft_r2c_2d( nwidth, nheight, data, fft_image, FFTW_ESTIMATE );</span>
+<a name="l00248"></a>00248 <span class="comment">//      plan_forward_kernel     = fftwf_plan_dft_r2c_2d( nwidth, nheight, kernel, fft_kernel, FFTW_ESTIMATE );</span>
+<a name="l00249"></a>00249 <span class="comment">//      plan_backward           = fftwf_plan_dft_c2r_2d( nwidth, nheight, fft_image, ifft_result, FFTW_ESTIMATE );</span>
+<a name="l00250"></a>00250 <span class="comment">//</span>
+<a name="l00251"></a>00251 <span class="comment">//      pthread_mutex_unlock( &amp;mutex1 );</span>
+<a name="l00252"></a>00252 <span class="comment">//</span>
+<a name="l00253"></a>00253 <span class="comment">//      //populate kernel and shift input</span>
+<a name="l00254"></a>00254 <span class="comment">//      for(unsigned int x = 0 ; x &lt; (unsigned int)nwidth ; ++x ){</span>
+<a name="l00255"></a>00255 <span class="comment">//              unsigned int xnw = x*nwidth;</span>
+<a name="l00256"></a>00256 <span class="comment">//              for(unsigned int y=0; y &lt; (unsigned int)nheight; ++y){</span>
+<a name="l00257"></a>00257 <span class="comment">//                      if(x &lt; kernel_img-&gt;sX() &amp;&amp; y &lt; kernel_img-&gt;sY())</span>
+<a name="l00258"></a>00258 <span class="comment">//                              kernel[xnw+ y] = (float)kernel_img-&gt;getValue(x,y);</span>
+<a name="l00259"></a>00259 <span class="comment">//                      else</span>
+<a name="l00260"></a>00260 <span class="comment">//                              kernel[xnw+ y] = 0;</span>
+<a name="l00261"></a>00261 <span class="comment">//              }</span>
+<a name="l00262"></a>00262 <span class="comment">//      }</span>
+<a name="l00263"></a>00263 <span class="comment">//</span>
+<a name="l00264"></a>00264 <span class="comment">//      for(unsigned int x = 0 ; x &lt; (unsigned int)nwidth ; ++x ){</span>
+<a name="l00265"></a>00265 <span class="comment">//              unsigned int xnw = x*nwidth;</span>
+<a name="l00266"></a>00266 <span class="comment">//              for(unsigned int y=0; y &lt; (unsigned int)nheight; ++y){</span>
+<a name="l00267"></a>00267 <span class="comment">//                      if(x &lt; img-&gt;sX() &amp;&amp; y &lt; img-&gt;sY())</span>
+<a name="l00268"></a>00268 <span class="comment">//                              data[xnw+ y] = (float)img-&gt;getValue(x,y);</span>
+<a name="l00269"></a>00269 <span class="comment">//                      else</span>
+<a name="l00270"></a>00270 <span class="comment">//                              data[xnw+ y] = 0;</span>
+<a name="l00271"></a>00271 <span class="comment">//              }</span>
+<a name="l00272"></a>00272 <span class="comment">//      }</span>
+<a name="l00273"></a>00273 <span class="comment">//</span>
+<a name="l00274"></a>00274 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibFFTW][conv2d_fft] Starting FFTW&quot;);</span>
+<a name="l00275"></a>00275 <span class="comment">//      /** FFT Execute */</span>
+<a name="l00276"></a>00276 <span class="comment">//              //fft of image</span>
+<a name="l00277"></a>00277 <span class="comment">//              fftwf_execute( plan_forward_image );</span>
+<a name="l00278"></a>00278 <span class="comment">//              //fft of kernel</span>
+<a name="l00279"></a>00279 <span class="comment">//              fftwf_execute( plan_forward_kernel );</span>
+<a name="l00280"></a>00280 <span class="comment">//</span>
+<a name="l00281"></a>00281 <span class="comment">//              //convolution in fourier domain</span>
+<a name="l00282"></a>00282 <span class="comment">//              float f1, f2;</span>
+<a name="l00283"></a>00283 <span class="comment">//              float nwnh = (float)(nwidth*nheight);</span>
+<a name="l00284"></a>00284 <span class="comment">//              unsigned int limit = (unsigned int)(nwidth * (floor(nheight/2) + 1));</span>
+<a name="l00285"></a>00285 <span class="comment">//              for(unsigned int i=0; i&lt; limit; ++i){</span>
+<a name="l00286"></a>00286 <span class="comment">//                      f1 = fft_image[i][0]*fft_kernel[i][0] - fft_image[i][1]*fft_kernel[i][1];</span>
+<a name="l00287"></a>00287 <span class="comment">//                      f2 = fft_image[i][0]*fft_kernel[i][1] + fft_image[i][1]*fft_kernel[i][0];</span>
+<a name="l00288"></a>00288 <span class="comment">//</span>
+<a name="l00289"></a>00289 <span class="comment">//                      fft_image[i][0]=f1/nwnh;</span>
+<a name="l00290"></a>00290 <span class="comment">//                      fft_image[i][1]=f2/nwnh;</span>
+<a name="l00291"></a>00291 <span class="comment">//              }</span>
+<a name="l00292"></a>00292 <span class="comment">//</span>
+<a name="l00293"></a>00293 <span class="comment">//              //ifft of the product</span>
+<a name="l00294"></a>00294 <span class="comment">//              fftwf_execute( plan_backward );</span>
+<a name="l00295"></a>00295 <span class="comment">//      /** FFT Execute */</span>
+<a name="l00296"></a>00296 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibFFTW][conv2d_fft] FFTW Finished&quot;);</span>
+<a name="l00297"></a>00297 <span class="comment">//</span>
+<a name="l00298"></a>00298 <span class="comment">//      if(output-&gt;sX() == (unsigned int)nwidth &amp;&amp; output-&gt;sY() == (unsigned int)nheight)</span>
+<a name="l00299"></a>00299 <span class="comment">//      for(unsigned int x = 0 ; x &lt; output-&gt;sX() ; ++x ){</span>
+<a name="l00300"></a>00300 <span class="comment">//              unsigned int xnw = x*nwidth;</span>
+<a name="l00301"></a>00301 <span class="comment">//              for(unsigned int y = 0 ; y &lt; output-&gt;sY() ; ++y ){</span>
+<a name="l00302"></a>00302 <span class="comment">//                      output-&gt;at(x,y) = ifft_result[xnw+y];</span>
+<a name="l00303"></a>00303 <span class="comment">//              }</span>
+<a name="l00304"></a>00304 <span class="comment">//      }</span>
+<a name="l00305"></a>00305 <span class="comment">//</span>
+<a name="l00306"></a>00306 <span class="comment">//    /* free memory */</span>
+<a name="l00307"></a>00307 <span class="comment">//    fftwf_destroy_plan( plan_forward_image );</span>
+<a name="l00308"></a>00308 <span class="comment">//    fftwf_destroy_plan( plan_forward_kernel );</span>
+<a name="l00309"></a>00309 <span class="comment">//    fftwf_destroy_plan( plan_backward );</span>
+<a name="l00310"></a>00310 <span class="comment">//</span>
+<a name="l00311"></a>00311 <span class="comment">//    fftwf_free( data );</span>
+<a name="l00312"></a>00312 <span class="comment">//    fftwf_free( kernel );</span>
+<a name="l00313"></a>00313 <span class="comment">//    fftwf_free( ifft_result );</span>
+<a name="l00314"></a>00314 <span class="comment">//</span>
+<a name="l00315"></a>00315 <span class="comment">//    fftwf_free( fft_image );</span>
+<a name="l00316"></a>00316 <span class="comment">//    fftwf_free( fft_kernel );</span>
+<a name="l00317"></a>00317 <span class="comment">//}</span>
+</pre></div></div>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:19 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

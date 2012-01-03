@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Fichero Fuente src/Algorithm/Implementations/Chi2HDCudaAlgorithm.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+      <li><a href="globals.html"><span>Miembros&#160;de&#160;los&#160;ficheros</span></a></li>
+    </ul>
+  </div>
+  <div id="nav-path" class="navpath">
+    <ul>
+      <li class="navelem"><a class="el" href="dir_6843526ecfe91d74c51ab8083199d582.html">src</a>      </li>
+      <li class="navelem"><a class="el" href="dir_39de92efa378cb35af6ae8b91ad9b8a9.html">Algorithm</a>      </li>
+      <li class="navelem"><a class="el" href="dir_9c30e6cabb1d2997a0a138bb094588d0.html">Implementations</a>      </li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">Chi2HDCudaAlgorithm.cpp</div>  </div>
+</div>
+<div class="contents">
+<a href="_chi2_h_d_cuda_algorithm_8cpp.html">Ir a la documentación de este archivo.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * Chi2HDCudaAlgorithm.cpp</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> *  Created on: 15-11-2011</span>
+<a name="l00005"></a>00005 <span class="comment"> *      Author: ptrack</span>
+<a name="l00006"></a>00006 <span class="comment"> */</span>
+<a name="l00007"></a>00007 
+<a name="l00008"></a>00008 <span class="preprocessor">#include &quot;<a class="code" href="_chi2_h_d_cuda_algorithm_8h.html">Chi2HDCudaAlgorithm.h</a>&quot;</span>
+<a name="l00009"></a>00009 
+<a name="l00010"></a><a class="code" href="class_chi2_h_d_cuda_algorithm.html#a60d6c46d691c6a1ea47f35b9c57c45e8">00010</a> vector&lt;MyPeak&gt; <a class="code" href="class_chi2_h_d_cuda_algorithm.html#a60d6c46d691c6a1ea47f35b9c57c45e8">Chi2HDCudaAlgorithm::run</a>(<a class="code" href="class_parameter_container.html">ParameterContainer</a> *pc){
+<a name="l00011"></a>00011         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;notice(<span class="stringliteral">&quot;[Chi2Algorithm] Running Chi2HD CUDA Algorithm&quot;</span>);
+<a name="l00012"></a>00012 
+<a name="l00013"></a>00013 
+<a name="l00014"></a>00014         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-device&quot;</span>)){
+<a name="l00015"></a>00015                 <span class="keywordtype">int</span> dev = pc-&gt;<a class="code" href="class_parameter_container.html#aa632a0aa1f9ad14060fa7af9deb6429d">getParamAsInt</a>(<span class="stringliteral">&quot;-device&quot;</span>);
+<a name="l00016"></a>00016                 Chi2Libcu::setDevice(dev);
+<a name="l00017"></a>00017         }
+<a name="l00018"></a>00018         DeviceProps props = Chi2Libcu::getProps();
+<a name="l00019"></a>00019         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;notice(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00020"></a>00020         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;notice(<span class="stringliteral">&quot;[Chi2Algorithm] Setting CUDA Device %i = %s&quot;</span>, props.device, props.name);
+<a name="l00021"></a>00021 
+<a name="l00022"></a>00022         <span class="keywordtype">float</span> d = 9.87;
+<a name="l00023"></a>00023         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-d&quot;</span>))
+<a name="l00024"></a>00024                 d = (<span class="keywordtype">float</span>)pc-&gt;<a class="code" href="class_parameter_container.html#a5de19e4f72eb46b16a558e9b456ba5e1">getParamAsDouble</a>(<span class="stringliteral">&quot;-d&quot;</span>);
+<a name="l00025"></a>00025 
+<a name="l00026"></a>00026         <span class="keywordtype">float</span> w = 1.84;
+<a name="l00027"></a>00027         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-w&quot;</span>))
+<a name="l00028"></a>00028                 w = (<span class="keywordtype">float</span>)pc-&gt;<a class="code" href="class_parameter_container.html#a5de19e4f72eb46b16a558e9b456ba5e1">getParamAsDouble</a>(<span class="stringliteral">&quot;-w&quot;</span>);
+<a name="l00029"></a>00029 
+<a name="l00030"></a>00030         <span class="keywordtype">int</span> ss = 2*floor(d/2 + 4*w/2)-1;
+<a name="l00031"></a>00031         <span class="keywordtype">int</span> os = (ss-1)/2;
+<a name="l00032"></a>00032 
+<a name="l00033"></a>00033         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00034"></a>00034         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Initializing Device Data &quot;</span>);
+<a name="l00035"></a>00035         cuMyMatrix cuImg = <a class="code" href="class_chi2_lib_cuda.html#a25de91fd608d0f3efdca843bdd631753">Chi2LibCuda::initializeData</a>(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>);
+<a name="l00036"></a>00036 
+<a name="l00037"></a>00037         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00038"></a>00038         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Normalize image &quot;</span>);
+<a name="l00039"></a>00039         pair&lt;double, double&gt; hilo = <a class="code" href="class_chi2_lib.html#a534582e1ab9fb300c72aa41640adf116">Chi2Lib::getHighLow</a>(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>);
+<a name="l00040"></a>00040         <a class="code" href="class_chi2_lib_cuda.html#ab11cd6aef250d6656dc8faf1461d5e3e">Chi2LibCuda::normalizeImage</a>(&amp;cuImg, hilo.first, hilo.second);
+<a name="l00041"></a>00041         <a class="code" href="class_chi2_lib.html#a03a0198c84f0deac9b4c53126634531c">Chi2Lib::normalizeImage</a>(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>, hilo.first, hilo.second);
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00044"></a>00044         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Generate Chi2 image &quot;</span>);
+<a name="l00045"></a>00045         cuMyMatrix cuKernel = <a class="code" href="class_chi2_lib_cuda.html#af105e3e4c855cfb192de1bfd4f1f41e4">Chi2LibCuda::generateKernel</a>(ss,os,d,w);
+<a name="l00046"></a>00046         cuMyMatrix cu_chi_img(cuImg.sizeX()+cuKernel.sizeX()-1, cuImg.sizeY()+cuKernel.sizeY()-1);
+<a name="l00047"></a>00047         <a class="code" href="class_chi2_lib_cuda_f_f_t.html#a0b768e4b70ee352aceb3b1b751cc8a92">Chi2LibCudaFFT::getChiImage</a>(&amp;cuKernel, &amp;cuImg, &amp;cu_chi_img);
+<a name="l00048"></a>00048 
+<a name="l00049"></a>00049         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00050"></a>00050         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Obtain peaks of Chi2 Image &quot;</span>);
+<a name="l00051"></a>00051         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> threshold = 5, minsep = 1, mindistance = 5;
+<a name="l00052"></a>00052         cuMyPeakArray peaks = <a class="code" href="class_chi2_lib_cuda.html#a9960992ef1659dc16861b40459448f99">Chi2LibCuda::getPeaks</a>(&amp;cu_chi_img, threshold, mindistance, minsep, !pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-validateones&quot;</span>));
+<a name="l00053"></a>00053 
+<a name="l00054"></a>00054         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00055"></a>00055         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Generate Auxiliary Matrix &quot;</span>);
+<a name="l00056"></a>00056         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Allocating %ix%i&quot;</span>, <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00057"></a>00057         cuMyMatrix grid_x(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00058"></a>00058         cuMyMatrix grid_y(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00059"></a>00059         cuMyMatrixi over(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00060"></a>00060         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Allocation Complete &quot;</span>);
+<a name="l00061"></a>00061         <a class="code" href="class_chi2_lib_cuda.html#a82d1d200108dd427790e6ef16f2be0b2">Chi2LibCuda::generateGrid</a>(&amp;peaks, os, &amp;grid_x, &amp;grid_y, &amp;over);
+<a name="l00062"></a>00062         <a class="code" href="class_file_utils.html#a329dd68d700499066b23a320480e3462">FileUtils::writeToFileM</a>(&amp;grid_x, <span class="stringliteral">&quot;grid_x-cuda.txt&quot;</span>);
+<a name="l00063"></a>00063         <a class="code" href="class_file_utils.html#a329dd68d700499066b23a320480e3462">FileUtils::writeToFileM</a>(&amp;grid_y, <span class="stringliteral">&quot;grid_y-cuda.txt&quot;</span>);
+<a name="l00064"></a>00064         <a class="code" href="class_file_utils.html#a329dd68d700499066b23a320480e3462">FileUtils::writeToFileM</a>(&amp;over, <span class="stringliteral">&quot;over-cuda.txt&quot;</span>);
+<a name="l00065"></a>00065 
+<a name="l00066"></a>00066         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00067"></a>00067         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Compute Chi2 Difference &quot;</span>);
+<a name="l00068"></a>00068         cuMyMatrix chi2diff(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00069"></a>00069         <span class="keywordtype">float</span> currentChi2Error = <a class="code" href="class_chi2_lib_cuda.html#a9fdf16b743fe4432fa0446542f66e586">Chi2LibCuda::computeDifference</a>(&amp;cuImg, &amp;grid_x, &amp;grid_y, d, w, &amp;chi2diff);
+<a name="l00070"></a>00070 
+<a name="l00071"></a>00071         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00072"></a>00072         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Add missed points &quot;</span>);
+<a name="l00073"></a>00073         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> chi_cut = 2;
+<a name="l00074"></a>00074         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-chicut&quot;</span>))
+<a name="l00075"></a>00075                 chi_cut = pc-&gt;<a class="code" href="class_parameter_container.html#aa632a0aa1f9ad14060fa7af9deb6429d">getParamAsInt</a>(<span class="stringliteral">&quot;-chicut&quot;</span>);
+<a name="l00076"></a>00076         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> total_found = 0;
+<a name="l00077"></a>00077         cuMyMatrix normaldata_chi(<a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(), <a class="code" href="class_algorithm.html#a3c4f39e6f118205be0eaa5b4db81a109">data</a>-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>());
+<a name="l00078"></a>00078 
+<a name="l00079"></a>00079         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> _maxIterations = 10, iterations = 0;
+<a name="l00080"></a>00080         <span class="keywordflow">while</span>(iterations &lt;= _maxIterations){
+<a name="l00081"></a>00081                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Generating Scaled Image &quot;</span>);
+<a name="l00082"></a>00082                 <a class="code" href="class_chi2_lib_cuda_high_density.html#a3ec4bb2261c76c84d0429f2e66da8b4f">Chi2LibCudaHighDensity::generateScaledImage</a>(&amp;chi2diff, &amp;normaldata_chi);
+<a name="l00083"></a>00083 
+<a name="l00084"></a>00084                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Obtaining new CHi2 Image &quot;</span>);
+<a name="l00085"></a>00085                 Chi2LibCudaFFT::getChiImage(&amp;cuKernel, &amp;normaldata_chi, &amp;cu_chi_img);
+<a name="l00086"></a>00086 
+<a name="l00087"></a>00087                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Obtaining new Peaks &quot;</span>);
+<a name="l00088"></a>00088                 cuMyPeakArray new_peaks = <a class="code" href="class_chi2_lib_cuda.html#a9960992ef1659dc16861b40459448f99">Chi2LibCuda::getPeaks</a>(&amp;cu_chi_img, chi_cut, mindistance, minsep, !pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-validateones&quot;</span>));
+<a name="l00089"></a>00089 
+<a name="l00090"></a>00090                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> old_size = peaks.size();
+<a name="l00091"></a>00091                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Checking inside image peaks &quot;</span>);
+<a name="l00092"></a>00092                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> found = <a class="code" href="class_chi2_lib_cuda_high_density.html#a9004febbebaecb59d9a573050a99338c">Chi2LibCudaHighDensity::checkInsidePeaks</a>(&amp;peaks, &amp;new_peaks, &amp;cuImg, os);
+<a name="l00093"></a>00093                 total_found += found;
+<a name="l00094"></a>00094 
+<a name="l00095"></a>00095                 <span class="keywordflow">if</span>(found &lt;= 0)
+<a name="l00096"></a>00096                         <span class="keywordflow">break</span>;
+<a name="l00097"></a>00097 
+<a name="l00098"></a>00098                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Generating Auxiliary Matrix &quot;</span>);
+<a name="l00099"></a>00099                 <a class="code" href="class_chi2_lib_cuda.html#a82d1d200108dd427790e6ef16f2be0b2">Chi2LibCuda::generateGrid</a>(&amp;peaks, os, &amp;grid_x, &amp;grid_y, &amp;over);
+<a name="l00100"></a>00100 
+<a name="l00101"></a>00101                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Computing Chi2 Difference &quot;</span>);
+<a name="l00102"></a>00102                 currentChi2Error = <a class="code" href="class_chi2_lib_cuda.html#a9fdf16b743fe4432fa0446542f66e586">Chi2LibCuda::computeDifference</a>(&amp;cuImg, &amp;grid_x, &amp;grid_y, d, w, &amp;chi2diff);
+<a name="l00103"></a>00103 
+<a name="l00104"></a>00104                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDAlgorithm] &gt;&gt; Original No of Points: %i, +%i; Total Found = %i&quot;</span>, old_size, found, total_found);
+<a name="l00105"></a>00105 
+<a name="l00106"></a>00106                 iterations++;
+<a name="l00107"></a>00107         }
+<a name="l00108"></a>00108         peaks.sortByChiIntensity();
+<a name="l00109"></a>00109         <a class="code" href="class_chi2_lib_cuda_f_f_t_cache.html#a8b6d7617a21edbccebceca4a2d91eeca">Chi2LibCudaFFTCache::eraseAll</a>();
+<a name="l00110"></a>00110         normaldata_chi.deallocate();
+<a name="l00111"></a>00111 
+<a name="l00112"></a>00112         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00113"></a>00113         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recompute Auxiliary matrix and Chi2 Difference &quot;</span>);
+<a name="l00114"></a>00114         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recompute Auxiliary matrix&quot;</span>);
+<a name="l00115"></a>00115         <a class="code" href="class_chi2_lib_cuda.html#a82d1d200108dd427790e6ef16f2be0b2">Chi2LibCuda::generateGrid</a>(&amp;peaks, os, &amp;grid_x, &amp;grid_y, &amp;over);
+<a name="l00116"></a>00116 
+<a name="l00117"></a>00117         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recompute Chi2 Difference&quot;</span>);
+<a name="l00118"></a>00118         currentChi2Error = <a class="code" href="class_chi2_lib_cuda.html#a9fdf16b743fe4432fa0446542f66e586">Chi2LibCuda::computeDifference</a>(&amp;cuImg, &amp;grid_x, &amp;grid_y, d, w, &amp;chi2diff);
+<a name="l00119"></a>00119 
+<a name="l00120"></a>00120         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00121"></a>00121         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Minimizing Chi2 Error &quot;</span>);
+<a name="l00122"></a>00122         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> _minChi2Delta = 1;
+<a name="l00123"></a>00123         iterations = 0;
+<a name="l00124"></a>00124         <span class="keywordtype">double</span> chi2Delta = currentChi2Error;
+<a name="l00125"></a>00125 
+<a name="l00126"></a>00126         _maxIterations = 5;
+<a name="l00127"></a>00127         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-maxchi2miniter&quot;</span>))
+<a name="l00128"></a>00128                 _maxIterations = pc-&gt;<a class="code" href="class_parameter_container.html#aa632a0aa1f9ad14060fa7af9deb6429d">getParamAsInt</a>(<span class="stringliteral">&quot;-maxchi2miniter&quot;</span>);
+<a name="l00129"></a>00129         <span class="keywordflow">while</span>( fabs(chi2Delta) &gt; _minChi2Delta &amp;&amp;  iterations &lt; _maxIterations){
+<a name="l00130"></a>00130                 <a class="code" href="class_chi2_lib_cuda.html#a10a1caf7ca9795ebbced85671ab6f9d5">Chi2LibCuda::newtonCenter</a>(&amp;over, &amp;chi2diff, &amp;peaks, os, d, w, ss, 20.0);
+<a name="l00131"></a>00131                 peaks.includeDeltas();
+<a name="l00132"></a>00132 
+<a name="l00133"></a>00133                 <a class="code" href="class_chi2_lib_cuda.html#a82d1d200108dd427790e6ef16f2be0b2">Chi2LibCuda::generateGrid</a>(&amp;peaks, os, &amp;grid_x, &amp;grid_y, &amp;over);
+<a name="l00134"></a>00134                 chi2diff.reset(0);
+<a name="l00135"></a>00135 
+<a name="l00136"></a>00136                 <span class="keywordtype">double</span> newChi2Err = <a class="code" href="class_chi2_lib_cuda.html#a9fdf16b743fe4432fa0446542f66e586">Chi2LibCuda::computeDifference</a>(&amp;cuImg, &amp;grid_x, &amp;grid_y, d, w, &amp;chi2diff);
+<a name="l00137"></a>00137                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDAlgorithm] &gt;&gt; Chi2Error: %f&quot;</span>, newChi2Err);
+<a name="l00138"></a>00138                 chi2Delta = currentChi2Error - newChi2Err;
+<a name="l00139"></a>00139                 currentChi2Error = currentChi2Error-chi2Delta;
+<a name="l00140"></a>00140                 iterations++;
+<a name="l00141"></a>00141         }
+<a name="l00142"></a>00142 
+<a name="l00143"></a>00143         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-validateones&quot;</span>)){
+<a name="l00144"></a>00144                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00145"></a>00145                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] Validating Peaks obtained so far &quot;</span>);
+<a name="l00146"></a>00146                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> old_size = peaks.size();
+<a name="l00147"></a>00147                 Chi2Libcu::validatePeaks(&amp;peaks, mindistance);
+<a name="l00148"></a>00148                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] Peaks deleted : %i, New Peaks Size : %i &quot;</span>, old_size-peaks.size(), peaks.size());
+<a name="l00149"></a>00149         }
+<a name="l00150"></a>00150 
+<a name="l00151"></a>00151         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00152"></a>00152         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Checking particles by pixel intensity and voronoi area Tom&#39;s algorithm &quot;</span>);
+<a name="l00153"></a>00153 
+<a name="l00154"></a>00154         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Remove outside image peaks&quot;</span>);
+<a name="l00155"></a>00155         <a class="code" href="class_chi2_lib_cuda_high_density.html#a5820d807455606d12d3567a00a694bcb">Chi2LibCudaHighDensity::filterPeaksOutside</a>(&amp;peaks, &amp;cuImg, os);
+<a name="l00156"></a>00156 
+<a name="l00157"></a>00157         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Apply Gaussian Fit &quot;</span>);
+<a name="l00158"></a>00158         pair&lt;double,double&gt; mypair = <a class="code" href="class_chi2_lib_cuda_high_density.html#a5889a99af384451a12a293be71178a7a">Chi2LibCudaHighDensity::gaussianFit</a>(&amp;peaks,&amp;cuImg, os);
+<a name="l00159"></a>00159         <span class="keywordtype">double</span> mu = mypair.first;
+<a name="l00160"></a>00160         <span class="keywordtype">double</span> sigma = mypair.second;
+<a name="l00161"></a>00161         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Total peaks: %i; MU=%f; SIGMA=%f&quot;</span>, peaks.size(), mu, sigma);
+<a name="l00162"></a>00162 
+<a name="l00163"></a>00163         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00164"></a>00164         <span class="keywordtype">double</span> par_thresh = mu-3.0*sigma;
+<a name="l00165"></a>00165         <span class="keywordtype">double</span> vor_thresh = 50.0;
+<a name="l00166"></a>00166         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-vorcut&quot;</span>))
+<a name="l00167"></a>00167                 vor_thresh = pc-&gt;<a class="code" href="class_parameter_container.html#a5de19e4f72eb46b16a558e9b456ba5e1">getParamAsDouble</a>(<span class="stringliteral">&quot;-vorcut&quot;</span>);
+<a name="l00168"></a>00168 
+<a name="l00169"></a>00169         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Filter &#39;Bad&#39; Peaks using Voronoi Area: %f - Intensity: %f&quot;</span>, vor_thresh, par_thresh);
+<a name="l00170"></a>00170         <a class="code" href="class_chi2_lib_cuda_high_density.html#a19bc7bff0e897c8d41c1e04c791eae39">Chi2LibCudaHighDensity::removeBadPeaks</a>(&amp;peaks, &amp;cuImg, vor_thresh, par_thresh, os);
+<a name="l00171"></a>00171 
+<a name="l00172"></a>00172         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-2filteri&quot;</span>)){
+<a name="l00173"></a>00173                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Second Filter &#39;Bad&#39; Peaks using intensity&quot;</span>);
+<a name="l00174"></a>00174                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> old_total  = peaks.size();
+<a name="l00175"></a>00175                 <a class="code" href="class_chi2_lib_cuda_high_density.html#a29283419701a543190329648c3a7d16c">Chi2LibCudaHighDensity::removeBadIntensityPeaks</a>(&amp;peaks, &amp;cuImg, pc-&gt;<a class="code" href="class_parameter_container.html#a5de19e4f72eb46b16a558e9b456ba5e1">getParamAsDouble</a>(<span class="stringliteral">&quot;-2filteri&quot;</span>), os);
+<a name="l00176"></a>00176                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> new_total  = peaks.size();
+<a name="l00177"></a>00177                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; New Number of peaks: %i, Filtered :%i&quot;</span>, new_total, (old_total - new_total));
+<a name="l00178"></a>00178         }
+<a name="l00179"></a>00179 
+<a name="l00180"></a>00180         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-2filterv&quot;</span>)){
+<a name="l00181"></a>00181                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Second Filter &#39;Bad&#39; Peaks using Voronoi Area&quot;</span>);
+<a name="l00182"></a>00182                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> old_total  = peaks.size();
+<a name="l00183"></a>00183                 <a class="code" href="class_chi2_lib_cuda_high_density.html#a5f147876f58d839e55d404deddbf2a9c">Chi2LibCudaHighDensity::removeBadVoronoiPeaks</a>(&amp;peaks, &amp;cuImg, pc-&gt;<a class="code" href="class_parameter_container.html#a5de19e4f72eb46b16a558e9b456ba5e1">getParamAsDouble</a>(<span class="stringliteral">&quot;-2filterv&quot;</span>), os);
+<a name="l00184"></a>00184                 <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> new_total  = peaks.size();
+<a name="l00185"></a>00185                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; New Number of peaks: %i, Filtered :%i&quot;</span>, new_total, (old_total - new_total));
+<a name="l00186"></a>00186         }
+<a name="l00187"></a>00187 
+<a name="l00188"></a>00188         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00189"></a>00189         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recompute Auxiliary matrix and Chi2 Difference&quot;</span>);
+<a name="l00190"></a>00190         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recompute Auxiliary matrix&quot;</span>);
+<a name="l00191"></a>00191         <a class="code" href="class_chi2_lib_cuda.html#a82d1d200108dd427790e6ef16f2be0b2">Chi2LibCuda::generateGrid</a>(&amp;peaks, os, &amp;grid_x, &amp;grid_y, &amp;over);
+<a name="l00192"></a>00192         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recompute Chi2 Difference&quot;</span>);
+<a name="l00193"></a>00193         currentChi2Error = <a class="code" href="class_chi2_lib_cuda.html#a9fdf16b743fe4432fa0446542f66e586">Chi2LibCuda::computeDifference</a>(&amp;cuImg, &amp;grid_x, &amp;grid_y, d, w, &amp;chi2diff);
+<a name="l00194"></a>00194         chi2Delta = 1000000.0;
+<a name="l00195"></a>00195         iterations = 0;
+<a name="l00196"></a>00196         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00197"></a>00197         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Minimizing Chi2 Error &quot;</span>);
+<a name="l00198"></a>00198         <span class="keywordflow">while</span>( fabs(chi2Delta) &gt; _minChi2Delta &amp;&amp;  iterations &lt; _maxIterations){
+<a name="l00199"></a>00199                 <a class="code" href="class_chi2_lib_cuda.html#a10a1caf7ca9795ebbced85671ab6f9d5">Chi2LibCuda::newtonCenter</a>(&amp;over, &amp;chi2diff, &amp;peaks, os, d, w, ss, 20.0);
+<a name="l00200"></a>00200                 peaks.includeDeltas();
+<a name="l00201"></a>00201 
+<a name="l00202"></a>00202                 <a class="code" href="class_chi2_lib_cuda.html#a82d1d200108dd427790e6ef16f2be0b2">Chi2LibCuda::generateGrid</a>(&amp;peaks, os, &amp;grid_x, &amp;grid_y, &amp;over);
+<a name="l00203"></a>00203                 chi2diff.reset(0);
+<a name="l00204"></a>00204 
+<a name="l00205"></a>00205                 <span class="keywordtype">double</span> newChi2Err = <a class="code" href="class_chi2_lib_cuda.html#a9fdf16b743fe4432fa0446542f66e586">Chi2LibCuda::computeDifference</a>(&amp;cuImg, &amp;grid_x, &amp;grid_y, d, w, &amp;chi2diff);
+<a name="l00206"></a>00206                 <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDAlgorithm] &gt;&gt; Chi2Error: %f&quot;</span>, newChi2Err);
+<a name="l00207"></a>00207                 chi2Delta = currentChi2Error - newChi2Err;
+<a name="l00208"></a>00208                 currentChi2Error = currentChi2Error-chi2Delta;
+<a name="l00209"></a>00209                 iterations++;
+<a name="l00210"></a>00210         }
+<a name="l00211"></a>00211 
+<a name="l00212"></a>00212         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] ***************************** &quot;</span>);
+<a name="l00213"></a>00213         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Recomputing Voronoi areas &quot;</span>);
+<a name="l00214"></a>00214         <a class="code" href="class_chi2_lib_cuda_qhull.html#a3b7ee2ee19f20535a520e0cea0ba99a8">Chi2LibCudaQhull::addVoronoiAreas</a>(&amp;peaks);
+<a name="l00215"></a>00215 
+<a name="l00216"></a>00216         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Translating coordenates &quot;</span>);
+<a name="l00217"></a>00217         <a class="code" href="class_chi2_lib_cuda.html#a42f52a5fe567441bdc752ab4425fd636">Chi2LibCuda::translatePeaks</a>(&amp;peaks, os);
+<a name="l00218"></a>00218 
+<a name="l00219"></a>00219         <span class="keywordtype">float</span> vor_areaSL = 75.0;
+<a name="l00220"></a>00220         <span class="keywordflow">if</span>(pc-&gt;<a class="code" href="class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029">existParam</a>(<span class="stringliteral">&quot;-vorsl&quot;</span>))
+<a name="l00221"></a>00221                 vor_areaSL = (<span class="keywordtype">float</span>)pc-&gt;<a class="code" href="class_parameter_container.html#a5de19e4f72eb46b16a558e9b456ba5e1">getParamAsDouble</a>(<span class="stringliteral">&quot;-vorsl&quot;</span>);
+<a name="l00222"></a>00222         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Adding State &quot;</span>);
+<a name="l00223"></a>00223         <a class="code" href="class_chi2_lib_cuda.html#ac8d5a006cb2e89a6296ce932006cdd49">Chi2LibCuda::addState</a>(&amp;peaks, vor_areaSL);
+<a name="l00224"></a>00224 
+<a name="l00225"></a>00225         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;info(<span class="stringliteral">&quot;[Chi2HDCudaAlgorithm] &gt;&gt; Converting Peaks to original vector : %i&quot;</span>, peaks.size());
+<a name="l00226"></a>00226         vector&lt;MyPeak&gt; ret = <a class="code" href="class_chi2_lib_cuda.html#a68534e3352876db665e3115cfdbc7610">Chi2LibCuda::convert</a>(&amp;peaks);
+<a name="l00227"></a>00227         <span class="keywordflow">return</span> ret;
+<a name="l00228"></a>00228 }
+</pre></div></div>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:19 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

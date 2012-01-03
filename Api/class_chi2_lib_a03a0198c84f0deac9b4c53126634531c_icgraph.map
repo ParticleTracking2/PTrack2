@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_chi2_lib_high_density.html#a3a3261ec07e283bb14fbc027a4233651" title="Chi2LibHighDensity::generateScaledImage" alt="" coords="221,5,493,35"/>
+<area shape="rect" id="node5" href="$class_chi2_h_d_algorithm.html#a794f836de22e5eb430263c4f93015520" title="Chi2HDAlgorithm::run" alt="" coords="543,32,692,61"/>
+<area shape="rect" id="node7" href="$class_chi2_h_d_cuda_algorithm.html#a60d6c46d691c6a1ea47f35b9c57c45e8" title="Chi2HDCudaAlgorithm::run" alt="" coords="267,109,448,139"/>
+<area shape="rect" id="node10" href="$class_chi2_algorithm.html#a6402aba871c52574eac2b8f144711c43" title="Chi2Algorithm::run" alt="" coords="292,163,423,192"/>
+</map>

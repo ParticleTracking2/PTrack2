@@ -1,0 +1,6 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_binary_output.html" title="BinaryOutput" alt="" coords="5,83,104,112"/>
+<area shape="rect" id="node5" href="$class_connector_output.html" title="ConnectorOutput" alt="" coords="128,83,248,112"/>
+<area shape="rect" id="node7" href="$class_plain_output.html" title="PlainOutput" alt="" coords="272,83,363,112"/>
+<area shape="rect" id="node9" href="$class_standar_output.html" title="StandarOutput" alt="" coords="387,83,493,112"/>
+</map>

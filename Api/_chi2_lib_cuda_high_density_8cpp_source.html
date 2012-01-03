@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Fichero Fuente src/Algorithm/Chi2LibCuda/Chi2LibCudaHighDensity.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+      <li><a href="globals.html"><span>Miembros&#160;de&#160;los&#160;ficheros</span></a></li>
+    </ul>
+  </div>
+  <div id="nav-path" class="navpath">
+    <ul>
+      <li class="navelem"><a class="el" href="dir_6843526ecfe91d74c51ab8083199d582.html">src</a>      </li>
+      <li class="navelem"><a class="el" href="dir_39de92efa378cb35af6ae8b91ad9b8a9.html">Algorithm</a>      </li>
+      <li class="navelem"><a class="el" href="dir_66d0338dc54918d6eb3c43e5497aace0.html">Chi2LibCuda</a>      </li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">Chi2LibCudaHighDensity.cpp</div>  </div>
+</div>
+<div class="contents">
+<a href="_chi2_lib_cuda_high_density_8cpp.html">Ir a la documentación de este archivo.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * Chi2LibCudaHighDensity.cpp</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> *  Created on: 13/12/2011</span>
+<a name="l00005"></a>00005 <span class="comment"> *      Author: juanin</span>
+<a name="l00006"></a>00006 <span class="comment"> */</span>
+<a name="l00007"></a>00007 
+<a name="l00008"></a>00008 <span class="preprocessor">#include &quot;<a class="code" href="_chi2_lib_cuda_high_density_8h.html">Chi2LibCudaHighDensity.h</a>&quot;</span>
+<a name="l00009"></a>00009 <span class="preprocessor">#include &quot;<a class="code" href="_chi2_lib_cuda_qhull_8h.html">Chi2LibCudaQhull.h</a>&quot;</span>
+<a name="l00010"></a>00010 
+<a name="l00011"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a3ec4bb2261c76c84d0429f2e66da8b4f">00011</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_cuda_high_density.html#a3ec4bb2261c76c84d0429f2e66da8b4f">Chi2LibCudaHighDensity::generateScaledImage</a>(cuMyMatrix *diff, cuMyMatrix *out){
+<a name="l00012"></a>00012         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][generateScaledImage] Scaling &quot;</span>);
+<a name="l00013"></a>00013         Chi2LibcuHighDensity::scaleImage(diff, out);
+<a name="l00014"></a>00014 
+<a name="l00015"></a>00015         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][generateScaledImage] Finding Maximum and Minimum &quot;</span>);
+<a name="l00016"></a>00016         pair&lt;float, float&gt; maxMin = <a class="code" href="class_chi2_lib_cuda.html#a37ebbf24acd37074f443e5339adff0b7">Chi2LibCuda::getHighLow</a>(out);
+<a name="l00017"></a>00017         <span class="keywordtype">float</span> maxval = maxMin.first;
+<a name="l00018"></a>00018 
+<a name="l00019"></a>00019         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][generateScaledImage] Inverting &quot;</span>);
+<a name="l00020"></a>00020         Chi2LibcuHighDensity::invertImage(out, maxval);
+<a name="l00021"></a>00021 
+<a name="l00022"></a>00022         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][generateScaledImage] Normalizing &quot;</span>);
+<a name="l00023"></a>00023         <a class="code" href="class_chi2_lib_cuda.html#ab11cd6aef250d6656dc8faf1461d5e3e">Chi2LibCuda::normalizeImage</a>(out, maxMin.first, maxMin.second);
+<a name="l00024"></a>00024 
+<a name="l00025"></a>00025         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][generateScaledImage] Generation complete &quot;</span>);
+<a name="l00026"></a>00026 }
+<a name="l00027"></a>00027 
+<a name="l00028"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a9004febbebaecb59d9a573050a99338c">00028</a> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> <a class="code" href="class_chi2_lib_cuda_high_density.html#a9004febbebaecb59d9a573050a99338c">Chi2LibCudaHighDensity::checkInsidePeaks</a>(cuMyPeakArray *old_peaks, cuMyPeakArray *new_peaks, cuMyMatrix *img, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> os){
+<a name="l00029"></a>00029         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> totalinside = 0;
+<a name="l00030"></a>00030         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][checkInsidePeaks] Scaling &quot;</span>);
+<a name="l00031"></a>00031         totalinside = <a class="code" href="class_chi2_lib_cuda_high_density.html#a9004febbebaecb59d9a573050a99338c">Chi2LibcuHighDensity::checkInsidePeaks</a>(old_peaks, new_peaks, img, os);
+<a name="l00032"></a>00032         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][checkInsidePeaks] Total peaks inside image %i of %i &quot;</span>,new_peaks-&gt;size(), totalinside);
+<a name="l00033"></a>00033         new_peaks-&gt;deallocate();
+<a name="l00034"></a>00034 
+<a name="l00035"></a>00035         <span class="keywordflow">return</span> totalinside;
+<a name="l00036"></a>00036 }
+<a name="l00037"></a>00037 
+<a name="l00038"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a5820d807455606d12d3567a00a694bcb">00038</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_cuda_high_density.html#a5820d807455606d12d3567a00a694bcb">Chi2LibCudaHighDensity::filterPeaksOutside</a>(cuMyPeakArray *peaks, cuMyMatrix *img, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> os){
+<a name="l00039"></a>00039         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][filterPeaksOutside] Filtering peaks outside image &quot;</span>);
+<a name="l00040"></a>00040         <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> old_size = peaks-&gt;size();
+<a name="l00041"></a>00041         <a class="code" href="class_chi2_lib_cuda_high_density.html#a5820d807455606d12d3567a00a694bcb">Chi2LibcuHighDensity::filterPeaksOutside</a>(peaks, img, os);
+<a name="l00042"></a>00042         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][filterPeaksOutside] Peaks Filtered %i of %i&quot;</span>, old_size, peaks-&gt;size());
+<a name="l00043"></a>00043 }
+<a name="l00044"></a>00044 
+<a name="l00045"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a5889a99af384451a12a293be71178a7a">00045</a> pair&lt;double, double&gt; <a class="code" href="class_chi2_lib_cuda_high_density.html#a5889a99af384451a12a293be71178a7a">Chi2LibCudaHighDensity::gaussianFit</a>(cuMyPeakArray *peaks, cuMyMatrix *img, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ss){
+<a name="l00046"></a>00046         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][gaussianFit] Calculating MU and SIGMA &quot;</span>);
+<a name="l00047"></a>00047         pair&lt;double, double&gt; ret = <a class="code" href="class_chi2_lib_cuda_high_density.html#a5889a99af384451a12a293be71178a7a">Chi2LibcuHighDensity::gaussianFit</a>(peaks,img,ss);
+<a name="l00048"></a>00048         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][gaussianFit] Returning MU=%f; SIGMA=%f&quot;</span>, ret.first, ret.second);
+<a name="l00049"></a>00049         <span class="keywordflow">return</span> ret;
+<a name="l00050"></a>00050 }
+<a name="l00051"></a>00051 
+<a name="l00052"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a19bc7bff0e897c8d41c1e04c791eae39">00052</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_cuda_high_density.html#a19bc7bff0e897c8d41c1e04c791eae39">Chi2LibCudaHighDensity::removeBadPeaks</a>(cuMyPeakArray *peaks, cuMyMatrix *img, <span class="keywordtype">double</span> vor_threshold, <span class="keywordtype">double</span> par_threshold, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ss){
+<a name="l00053"></a>00053         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadPeaks] Starting removing peaks by Area &lt; %f and Intensity &lt; %f&quot;</span>, vor_threshold, par_threshold);
+<a name="l00054"></a>00054         <a class="code" href="class_chi2_lib_cuda_qhull.html#a3b7ee2ee19f20535a520e0cea0ba99a8">Chi2LibCudaQhull::addVoronoiAreas</a>(peaks);
+<a name="l00055"></a>00055         img-&gt;copyToHost();
+<a name="l00056"></a>00056 
+<a name="l00057"></a>00057         <span class="keywordtype">int</span> xx = 0, yy = 0;
+<a name="l00058"></a>00058         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0; i &lt; peaks-&gt;size(); ++i){
+<a name="l00059"></a>00059                 xx = peaks-&gt;getHostValue(i).x - ss;
+<a name="l00060"></a>00060                 yy = peaks-&gt;getHostValue(i).y - ss;
+<a name="l00061"></a>00061                 <span class="keywordflow">if</span>(img-&gt;getValueHost(xx,yy) &lt; par_threshold &amp;&amp; 0 &lt; peaks-&gt;getHostValue(i).vor_area &amp;&amp; peaks-&gt;getHostValue(i).vor_area &lt; vor_threshold){
+<a name="l00062"></a>00062                         <span class="comment">// Remove Peak element at this position</span>
+<a name="l00063"></a>00063                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadPeaks] &gt;&gt; Deleting Peak: Index=%i , X=%i, Y=%i, Intensity=%f, VoronoiArea=%f&quot;</span>, i, peaks-&gt;getHostValue(i).x, peaks-&gt;getHostValue(i).y, img-&gt;getValueHost(xx,yy), peaks-&gt;getHostValue(i).vor_area );
+<a name="l00064"></a>00064                         peaks-&gt;atHost(i).valid = <span class="keyword">false</span>;
+<a name="l00065"></a>00065                 }
+<a name="l00066"></a>00066         }
+<a name="l00067"></a>00067         peaks-&gt;copyToDevice();
+<a name="l00068"></a>00068         peaks-&gt;keepValids();
+<a name="l00069"></a>00069 
+<a name="l00070"></a>00070         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadPeaks] Removing complete&quot;</span>);
+<a name="l00071"></a>00071 }
+<a name="l00072"></a>00072 
+<a name="l00073"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a29283419701a543190329648c3a7d16c">00073</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_cuda_high_density.html#a29283419701a543190329648c3a7d16c">Chi2LibCudaHighDensity::removeBadIntensityPeaks</a>(cuMyPeakArray *peaks, cuMyMatrix *img, <span class="keywordtype">double</span> par_threshold, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ss){
+<a name="l00074"></a>00074         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadIntensityPeaks] Starting removing peaks by Intensity &lt; %f&quot;</span>, par_threshold);
+<a name="l00075"></a>00075 
+<a name="l00076"></a>00076         <span class="keywordtype">int</span> xx = 0, yy = 0;
+<a name="l00077"></a>00077         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0; i &lt; peaks-&gt;size(); ++i){
+<a name="l00078"></a>00078                 xx = peaks-&gt;getHostValue(i).x - ss;
+<a name="l00079"></a>00079                 yy = peaks-&gt;getHostValue(i).y - ss;
+<a name="l00080"></a>00080                 <span class="keywordflow">if</span>(img-&gt;getValueHost(xx,yy) &lt; par_threshold){
+<a name="l00081"></a>00081                         <span class="comment">// Remove Peak element at this position</span>
+<a name="l00082"></a>00082                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadIntensityPeaks] &gt;&gt; Deleting Peak: Index=%i , X=%i, Y=%i, Intensity=%f&quot;</span>, i, peaks-&gt;getHostValue(i).x, peaks-&gt;getHostValue(i).y, img-&gt;getValueHost(xx,yy));
+<a name="l00083"></a>00083                         peaks-&gt;atHost(i).valid = <span class="keyword">false</span>;
+<a name="l00084"></a>00084                 }
+<a name="l00085"></a>00085         }
+<a name="l00086"></a>00086         peaks-&gt;copyToDevice();
+<a name="l00087"></a>00087         peaks-&gt;keepValids();
+<a name="l00088"></a>00088 
+<a name="l00089"></a>00089         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadIntensityPeaks] Removing complete&quot;</span>);
+<a name="l00090"></a>00090 }
+<a name="l00091"></a>00091 
+<a name="l00092"></a><a class="code" href="class_chi2_lib_cuda_high_density.html#a5f147876f58d839e55d404deddbf2a9c">00092</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_cuda_high_density.html#a5f147876f58d839e55d404deddbf2a9c">Chi2LibCudaHighDensity::removeBadVoronoiPeaks</a>(cuMyPeakArray *peaks, cuMyMatrix *img, <span class="keywordtype">double</span> vor_threshold, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ss){
+<a name="l00093"></a>00093         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadVoronoiPeaks] Starting removing peaks by Area &lt; %f &quot;</span>, vor_threshold);
+<a name="l00094"></a>00094 
+<a name="l00095"></a>00095         <span class="keywordtype">int</span> xx = 0, yy = 0;
+<a name="l00096"></a>00096         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> i=0; i &lt; peaks-&gt;size(); ++i){
+<a name="l00097"></a>00097                 xx = peaks-&gt;getHostValue(i).x - ss;
+<a name="l00098"></a>00098                 yy = peaks-&gt;getHostValue(i).y - ss;
+<a name="l00099"></a>00099                 <span class="keywordflow">if</span>(0 &lt; peaks-&gt;getHostValue(i).vor_area &amp;&amp; peaks-&gt;getHostValue(i).vor_area &lt; vor_threshold){
+<a name="l00100"></a>00100                         <span class="comment">// Remove Peak element at this position</span>
+<a name="l00101"></a>00101                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadVoronoiPeaks] &gt;&gt; Deleting Peak: Index=%i , X=%i, Y=%i, Intensity=%f&quot;</span>, i, peaks-&gt;getHostValue(i).x, peaks-&gt;getHostValue(i).y, img-&gt;getValueHost(xx,yy));
+<a name="l00102"></a>00102                         peaks-&gt;atHost(i).valid = <span class="keyword">false</span>;
+<a name="l00103"></a>00103                 }
+<a name="l00104"></a>00104         }
+<a name="l00105"></a>00105         peaks-&gt;copyToDevice();
+<a name="l00106"></a>00106         peaks-&gt;keepValids();
+<a name="l00107"></a>00107 
+<a name="l00108"></a>00108         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[Chi2LibCudaHighDensity][removeBadVoronoiPeaks] Removing complete&quot;</span>);
+<a name="l00109"></a>00109 }
+<a name="l00110"></a>00110 
+</pre></div></div>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:19 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

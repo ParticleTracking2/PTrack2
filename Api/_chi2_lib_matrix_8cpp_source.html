@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Fichero Fuente src/Algorithm/Chi2Lib/Chi2LibMatrix.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+      <li><a href="globals.html"><span>Miembros&#160;de&#160;los&#160;ficheros</span></a></li>
+    </ul>
+  </div>
+  <div id="nav-path" class="navpath">
+    <ul>
+      <li class="navelem"><a class="el" href="dir_6843526ecfe91d74c51ab8083199d582.html">src</a>      </li>
+      <li class="navelem"><a class="el" href="dir_39de92efa378cb35af6ae8b91ad9b8a9.html">Algorithm</a>      </li>
+      <li class="navelem"><a class="el" href="dir_6fd8b478e99276d2f896baa45cb8d73f.html">Chi2Lib</a>      </li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">Chi2LibMatrix.cpp</div>  </div>
+</div>
+<div class="contents">
+<a href="_chi2_lib_matrix_8cpp.html">Ir a la documentación de este archivo.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * Chi2LibMatrix.cpp</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> *  Created on: 02/10/2011</span>
+<a name="l00005"></a>00005 <span class="comment"> *      Author: juanin</span>
+<a name="l00006"></a>00006 <span class="comment"> */</span>
+<a name="l00007"></a>00007 
+<a name="l00008"></a>00008 <span class="preprocessor">#include &quot;<a class="code" href="_chi2_lib_matrix_8h.html">Chi2LibMatrix.h</a>&quot;</span>
+<a name="l00009"></a>00009 
+<a name="l00010"></a><a class="code" href="class_chi2_lib_matrix.html#ae5dd5b127b83ec44e7be8ae9925bfc7f">00010</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_matrix.html#ae5dd5b127b83ec44e7be8ae9925bfc7f">Chi2LibMatrix::squareIt</a>(<a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *mtrx){
+<a name="l00011"></a>00011 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibMatrix] Squaring Matrix&quot;);</span>
+<a name="l00012"></a>00012         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x =0; x &lt; mtrx-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(); ++x){
+<a name="l00013"></a>00013                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y =0; y &lt; mtrx-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>(); ++y){
+<a name="l00014"></a>00014                         <span class="keywordtype">double</span> tmp = mtrx-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y);
+<a name="l00015"></a>00015                         mtrx-&gt;<a class="code" href="class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba">at</a>(x,y) = tmp*tmp;
+<a name="l00016"></a>00016                 }
+<a name="l00017"></a>00017         }
+<a name="l00018"></a>00018 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibMatrix] Matrix Squared&quot;);</span>
+<a name="l00019"></a>00019 }
+<a name="l00020"></a>00020 
+<a name="l00021"></a><a class="code" href="class_chi2_lib_matrix.html#aab0b89430c857bc0451cf833592a975b">00021</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_matrix.html#aab0b89430c857bc0451cf833592a975b">Chi2LibMatrix::cubeIt</a>(<a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *mtrx){
+<a name="l00022"></a>00022 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibMatrix] Cubing Matrix&quot;);</span>
+<a name="l00023"></a>00023         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x =0; x &lt; mtrx-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(); ++x){
+<a name="l00024"></a>00024                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y =0; y &lt; mtrx-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(); ++y){
+<a name="l00025"></a>00025                         <span class="keywordtype">double</span> tmp = mtrx-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y);
+<a name="l00026"></a>00026                         mtrx-&gt;<a class="code" href="class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba">at</a>(x,y) = tmp*tmp*tmp;
+<a name="l00027"></a>00027                 }
+<a name="l00028"></a>00028         }
+<a name="l00029"></a>00029 <span class="comment">//      MyLogger::log()-&gt;debug(&quot;[Chi2LibMatrix] Matrix Cubed&quot;);</span>
+<a name="l00030"></a>00030 }
+<a name="l00031"></a>00031 
+<a name="l00032"></a><a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">00032</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(<a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *in, <a class="code" href="class_my_matrix.html">MyMatrix&lt;double&gt;</a> *out){
+<a name="l00033"></a>00033         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x=0; x &lt; in-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(); ++x){
+<a name="l00034"></a>00034                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y=0; y &lt; in-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>(); ++y){
+<a name="l00035"></a>00035                         out-&gt;<a class="code" href="class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba">at</a>(x,y) = in-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y);
+<a name="l00036"></a>00036                 }
+<a name="l00037"></a>00037         }
+<a name="l00038"></a>00038 }
+<a name="l00039"></a>00039 
+<a name="l00040"></a><a class="code" href="class_chi2_lib_matrix.html#a8ccd9c37243589939a24dcbad22797f7">00040</a> <span class="keywordtype">void</span> <a class="code" href="class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b">Chi2LibMatrix::copy</a>(<a class="code" href="class_my_matrix.html">MyMatrix&lt;int&gt;</a> *in, <a class="code" href="class_my_matrix.html">MyMatrix&lt;int&gt;</a> *out){
+<a name="l00041"></a>00041         <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x=0; x &lt; in-&gt;<a class="code" href="class_my_matrix.html#a6f277712304e2b537a86f8555c3da142">sX</a>(); ++x){
+<a name="l00042"></a>00042                 <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y=0; y &lt; in-&gt;<a class="code" href="class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc">sY</a>(); ++y){
+<a name="l00043"></a>00043                         out-&gt;<a class="code" href="class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba">at</a>(x,y) = in-&gt;<a class="code" href="class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3">getValue</a>(x,y);
+<a name="l00044"></a>00044                 }
+<a name="l00045"></a>00045         }
+<a name="l00046"></a>00046 }
+</pre></div></div>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:19 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

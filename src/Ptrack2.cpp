@@ -17,6 +17,15 @@
 
 using namespace std;
 
+/*! \mainpage PTrack2 C++/Cuda
+ *
+ * \section intro_sec Introdución
+ *
+ * Esta página contiene todo lo necesario para entender cada una de las funciones, relaciones y algunos patrones de diseño que se usan en PTrack2. <br/>
+ * Para más información acerca del uso, instalacion y recursos necesarios visita el <a href="http://trac.assembla.com/particle-tracking-2">Trac</a>
+ *
+ */
+
 int main(int argc, char* argv[]) {
 	MyLogger *mylog = MyLogger::getInstance();
 	ArgsProcessor *proc = ArgsProcessor::getInstance();

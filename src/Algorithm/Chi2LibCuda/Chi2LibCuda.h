@@ -84,7 +84,7 @@ public:
 	static vector<MyPeak> convert(cuMyPeakArray* peaks);
 
 	/**
-	 * Genera las matrices auxiliares con valores iguales a las distancias en X e Y al centro de los peaks detectados.
+	 * Genera las matrices auxiliares con valores iguales a las distancias en X e Y al centro de los peaks detectados y el indice del peak.
 	 * @param peaks Contenedor de Peaks detectados en GPU.
 	 * @param shift correccion de posicion para los peaks dentro de la imagen original. (Peaks tienen posiciones en la imagen Chi2).
 	 * @param grid_x Matriz en GPU donde guardar las posiciones de X al centro del peak mas cercano.

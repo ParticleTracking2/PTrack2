@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Fichero Fuente src/Image/MyImageFactory.cpp</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li><a href="annotated.html"><span>Clases</span></a></li>
+      <li class="current"><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="files.html"><span>Lista&#160;de&#160;archivos</span></a></li>
+      <li><a href="globals.html"><span>Miembros&#160;de&#160;los&#160;ficheros</span></a></li>
+    </ul>
+  </div>
+  <div id="nav-path" class="navpath">
+    <ul>
+      <li class="navelem"><a class="el" href="dir_6843526ecfe91d74c51ab8083199d582.html">src</a>      </li>
+      <li class="navelem"><a class="el" href="dir_b4c1c2af3a66ff1a3b68ecccdd834430.html">Image</a>      </li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<div class="title">MyImageFactory.cpp</div>  </div>
+</div>
+<div class="contents">
+<a href="_my_image_factory_8cpp.html">Ir a la documentación de este archivo.</a><div class="fragment"><pre class="fragment"><a name="l00001"></a>00001 <span class="comment">/*</span>
+<a name="l00002"></a>00002 <span class="comment"> * ImageFactory.cpp</span>
+<a name="l00003"></a>00003 <span class="comment"> *</span>
+<a name="l00004"></a>00004 <span class="comment"> *  Created on: 11-06-2011</span>
+<a name="l00005"></a>00005 <span class="comment"> *      Author: juanin</span>
+<a name="l00006"></a>00006 <span class="comment"> */</span>
+<a name="l00007"></a>00007 <span class="preprocessor">#include &quot;<a class="code" href="_my_image_factory_8h.html">MyImageFactory.h</a>&quot;</span>
+<a name="l00008"></a>00008 
+<a name="l00012"></a><a class="code" href="class_my_image_factory.html#a4689e68944e1ce38874b2774b846a2af">00012</a> <a class="code" href="class_my_image.html">MyImage</a> <a class="code" href="class_my_image_factory.html#a4689e68944e1ce38874b2774b846a2af">MyImageFactory::makeImgFromFile</a>(<span class="keywordtype">string</span> file){
+<a name="l00013"></a>00013         <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8">MyImageTypes</a> type = recognizeType(file);
+<a name="l00014"></a>00014         <span class="keywordflow">switch</span>(type){
+<a name="l00015"></a>00015                 <span class="keywordflow">case</span> <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8a3c722feca0c7dbb54ce8c35de7f2db5a">IMAGE_JPG</a> :
+<a name="l00016"></a>00016                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] JPG Image type detected&quot;</span>);
+<a name="l00017"></a>00017                         <span class="keywordflow">return</span> <a class="code" href="class_image_reader.html#ade6d281f70fb65e3999ec076888bfe93">JPGImageReader::decodeImageGray</a>(file);
+<a name="l00018"></a>00018                 <span class="keywordflow">case</span> <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8a4d093eeacb23c4a26f053b0e3ca618d8">IMAGE_PNG</a>:
+<a name="l00019"></a>00019                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] PNG Image type detected&quot;</span>);
+<a name="l00020"></a>00020                         <span class="keywordflow">return</span> <a class="code" href="class_image_reader.html#ade6d281f70fb65e3999ec076888bfe93">PNGImageReader::decodeImageGray</a>(file);
+<a name="l00021"></a>00021                 <span class="keywordflow">case</span> <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8aa32ceae317a31129942d51ac09c49667">IMAGE_TIF</a>:
+<a name="l00022"></a>00022                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] TIFF Image type detected&quot;</span>);
+<a name="l00023"></a>00023                         <span class="keywordflow">return</span> <a class="code" href="class_t_i_f_f_image_reader.html#a64a6e04ae92d13ff7bedffbbdafdee8b">TIFFImageReader::decodeImageGray</a>(file);
+<a name="l00024"></a>00024         }
+<a name="l00025"></a>00025 
+<a name="l00026"></a>00026         <span class="keywordflow">return</span> <a class="code" href="class_my_image.html">MyImage</a>();
+<a name="l00027"></a>00027 }
+<a name="l00028"></a>00028 
+<a name="l00029"></a><a class="code" href="class_my_image_factory.html#a8bff4229cfc2cdb054d65929320296a5">00029</a> <a class="code" href="class_my_image.html">MyImage</a> <a class="code" href="class_my_image_factory.html#a4689e68944e1ce38874b2774b846a2af">MyImageFactory::makeImgFromFile</a>(<span class="keywordtype">string</span> file, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> cut){
+<a name="l00030"></a>00030         <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8">MyImageTypes</a> type = recognizeType(file);
+<a name="l00031"></a>00031         <span class="keywordflow">switch</span>(type){
+<a name="l00032"></a>00032                 <span class="keywordflow">case</span> <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8a3c722feca0c7dbb54ce8c35de7f2db5a">IMAGE_JPG</a> :
+<a name="l00033"></a>00033                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] JPG Image type detected&quot;</span>);
+<a name="l00034"></a>00034                         <span class="keywordflow">return</span> <a class="code" href="class_image_reader.html#ade6d281f70fb65e3999ec076888bfe93">JPGImageReader::decodeImageGray</a>(file, cut);
+<a name="l00035"></a>00035                 <span class="keywordflow">case</span> <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8a4d093eeacb23c4a26f053b0e3ca618d8">IMAGE_PNG</a>:
+<a name="l00036"></a>00036                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] PNG Image type detected&quot;</span>);
+<a name="l00037"></a>00037                         <span class="keywordflow">return</span> <a class="code" href="class_image_reader.html#ade6d281f70fb65e3999ec076888bfe93">PNGImageReader::decodeImageGray</a>(file, cut);
+<a name="l00038"></a>00038                 <span class="keywordflow">case</span> <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8aa32ceae317a31129942d51ac09c49667">IMAGE_TIF</a>:
+<a name="l00039"></a>00039                         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] TIFF Image type detected&quot;</span>);
+<a name="l00040"></a>00040                         <span class="keywordflow">return</span> <a class="code" href="class_t_i_f_f_image_reader.html#a64a6e04ae92d13ff7bedffbbdafdee8b">TIFFImageReader::decodeImageGray</a>(file, cut);
+<a name="l00041"></a>00041         }
+<a name="l00042"></a>00042 
+<a name="l00043"></a>00043         <span class="keywordflow">return</span> <a class="code" href="class_my_image.html">MyImage</a>();
+<a name="l00044"></a>00044 }
+<a name="l00045"></a>00045 
+<a name="l00046"></a>00046 <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8">MyImageTypes</a> MyImageFactory::recognizeType(<span class="keywordtype">string</span> file){
+<a name="l00047"></a>00047         <a class="code" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9">MyLogger::log</a>()-&gt;debug(<span class="stringliteral">&quot;[MyImageFactory] Finding Extension of image...&quot;</span>);
+<a name="l00048"></a>00048         <span class="keywordtype">string</span> typetxt = file.substr(file.find_last_of(<span class="stringliteral">&quot;.&quot;</span>)+1, file.length());
+<a name="l00049"></a>00049         <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8">MyImageTypes</a> type;
+<a name="l00050"></a>00050         <span class="keywordflow">if</span>(!typetxt.compare(<span class="stringliteral">&quot;tif&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;TIF&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;tiff&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;TIFF&quot;</span>))
+<a name="l00051"></a>00051                 type = <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8aa32ceae317a31129942d51ac09c49667">IMAGE_TIF</a>;
+<a name="l00052"></a>00052         <span class="keywordflow">if</span>(!typetxt.compare(<span class="stringliteral">&quot;jpg&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;JPG&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;jpeg&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;JPEG&quot;</span>))
+<a name="l00053"></a>00053                 type = <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8a3c722feca0c7dbb54ce8c35de7f2db5a">IMAGE_JPG</a>;
+<a name="l00054"></a>00054         <span class="keywordflow">if</span>(!typetxt.compare(<span class="stringliteral">&quot;png&quot;</span>) || !typetxt.compare(<span class="stringliteral">&quot;PNG&quot;</span>))
+<a name="l00055"></a>00055                 type = <a class="code" href="_my_image_factory_8h.html#ae3566c20d7102fd3d0f8890f0829e3c8a4d093eeacb23c4a26f053b0e3ca618d8">IMAGE_PNG</a>;
+<a name="l00056"></a>00056 
+<a name="l00057"></a>00057         <span class="keywordflow">return</span> type;
+<a name="l00058"></a>00058 }
+</pre></div></div>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:19 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

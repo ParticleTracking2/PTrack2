@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>PTrack 2 CPP/CUDA: Referencia de la Clase Chi2LibQhull</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body onload='searchBox.OnSelectItem(0);'>
+<!-- Generado por Doxygen 1.7.4 -->
+<script type="text/javascript"><!--
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+--></script>
+<div id="top">
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td style="padding-left: 0.5em;">
+   <div id="projectname">PTrack 2 CPP/CUDA&#160;<span id="projectnumber">1.0</span></div>
+   <div id="projectbrief">Particle Tracking C++/CUDA</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+  <div id="navrow1" class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Página&#160;principal</span></a></li>
+      <li class="current"><a href="annotated.html"><span>Clases</span></a></li>
+      <li><a href="files.html"><span>Archivos</span></a></li>
+      <li><a href="dirs.html"><span>Directorios</span></a></li>
+      <li id="searchli">
+        <div id="MSearchBox" class="MSearchBoxInactive">
+        <span class="left">
+          <img id="MSearchSelect" src="search/mag_sel.png"
+               onmouseover="return searchBox.OnSearchSelectShow()"
+               onmouseout="return searchBox.OnSearchSelectHide()"
+               alt=""/>
+          <input type="text" id="MSearchField" value="Buscar" accesskey="S"
+               onfocus="searchBox.OnSearchFieldFocus(true)" 
+               onblur="searchBox.OnSearchFieldFocus(false)" 
+               onkeyup="searchBox.OnSearchFieldChange(event)"/>
+          </span><span class="right">
+            <a id="MSearchClose" href="javascript:searchBox.CloseResultsWindow()"><img id="MSearchCloseImg" border="0" src="search/close.png" alt=""/></a>
+          </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="navrow2" class="tabs2">
+    <ul class="tablist">
+      <li><a href="annotated.html"><span>Lista&#160;de&#160;clases</span></a></li>
+      <li><a href="classes.html"><span>Índice&#160;de&#160;clases</span></a></li>
+      <li><a href="inherits.html"><span>Jerarquía&#160;de&#160;la&#160;clase</span></a></li>
+      <li><a href="functions.html"><span>Miembros&#160;de&#160;las&#160;clases</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="summary">
+<a href="#pub-static-methods">Métodos públicos estáticos</a>  </div>
+  <div class="headertitle">
+<div class="title">Referencia de la Clase Chi2LibQhull</div>  </div>
+</div>
+<div class="contents">
+<!-- doxytag: class="Chi2LibQhull" -->
+<p><code>#include &lt;<a class="el" href="_chi2_lib_qhull_8h_source.html">Chi2LibQhull.h</a>&gt;</code></p>
+
+<p><a href="class_chi2_lib_qhull-members.html">Lista de todos los miembros.</a></p>
+<table class="memberdecls">
+<tr><td colspan="2"><h2><a name="pub-static-methods"></a>
+Métodos públicos estáticos</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chi2_lib_qhull.html#a78f9922634bb5063cfae619d9002e2da">execQhull</a> (string data, string params)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_chi2_lib_qhull.html#a1133155715661dfa8f460608a47332a7">addVoronoiAreas</a> (vector&lt; <a class="el" href="class_my_peak.html">MyPeak</a> &gt; *peaks)</td></tr>
+</table>
+<hr/><a name="details" id="details"></a><h2>Descripción detallada</h2>
+<div class="textblock"><p>Clase para ejecuar Qhull y obtener datos a partir de los datos recibidos. </p>
+
+<p>Definición en la línea <a class="el" href="_chi2_lib_qhull_8h_source.html#l00025">25</a> del archivo <a class="el" href="_chi2_lib_qhull_8h_source.html">Chi2LibQhull.h</a>.</p>
+</div><hr/><h2>Documentación de las funciones miembro</h2>
+<a class="anchor" id="a1133155715661dfa8f460608a47332a7"></a><!-- doxytag: member="Chi2LibQhull::addVoronoiAreas" ref="a1133155715661dfa8f460608a47332a7" args="(vector&lt; MyPeak &gt; *peaks)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Chi2LibQhull::addVoronoiAreas </td>
+          <td>(</td>
+          <td class="paramtype">vector&lt; <a class="el" href="class_my_peak.html">MyPeak</a> &gt; *&#160;</td>
+          <td class="paramname"><em>peaks</em></td><td>)</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Agrega las areas de Voronoi generadas a traves de la ejecucion de Qhull a los peaks. </p>
+<dl><dt><b>Parámetros:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">peaks</td><td>Vector de peaks encontrados a los cuales se le agregaran las areas de voronoi respectivas. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Definición en la línea <a class="el" href="_chi2_lib_qhull_8cpp_source.html#l00144">144</a> del archivo <a class="el" href="_chi2_lib_qhull_8cpp_source.html">Chi2LibQhull.cpp</a>.</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas para esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_cgraph.png" border="0" usemap="#class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_cgraph" alt=""/></div>
+<map name="class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_cgraph" id="class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_cgraph">
+<area shape="rect" id="node3" href="class_chi2_lib_qhull.html#a78f9922634bb5063cfae619d9002e2da" title="Chi2LibQhull::execQhull" alt="" coords="256,5,419,35"/><area shape="rect" id="node5" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="467,32,571,61"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas a esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_icgraph.png" border="0" usemap="#class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_icgraph" alt=""/></div>
+<map name="class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_icgraph" id="class_chi2_lib_qhull_a1133155715661dfa8f460608a47332a7_icgraph">
+<area shape="rect" id="node3" href="class_chi2_lib_high_density.html#ac5d4f8907e2242a676e72f46dba17523" title="Chi2LibHighDensity::removeBadPeaks" alt="" coords="257,5,505,35"/><area shape="rect" id="node5" href="class_chi2_h_d_algorithm.html#a794f836de22e5eb430263c4f93015520" title="Chi2HDAlgorithm::run" alt="" coords="556,32,705,61"/><area shape="rect" id="node8" href="class_chi2_algorithm.html#a6402aba871c52574eac2b8f144711c43" title="Chi2Algorithm::run" alt="" coords="316,109,447,139"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<a class="anchor" id="a78f9922634bb5063cfae619d9002e2da"></a><!-- doxytag: member="Chi2LibQhull::execQhull" ref="a78f9922634bb5063cfae619d9002e2da" args="(string data, string params)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Chi2LibQhull::execQhull </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Ejecuta Qhull entregandole los datos de data como texto plano segun los parametros de params. La salida de datos se encuentra en bruto como texto plano. </p>
+<dl><dt><b>Parámetros:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Datos en texto plano para entregar a Qhull y ejecutar. </td></tr>
+    <tr><td class="paramname">params</td><td>Parametros de ejecucion de Qhull. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p><p>qhull &gt;--&gt; qhull_out &gt;--&gt; This qhull &lt;--&lt; qhull_in &lt;--&lt; This</p>
+<p>This &lt;--&lt; qhull_out &lt;--&lt; qhull This &gt;--&gt; qhull_in &gt;--&gt; qhull</p>
+</p>
+
+<p>Definición en la línea <a class="el" href="_chi2_lib_qhull_8cpp_source.html#l00091">91</a> del archivo <a class="el" href="_chi2_lib_qhull_8cpp_source.html">Chi2LibQhull.cpp</a>.</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas para esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_cgraph.png" border="0" usemap="#class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_cgraph" alt=""/></div>
+<map name="class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_cgraph" id="class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_cgraph">
+<area shape="rect" id="node3" href="class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="216,5,320,35"/></map>
+</div>
+</p>
+
+<p><div class="dynheader">
+Gráfico de llamadas a esta función:</div>
+<div class="dyncontent">
+<div class="center"><img src="class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_icgraph.png" border="0" usemap="#class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_icgraph" alt=""/></div>
+<map name="class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_icgraph" id="class_chi2_lib_qhull_a78f9922634bb5063cfae619d9002e2da_icgraph">
+<area shape="rect" id="node3" href="class_chi2_lib_qhull.html#a1133155715661dfa8f460608a47332a7" title="Chi2LibQhull::addVoronoiAreas" alt="" coords="216,57,419,87"/><area shape="rect" id="node5" href="class_chi2_lib_high_density.html#ac5d4f8907e2242a676e72f46dba17523" title="Chi2LibHighDensity::removeBadPeaks" alt="" coords="468,5,716,35"/><area shape="rect" id="node7" href="class_chi2_h_d_algorithm.html#a794f836de22e5eb430263c4f93015520" title="Chi2HDAlgorithm::run" alt="" coords="767,32,916,61"/><area shape="rect" id="node10" href="class_chi2_algorithm.html#a6402aba871c52574eac2b8f144711c43" title="Chi2Algorithm::run" alt="" coords="527,109,657,139"/></map>
+</div>
+</p>
+
+</div>
+</div>
+<hr/>La documentación para esta clase fue generada a partir de los siguientes ficheros:<ul>
+<li>src/Algorithm/Chi2Lib/<a class="el" href="_chi2_lib_qhull_8h_source.html">Chi2LibQhull.h</a></li>
+<li>src/Algorithm/Chi2Lib/<a class="el" href="_chi2_lib_qhull_8cpp_source.html">Chi2LibQhull.cpp</a></li>
+</ul>
+</div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Todo</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Clases</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Archivos</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Funciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumeraciones</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Valores de enumeraciones</a></div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<hr class="footer"/><address class="footer"><small>Generado el Martes, 3 de Enero de 2012 00:22:20 para PTrack 2 CPP/CUDA por&#160;
+<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
+</body>
+</html>

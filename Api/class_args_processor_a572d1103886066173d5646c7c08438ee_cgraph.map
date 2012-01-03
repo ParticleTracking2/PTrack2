@@ -1,0 +1,7 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_parameter_container.html#adb3df5112e12419386ae987d26c66521" title="ParameterContainer::addParam" alt="" coords="216,5,421,35"/>
+<area shape="rect" id="node5" href="$class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="469,163,573,192"/>
+<area shape="rect" id="node7" href="$class_args_processor.html#a04cb5ad6f1784aac09303574f8fb15aa" title="ArgsProcessor::printHelp" alt="" coords="235,109,403,139"/>
+<area shape="rect" id="node9" href="$class_output.html#abeb5d6a043a630b78c6cf3f5a60fb989" title="Output::translate" alt="" coords="260,163,377,192"/>
+<area shape="rect" id="node12" href="$class_algorithm.html#ad3c230754a6faedc0a71bccd59e4144d" title="Algorithm::translate" alt="" coords="252,216,385,245"/>
+</map>

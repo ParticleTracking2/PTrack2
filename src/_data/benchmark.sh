@@ -131,4 +131,4 @@ function main {
 
 ( (time main)2>&1 ) > log-ref.txt 
 
-rm ImgA000002.tif ImgA000003.tif ImgA000004.tif ImgA000005.tif ImgA000006.tif ImgA000007.tif ImgA000008.tif
+rm ImgA000001.tif ImgA000002.tif ImgA000003.tif ImgA000004.tif ImgA000005.tif ImgA000006.tif ImgA000007.tif ImgA000008.tif

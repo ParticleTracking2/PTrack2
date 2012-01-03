@@ -1,0 +1,13 @@
+<map id="G" name="G">
+<area shape="rect" id="node3" href="$class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba" title="MyMatrix::at" alt="" coords="496,124,589,154"/>
+<area shape="rect" id="node5" href="$class_chi2_lib_f_f_t_w_cache.html#a1bfb026b6022831e93eb918996c5148b" title="Chi2LibFFTWCache::cache" alt="" coords="241,332,425,362"/>
+<area shape="rect" id="node7" href="$class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b" title="Chi2LibMatrix::copy" alt="" coords="264,178,403,207"/>
+<area shape="rect" id="node10" href="$class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3" title="MyMatrix::getValue" alt="" coords="476,71,609,100"/>
+<area shape="rect" id="node12" href="$class_my_matrix.html#a6f277712304e2b537a86f8555c3da142" title="MyMatrix::sX" alt="" coords="493,178,592,207"/>
+<area shape="rect" id="node14" href="$class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc" title="MyMatrix::sY" alt="" coords="493,231,592,260"/>
+<area shape="rect" id="node16" href="$class_chi2_lib_matrix.html#aab0b89430c857bc0451cf833592a975b" title="Chi2LibMatrix::cubeIt" alt="" coords="260,71,407,100"/>
+<area shape="rect" id="node21" href="$class_chi2_lib_f_f_t_w_cache.html#a6550f3aaf68aae02c66d4fd01e443e30" title="Chi2LibFFTWCache::empty" alt="" coords="241,386,425,415"/>
+<area shape="rect" id="node24" href="$class_chi2_lib_f_f_t_w_cache.html#ae5eb971b629dd1c850ad90015b6acd49" title="Chi2LibFFTWCache::lock" alt="" coords="247,439,420,468"/>
+<area shape="rect" id="node26" href="$class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="281,492,385,522"/>
+<area shape="rect" id="node28" href="$class_chi2_lib_matrix.html#ae5dd5b127b83ec44e7be8ae9925bfc7f" title="Chi2LibMatrix::squareIt" alt="" coords="255,124,412,154"/>
+</map>
