@@ -55,7 +55,7 @@ all: PTrack2
 PTrack2: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L"/media/Datosi7/workspace/Chi2HD_Cuda/Release" -L/usr/local/cuda/lib64 -L/usr/local/lib -L/usr/lib -o "PTrack2" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/usr/local/cuda/lib64 -L/usr/local/lib -L/usr/lib -o "PTrack2" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,17 +71,17 @@ install:
 	sudo cp ../src/Distribute\ Computing/PTrack2BashFolders /usr/bin
 	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf ~/PTrack2BashFolders.conf.example
 	cp ../src/Distribute\ Computing/.PTrack2Bash.conf ~/
-	chmod +x /usr/bin/PTrack2
-	chmod +x /usr/bin/PTrack2Bash
-	chmod +x /usr/bin/PTrack2Folder
-	chmod +x /usr/bin/PTrack2BashFolders
+	sudo chmod +x /usr/bin/PTrack2
+	sudo chmod +x /usr/bin/PTrack2Bash
+	sudo chmod +x /usr/bin/PTrack2Folder
+	sudo chmod +x /usr/bin/PTrack2BashFolders
 	
 uninstall:
 	rm ~/.PTrack2Bash.conf
-	rm /usr/bin/PTrack2
-	rm /usr/bin/PTrack2Bash
-	rm /usr/bin/PTrack2Folder
-	rm /usr/bin/PTrack2BashFolders
+	sudo rm /usr/bin/PTrack2
+	sudo rm /usr/bin/PTrack2Bash
+	sudo rm /usr/bin/PTrack2Folder
+	sudo rm /usr/bin/PTrack2BashFolders
 
 .PHONY: all clean dependents
 .SECONDARY:
