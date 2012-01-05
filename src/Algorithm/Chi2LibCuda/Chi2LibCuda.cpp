@@ -107,54 +107,7 @@ vector<MyPeak> Chi2LibCuda::convert(cuMyPeakArray* peaks){
 void Chi2LibCuda::generateGrid(cuMyPeakArray* peaks, unsigned int shift, cuMyMatrix* grid_x, cuMyMatrix* grid_y, cuMyMatrixi* over){
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix");
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Grid Size: %ix%i", grid_x->sizeX(), grid_x->sizeY());
-//	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
-
-	float maxval = grid_x->sizeX() > grid_x->sizeY() ? grid_x->sizeX() : grid_x->sizeY();
-	grid_x->reset(maxval);
-	grid_y->reset(maxval);
-	over->reset(0);
-
-	peaks->copyToHost();
-	grid_x->copyToHost();
-	grid_y->copyToHost();
-	over->copyToHost();
-
-	unsigned int half=(shift+2);
-	int currentX, currentY;
-	double currentDistance = 0.0;
-	double currentDistanceAux = 0.0;
-
-	if(peaks->size() != 0)
-	for(int npks = peaks->size()-1; npks >= 0; npks--){
-		for(unsigned int localX=0; localX < 2*half+1; ++localX)
-			for(unsigned int localY=0; localY < 2*half+1; ++localY){
-				cuMyPeak currentPeak = peaks->getHostValue(npks);
-				currentX = (int)round(currentPeak.fx) - shift + (localX - half);
-				currentY = (int)round(currentPeak.fy) - shift + (localY - half);
-
-				if( 0 <= currentX && currentX < (int)grid_x->sizeX() && 0 <= currentY && currentY < (int)grid_x->sizeY() ){
-					currentDistance =
-							sqrt( grid_x->getValueHost(currentX, currentY)*grid_x->getValueHost(currentX, currentY)
-								+ grid_y->getValueHost(currentX, currentY)*grid_y->getValueHost(currentX, currentY));
-
-					currentDistanceAux =
-							sqrt(1.0*(1.0*localX-half+currentPeak.x - currentPeak.fx)*(1.0*localX-half+currentPeak.x - currentPeak.fx) +
-								 1.0*(1.0*localY-half+currentPeak.y - currentPeak.fy)*(1.0*localY-half+currentPeak.y - currentPeak.fy));
-
-					if(currentDistance >= currentDistanceAux){
-						over->atHost(currentX, currentY) = npks+1;
-						grid_x->atHost(currentX, currentY) = (1.0*localX-half+currentPeak.x)-currentPeak.fx;
-						grid_y->atHost(currentX, currentY) = (1.0*localY-half+currentPeak.y)-currentPeak.fy;
-					}
-				}
-
-			}
-	}
-
-	grid_x->copyToDevice();
-	grid_y->copyToDevice();
-	over->copyToDevice();
-
+	Chi2Libcu::generateGrid(peaks, shift, grid_x, grid_y, over);
 	MyLogger::log()->debug("[Chi2LibCuda][generateGrid] Generating Auxiliary Matrix Complete");
 }
 

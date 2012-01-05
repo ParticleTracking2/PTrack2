@@ -68,9 +68,10 @@ int main(int argc, char* argv[]) {
 	if(!proc->hasKey("-out") && !proc->hasKey("-outbin"))
 		out->writeData(&peaks, "");
 
+	delete out;
 	if(proc->hasKey("-display"))
 		img.display(&peaks);
 
-	mylog->log()->notice(">> Ptracking C++/CUDA Finished<<");
+	mylog->log()->notice(">> Ptracking C++/CUDA Finished <<");
 	return EXIT_SUCCESS;
 }
