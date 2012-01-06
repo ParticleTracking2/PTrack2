@@ -55,7 +55,7 @@ sub CheckConfigFile{
 		print "\n";
 		
 		if( @SERVER[$i] != $HOST ){
-			system "ping -w 5 -c 5 @SERVER[$i] >> /tmp/pingtest.txt";
+			system "ping -t 5 -c 5 @SERVER[$i] >> /tmp/pingtest.txt";
 			$alive=$?;
 			if($alive == 0){
 				print ">> Server @SERVER[$i] is Alive.";
@@ -113,21 +113,27 @@ sub runServer{
 		print MYPROCFILE ">> [$ip]: Data transfer complete";
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
+				print "[$ip]: ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'";
 				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 			}else{
+				print "[$ip]: ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'";
 				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
 			}
 		}else{
+			print "[$ip]: ssh $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'";
 			system("ssh $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 		}
 	}else{
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
+				print "[$ip]: PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile";
 				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 			}else{
+				print "[$ip]: PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile";
 				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile");
 			}
 		}else{
+			print "[$ip]: PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile";
 			system("PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 		}
 	}
@@ -154,20 +160,23 @@ sub start_server{
 			my @process;
 			
 			foreach $img (@mypacket){
+				if( $currentDev < $mycudadev-1){
+					$currentDev += 1;
+				}else{
+					$currentDev = 0;
+				}
 				my $thr = threads->create('runServer', ($myip, $mycuda, $currentDev, $img));
 				push(@process, $thr);
-				
-				if( $currentDev >= $mycudadev){
-					$currentDev = 0;
-				}else{
-					$currentDev += 1;
-				}
 			}
 			
 			# Esperar a que terminen los procesos
 			foreach $thrd (@process){
 				$thrd->join();
 			}
+			system("scp -r $USER\@$ip:/Users/$USER/Out/* $DEST/");
+			print MYPROCFILE ">> Data retrieve from $myip";
+			#system("ssh $USER\@$myip 'rm *.tif; rm Out/*;'");
+			#print MYPROCFILE ">> Images and Data deleted from $myip";
 			
 			# Chequear datos
 			checkPacket(@mypacket);
