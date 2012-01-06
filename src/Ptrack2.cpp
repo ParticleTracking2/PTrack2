@@ -1,7 +1,7 @@
 //============================================================================
-// Name        : CC69E
+// Name        : PTrack2
 // Author      : Juan Silva
-// Version     : 0.9b
+// Version     : 1.1
 // Copyright   : GLP
 // Description : Particle recognition software.
 //============================================================================

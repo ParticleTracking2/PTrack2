@@ -1,81 +1,19 @@
-#!/bin/bash
-# probando probando
+#!/usr/bin/perl
+use POSIX;
+use threads;
+use threads::shared;
+use Time::HiRes;
 
-if [[ "${#*}" -lt 4 ]]
-then
-	echo "--------------------------------------------------------"
-	echo "Uso: PTrack2Bash [Carpeta] [Carpeta Destino] [D] [W]  "
-	echo "-Carpeta: Carpeta donde ubicar las imagenes             "
-	echo "-Carpeta Destino: Carpeta de destino de los datos       "
-	echo "-D: Parametro de diametro de PTrack                  "
-	echo "-W: Parametro de peso de PTrack                      "
-	echo "--------------------------------------------------------"
-	exit
-fi
-
-configfile=~/.PTrack2Bash.conf
-
-if [ -r $configfile ]
-then
-	echo ">> Reading user configuration file..."
-	if egrep -q -z -v '^#|^[^ ]*=[^;]*|$([*])' $configfile
-	then
-		echo ">> Configuration file is unclean, please cleaning it..."
-		exit
-	fi
-	source $configfile
-	echo ">> Configuration file OK"
-
-	for(( index=0; index<${#SERVER[@]}; ++index))
-	do
-		echo -n ">> Server: ${SERVER[$index]} -> ${PARALLEL_LIMIT[$index]}"
-		if [[ ${CUDA[$index]} -ge 1 ]]
-		then
-			echo " CUDA Enabled"
-		else
-			echo " "
-		fi
-		
-		if [ "${SERVER[$index]}" != "$HOST" ]
-		then
-			ping -t 10 -c 5 ${SERVER[$index]} >> /tmp/pingTests.txt 
-			alive=$?
-			if [[ $alive -eq 0 ]]
-			then
-				echo -n ">> Server ${SERVER[$index]} is Alive. "
-				
-				ssh -q -o "BatchMode=yes" $USER@${SERVER[$index]} "echo 2>&1"
-				sshalive=$?
-				if [[ $sshalive -eq 0 ]]
-				then
-					echo " SSH is responding. Server OK!"
-					
-					MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
-					MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
-					MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
-					MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
-				else
-					echo " SSH is not responding or is not properly configured, discarding server."
-				fi				
-			else
-				echo ">> Server ${SERVER[$index]} is not responding, discarding server."
-			fi
-		else
-			MYSERVERS[${#MYSERVERS[*]}]=${SERVER[$index]}
-			MYPARALLEL_LIMIT[${#MYPARALLEL_LIMIT[*]}]=${PARALLEL_LIMIT[$index]}
-			MYCUDA[${#MYCUDA[*]}]=${CUDA[$index]}
-			MYCUDA_DEV[${#MYCUDA_DEV[*]}]=${CUDA_DEV[$index]}
-		fi
-	done
-
-	echo ">> Host: $HOST"
-	echo ">> Time Out: $TIME_OUT"
-	echo ">> Try Limit: $TRY_LIMIT"
-	echo ">> User: $USER"
-else
-	echo ">> No configuration file found, please create a new one."
-	exit
-fi
+if ($#ARGV < 3){
+	print "--------------------------------------------------------\n";
+	print "Uso: PTrack2Bash [Carpeta] [Carpeta Destino] [D] [W]\n";
+	print "-Carpeta: Carpeta donde ubicar las imagenes\n";
+	print "-Carpeta Destino: Carpeta de destino de los datos\n";
+	print "-D: Parametro de diametro de PTrack\n";
+	print "-W: Parametro de peso de PTrack\n";
+	print "--------------------------------------------------------\n";
+	exit;
+}
 
 #-------------------------------------
 # - Carpeta fuente de imagenes;
@@ -83,269 +21,256 @@ fi
 # - Diametro para PTrack
 # - Peso para PTrack
 #-------------------------------------
-FOLDER=$1
-DEST=$2
-DE=$3
-WU=$4
-
-mkdir $DEST
+my $FOLDER=$ARGV[0];
+my $DEST=$ARGV[1];
+my $DE=$ARGV[2];
+my $WU=$ARGV[3];
 
 #-------------------------------------
-# Recuperar los datos del servidor
-# Parametro $1: IP del servidor
-# Parametro $2: Imagen a procesar con nombre de archivo completo
-# Parametro $3: CUDA Habilitado
-# Parametro $4: Dispositivos de cuda [0,1,...] (0 No existe)
+# Datos de servidores
+# - Direccion IP
+# - Procesos en paralelo
+# - CUDA Habilitado
+# - Cantidad de dispositivos CUDA
 #-------------------------------------
-function doServer {
-	echo -n ">> [$1]: Processing Image: $2 "
-	if [[ "$3" -eq 1 ]]
-	then
-		echo "- CUDA Device $4"
-	else
-		echo ""
-	fi
+my @MYSERVERS;
+my @MYPARALLEL_LIMIT;
+my @MYCUDA;
+my @MYCUDA_DEV;
+
+#----------------------------------------------
+# Chequea e integra los datos de configuracion
+#---------------------------------------------- 
+sub CheckConfigFile{
+	print ">> Reading user configuration file...\n";
+	do "$ENV{HOME}/.PTrack2Bash.conf2"
+		or die ">> No configuration file found, please create a new one.";
 	
-	local myfile=$2	
-	local OUTFILE='xysl'${myfile:6:4}
-	if [[ "$1" != "$HOST" ]]
-	then
-		scp $FOLDER/$2 $USER@$1:/Users/$USER
-		echo ">> [$1]: Data transfer complete"
+	$limit=scalar(@SERVER);
+	for($i = 0; $i < $limit; $i++){
+		print ">> Checking Server: @SERVER[$i] -> @PARALLEL_LIMIT[$i]";
+		if( @CUDA[$i] >= 1 ){
+			print " CUDA Enabled"
+		}
+		print "\n";
 		
-		if [[ "$3" -eq 1 ]]
-		then
-			if [[ "$4" -eq 0 ]]
-			then
-				ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
-			else
-				ssh $USER@$1 "PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $2 -device $4 -outbin ./Out/$OUTFILE; exit;" &
-			fi
-		else
-			ssh $USER@$1 "PTrack2 chi2hd -d $DE -w $WU -silent -i $2 -outbin ./Out/$OUTFILE; exit;" &
-		fi
-		
-		local my_pid=$!
-	else
-		if [[ "$3" -eq 1 ]]
-		then
-			if [[ "$4" -eq 0 ]]
-			then
-				PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -outbin $DEST/$OUTFILE &
-			else
-				PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$2 -device $4 -outbin $DEST/$OUTFILE &
-			fi
-		else
-			PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$2 -outbin $DEST/$OUTFILE &
-		fi
-		local my_pid=$!
-	fi
+		if( @SERVER[$i] != $HOST ){
+			system "ping -w 5 -c 5 @SERVER[$i] >> /tmp/pingtest.txt";
+			$alive=$?;
+			if($alive == 0){
+				print ">> Server @SERVER[$i] is Alive.";
+				
+				system "ssh -q -o 'BatchMode=yes' $USER@$SERVER[$i] 'echo 2>&1'";
+				$sshalive=$?;
+				if($sshalive == 0){
+					print " SSH is responding. Server OK!\n";
+					push(@MYSERVERS,@SERVER[$i]);
+					push(@MYPARALLEL_LIMIT,@PARALLEL_LIMIT[$i]);
+					push(@MYCUDA,@CUDA[$i]);
+					push(@MYCUDA_DEV, @CUDA_DEV[$i]);
+				}else{
+					print " SSH is not responding or is not properly configured, discarding server.\n"
+				}
+			}else{
+				print ">> Server @SERVER[$i] is not responding, discarding server.\n";
+			}
+		}else{
+			push(@MYSERVERS,@SERVER[$i]);
+			push(@MYPARALLEL_LIMIT,@PARALLEL_LIMIT[$i]);
+			push(@MYCUDA,@CUDA[$i]);
+			push(@MYCUDA_DEV, @CUDA_DEV[$i]);
+		}
+	}
 
-	timeToKill $TIME_OUT $my_pid $1 $2 &
-	local killer_id=$!
-
-	wait $my_pid
-	disown $killer_id
-	kill $killer_id
-
-	echo ">> [$1]: $2 Data Processing Complete"
+	print ">> Host: $HOST\n";
+	print ">> Time Out: $TIME_OUT\n";
+	print ">> Try Limit: $TRY_LIMIT\n";
+	print ">> User: $USER\n";	
 }
 
-#-------------------------------------
-# Genera el tiempo de espera para que
-#  se complete el proceso
-# Parametro $1: Tiempo de espera
-# Parametro $2: Proceso a esperar
-# Parametro $3: Servidor del proceso
+#-----------------------------------------
+# Ejecuta el procesamiento de una imagen
+# Parametro $1: IP del servidor
+# Parametro $2: CUDA Habilitado o no
+# Parametro $3: Dispositivo cuda, si aplica. [0,1,2...]
 # Parametro $4: Imagen a procesar
-#-------------------------------------
-function timeToKill {
-	local mytime=$1
-	local mypid=$2
-	local myip=$3
-	local myimage=$4
-
-	sleep $mytime
-	kill -0 $mypid
-	local ret=$?
-
-	if [[ $ret -eq 0 ]]
-	then
-		kill $mypid
-		echo "Error: Killed task ID $mypid [$myip->$myimage] due to timeout $mytime exceeded, returned $ret"
-		echo "Error: Killed task ID $mypid [$myip->$myimage] due to timeout $mytime exceeded, returned $ret" >> $DEST/proc-log.txt
-	fi
-}
-
-#-------------------------------------
-# Itera sobre los archivos asignados a procesar para el servidor
-# Parametro $1: IP del servidor
-# Parametro $2: CUDA Habilitado
-# Parametro $3: Dispositivos CUDA
-# Parametro $4+: Imagen a procesar con nombre de archivo completo
-#-------------------------------------
-function iterateServer {
-	local cudadev=0
-	for file in ${*:4}
-	do
-		if [[ $2 -eq 0 ]]
-		then
-			doServer $1 $file 0 0 &
-		else
-			doServer $1 $file 1 $cudadev &
-			let "cudadev=$cudadev+1"
-			if [[ $cudadev -ge $3 ]]
-			then
-				cudadev=0
-			fi
-		fi
-	done
-	echo ">> [$1] Waiting server"
-	wait 
-	echo ">> [$1] Done"
-}
-
-#-------------------------------------
-# Recuperar los datos del servidor
-# Parametro $1: IP del servidor
-#-------------------------------------
-function retrieveData {
-	scp -q -o "BatchMode=yes" -r $USER@$1:/Users/$USER/Out/* $DEST/
-	echo ">> Data retrieved from $1"
-	ssh -q -o "BatchMode=yes" $USER@$1 "rm *.tif; rm Out/*; killall PTrack2;"
-	echo ">> Images and data deleted from $1"
-}
-
-#Main Loop
-function main {
+#-----------------------------------------
+sub runServer{
+	($myip, $mycuda, $mycudadev, $img) = @_;
 	
-	if [ "$(ls -A $FOLDER)" ]
-	then
-		 echo ">> Image Directory is OK"
-	else
-		echo ">> Image Directory $FOLDER is empty or is not present"
-		exit
-	fi
+	print MYPROCFILE ">> [$myip]: Processing Image: $img ";
+	if( $mycuda == 1 ){
+		print MYPROCFILE "- CUDA Device $mycudadev";
+	}
+	print MYPROCFILE "\n";
+	
+	my $myfile=substr($img, -14, 14);
+	my $myoutfile="xysl".substr($img, -8, 4);
+	
+	# Ejecutar en Servidor o local
+	if($ip != $HOST){
+		system("scp $FOLDER/$myfile $USER@$ip:/Users/$USER");
+		print MYPROCFILE ">> [$ip]: Data transfer complete";
+		if( $cuda == 1 ){
+			if( $cudadev == 0 ){
+				system("ssh $USER@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+			}else{
+				system("ssh $USER@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
+			}
+		}else{
+			system("ssh $USER@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+		}
+	}else{
+		if( $mycuda == 1 ){
+			if( $cudadev == 0 ){
+				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
+			}else{
+				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile");
+			}
+		}else{
+			system("PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
+		}
+	}
+}
+
+#-----------------------------------------
+# Ejecuta en un servidor el procesamiento
+# de imagenes
+# Parametro $1: IP del servidor
+# Parametro $2: Cantidad de procesos en paralelo
+# Parametro $3: CUDA Habilitado o no
+# Parametro $4: Dispositivo cuda, si aplica. [0,1,2...]
+#-----------------------------------------
+sub start_server{
+	($myip, $myprocess, $mycuda, $mycudadev) = @_;
+	
+	my @mypacket;
+	while( 1 ){
+		# Obtener paquete de datos
+		@mypacket = getPacket($myprocess);
+		if( 0 < @mypacket ){
+			# Ejecutar 1 proceso 1 imagen
+			my @process;
+			foreach $img (@mypacket){
+				my $thr = threads->create('runServer', ($myip, $mycuda, $mycudadev-1, $img));
+				push(@process, $thr);
+			}
+			
+			# Esperar a que terminen los procesos
+			foreach $thrd (@process){
+				$thrd->join();
+			}
+			
+			# Chequear datos
+			checkPacket(@mypacket);
+		}else{
+			print MYPROCFILE "[$myip-$myprocess] => No Packets Available. Good Bye!\n";
+			threads->exit();
+		}
+	}
+}
+
+my @IMG_STACK:shared;
+my @RETRY_HISTORY_STACK:shared;
+#-------------------------------
+# Construir packete de imagenes
+# Parametro $1: Tamaño del paquete
+#-------------------------------
+sub getPacket{
+	($maxPacket) = @_;
+	my @packet;
+	lock(@IMG_STACK);
+		my $img_stack_size = @IMG_STACK;
+		for($pi=0; $pi < $img_stack_size && $pi < $maxPacket; $pi++){
+			push(@packet,pop(@IMG_STACK));
+		}
+	
+	return @packet;
+}
+
+#--------------------------------------------------
+# Chequea la existencia de los archivos de salida
+# con la forma xysl####
+# Parametro $1: Arreglo de imagenes
+#--------------------------------------------------
+sub checkPacket{
+	(@images) = @_;
+	foreach $img (@images){
+		my $xysl = $DEST."/xysl".substr($img, -8, 4);
+		if(! -e $xysl ){
+			lock(@IMG_STACK);
+			lock(@RETRY_HISTORY_STACK);
+			
+			push(@RETRY_HISTORY_STACK, $img);
+			my $hcounter = 0;
+			foreach $rimg (@RETRY_HISTORY_STACK){
+				if($rimg eq $img){
+					$hcounter +=1;
+				}
+			}
+			
+			print MYPROCFILE ">> $img failed to process, trying to re process $hcounter times \n";
+			if( $hcounter < $TRY_LIMIT ){
+				push(@IMG_STACK, $img);
+			}else{
+				print MYPROCFILE ">> Try limit to process $img reached, discarding image\n";
+				print MYERRFILE ">> Failed to process $img\n";
+			}
+		}
+	}
+}
+
+#----------------------------------------
+# Inicia los calculos en cada servidor
+#----------------------------------------
+sub main{
+	#-------------------------------------
+	# Chequear que exista la carpeta
+	#-------------------------------------
+	opendir(FOLDER_VAR, $FOLDER)
+		or die ">> Image Directory $FOLDER is empty or is not present.";
+	closedir(FOLDER_VAR);
 	
 	#-------------------------------------
 	# Agregar todas las imagenes al STACK
 	#-------------------------------------
-	for file in $FOLDER/*.tif
-	do
-		STACK[${#STACK[*]}]=${file: -14}
-	done
-	echo ">> ${#STACK[@]} Images to process"
+	@IMG_STACK = <$FOLDER*.tif>;
+	my $stack_size = @IMG_STACK;
+	print MYPROCFILE ">> $stack_size Images to process\n";
 	
-	#-------------------------------------
-	# Pasar imagenes a los servidores
-	# y procesar
-	#-------------------------------------
-	STACK_SIZE=${#STACK[@]}
-	while [[ "$STACK_SIZE" -gt 0 ]]
-	do
-		for(( i=0; i<${#MYSERVERS[@]} && 0<$STACK_SIZE; ++i))
-		do
-			let "init=$STACK_SIZE-${MYPARALLEL_LIMIT[$i]}"
-			if (( $init > 0 ))
-			then
-				min=$init
-			else
-				min=0
-			fi
+	my @process_stream;
+	#------------------------------------------
+	# Por cada servidor, iniciar procesamiento
+	#------------------------------------------
+	for($i = 0; $i < @MYSERVERS; $i++){
+		print MYPROCFILE ">> Starting Server $MYSERVERS[$i]\n";
+		my $thread = threads->create('start_server', ($MYSERVERS[$i], $MYPARALLEL_LIMIT[$i], $MYCUDA[$i], $MYCUDA_DEV[$i]));
+		push(@process_stream, $thread);
+	}
 
-			iterateServer ${MYSERVERS[$i]} ${MYCUDA[$i]} ${MYCUDA_DEV[$i]} ${STACK[@]:$min:$STACK_SIZE} &
-
-			for img in ${STACK[@]:$min:$STACK_SIZE}
-			do
-				CHECK_STACK[${#CHECK_STACK[*]}]=$img
-			done
-
-			for (( k=0; k<${MYPARALLEL_LIMIT[$i]} && 0<$STACK_SIZE; ++k ))
-			do
-				unset STACK[${#STACK[@]}-1]
-				STACK_SIZE=${#STACK[@]}
-			done
-		done
-		echo ">> Waiting Iterations on servers"
-		wait
+	for($i = 0; $i < @process_stream; $i++){
+		$process_stream[$i]->join();
+	}
 	
-		#-------------------------------------
-		# Recolectar informacion y limpiar
-		#-------------------------------------
-		for(( i=0; i<${#MYSERVERS[@]}; ++i))
-		do
-			if [[ "${MYSERVERS[$i]}" != "$HOST" ]]
-			then
-				echo ">> Retrieving data from ${MYSERVERS[$i]}"
-				retrieveData ${MYSERVERS[$i]}
-			fi
-		done
-		wait
-		#----------------------------------------------
-		# Chequear que se hayan procesado correctamente
-		#----------------------------------------------
-		echo ">> Checking corresponding output data with image data"
-		for img in ${CHECK_STACK[*]}
-		do
-			imgNum='xysl'${img:6:4}
-			found=0
-			
-			#--------------------------------
-			# Encontrar correspondencia entre 
-			# la imagen y los datos
-			#--------------------------------
-			for data in $DEST/*
-			do
-				if [[ "$data" == "$DEST/$imgNum" ]]
-				then
-					found=1
-					break
-				fi
-			done
-			
-			#----------------------------
-			# Colocar denuevo en el STACK
-			#----------------------------
-			if [[ "$found" -eq 0 ]]
-			then
-				echo ">> $img failed to process, trying to re process"
-				echo ">> $img failed to process, trying to re process" >> $DEST/failed-img-log.txt
-				HISTORY_STACK[${#HISTORY_STACK[*]}]=$img
-				
-				hcounter=0
-				for himg in ${HISTORY_STACK[*]}
-				do
-					if [[ "$img" == "$himg" ]]
-					then
-						let hcounter=$hcounter+1
-					fi
-				done
-				echo ">> $img failed to process $hcounter times"
-				if [[ "$hcounter" -lt "$TRY_LIMIT" ]]
-				then
-					STACK[${#STACK[*]}]=$img
-					STACK_SIZE=${#STACK[@]}
-				else
-					echo ">> $img failed to process. Limit $TRY_LIMIT reached"
-					echo ">> $img failed to process. Limit $TRY_LIMIT reached" >> $DEST/failed-img-log.txt
-				fi
-			fi
-		done
-		echo ">> Corresponding output data with image data Checked"		
-		#----------------------------
-		# Vaciar stack de chequeo
-		#----------------------------
-		CHECK_STACK=( )
-		
-		echo ">> Iterations on servers complete"
-	done
+	print MYPROCFILE ">> All jobs Done!\n";
 }
 
-#-------------------------------------
-# Medir el tiempo y ejecutar
-#-------------------------------------
-(time main > $DEST/process-log.txt) 2> $DEST/time-log.txt
-#time main
 
-echo "------- All jobs done! -------"
+mkdir($DEST);
+open (MYERRFILE, ">>","$DEST/failed-img-log.txt")
+	or die "fail";
+open (MYPROCFILE, ">>", "$DEST/process-log.txt")
+	or die "fail proc";
+	
+CheckConfigFile();
+print ">> -------------------------------------\n";
+my $initTime = [ Time::HiRes::gettimeofday( ) ];
+main();
+my $totalTime = Time::HiRes::tv_interval( $initTime );
+my $minutes = floor($totalTime/60);
 
+close(MYERRFILE);
+
+printf ">> Total time to process %im%.3fs\n",($minutes,$totalTime-$minutes*60);
+printf MYPROCFILE ">> Total time to process %im%.3fs\n",($minutes,$totalTime-$minutes*60);
+close(MYPROCFILE);
