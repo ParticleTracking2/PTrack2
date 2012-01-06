@@ -43,7 +43,7 @@ my @MYCUDA_DEV;
 #---------------------------------------------- 
 sub CheckConfigFile{
 	print ">> Reading user configuration file...\n";
-	do "$ENV{HOME}/.PTrack2Bash.conf2"
+	do "$ENV{HOME}/.PTrack2Bash.conf"
 		or die ">> No configuration file found, please create a new one.";
 	
 	$limit=scalar(@SERVER);
@@ -113,12 +113,12 @@ sub runServer{
 		print MYPROCFILE ">> [$ip]: Data transfer complete";
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
-				system("ssh $USER@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 			}else{
-				system("ssh $USER@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
+				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
 			}
 		}else{
-			system("ssh $USER@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+			system("ssh $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 		}
 	}else{
 		if( $mycuda == 1 ){
@@ -156,12 +156,12 @@ sub start_server{
 			foreach $img (@mypacket){
 				my $thr = threads->create('runServer', ($myip, $mycuda, $currentDev, $img));
 				push(@process, $thr);
-			}
-			
-			if( $currentDev >= $mycudadev){
-				$currentDev = 0;
-			}else{
-				$currentDev += 1;
+				
+				if( $currentDev >= $mycudadev){
+					$currentDev = 0;
+				}else{
+					$currentDev += 1;
+				}
 			}
 			
 			# Esperar a que terminen los procesos
