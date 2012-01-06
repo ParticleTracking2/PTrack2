@@ -60,7 +60,7 @@ sub CheckConfigFile{
 			if($alive == 0){
 				print ">> Server @SERVER[$i] is Alive.";
 				
-				system "ssh -q -o 'BatchMode=yes' $USER@$SERVER[$i] 'echo 2>&1'";
+				system "ssh -q -o 'BatchMode=yes' $USER\@$SERVER[$i] 'echo 2>&1'";
 				$sshalive=$?;
 				if($sshalive == 0){
 					print " SSH is responding. Server OK!\n";
@@ -111,8 +111,8 @@ sub runServer{
 	if($ip != $HOST){
 		system("scp $FOLDER/$myfile $USER@$ip:/Users/$USER");
 		print MYPROCFILE ">> [$ip]: Data transfer complete";
-		if( $cuda == 1 ){
-			if( $cudadev == 0 ){
+		if( $mycuda == 1 ){
+			if( $mycudadev == 0 ){
 				system("ssh $USER@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 			}else{
 				system("ssh $USER@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
@@ -122,7 +122,7 @@ sub runServer{
 		}
 	}else{
 		if( $mycuda == 1 ){
-			if( $cudadev == 0 ){
+			if( $mycudadev == 0 ){
 				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 			}else{
 				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile");
@@ -145,15 +145,23 @@ sub start_server{
 	($myip, $myprocess, $mycuda, $mycudadev) = @_;
 	
 	my @mypacket;
+	my $currentDev=0;
 	while( 1 ){
 		# Obtener paquete de datos
 		@mypacket = getPacket($myprocess);
 		if( 0 < @mypacket ){
 			# Ejecutar 1 proceso 1 imagen
 			my @process;
+			
 			foreach $img (@mypacket){
-				my $thr = threads->create('runServer', ($myip, $mycuda, $mycudadev-1, $img));
+				my $thr = threads->create('runServer', ($myip, $mycuda, $currentDev, $img));
 				push(@process, $thr);
+			}
+			
+			if( $currentDev >= $mycudadev){
+				$currentDev = 0;
+			}else{
+				$currentDev += 1;
 			}
 			
 			# Esperar a que terminen los procesos
