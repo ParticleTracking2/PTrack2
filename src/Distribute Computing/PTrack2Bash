@@ -108,32 +108,26 @@ sub runServer{
 	my $myoutfile="xysl".substr($img, -8, 4);
 	
 	# Ejecutar en Servidor o local
-	if($ip != $HOST){
+	if($myip != $HOST){
 		system("scp $FOLDER/$myfile $USER\@$ip:/Users/$USER");
 		print MYPROCFILE ">> [$ip]: Data transfer complete";
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
-				print "[$ip]: ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'";
 				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 			}else{
-				print "[$ip]: ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'";
 				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
 			}
 		}else{
-			print "[$ip]: ssh $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'";
 			system("ssh $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 		}
 	}else{
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
-				print "[$ip]: PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile";
 				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 			}else{
-				print "[$ip]: PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile";
 				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile");
 			}
 		}else{
-			print "[$ip]: PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile";
 			system("PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 		}
 	}
