@@ -109,16 +109,17 @@ sub runServer{
 	
 	# Ejecutar en Servidor o local
 	if($myip ne $HOST){
-		system("scp $FOLDER/$myfile $USER\@$ip:/Users/$USER");
-		print MYPROCFILE ">> [$ip]: Data transfer complete";
+		print MYPROCFILE ">> [$myip]: Transfering data $myfile\n";
+		system("scp -q $FOLDER/$myfile $USER\@$myip:/Users/$USER");
+		print MYPROCFILE ">> [$myip]: Data transfer complete\n";
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
-				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 			}else{
-				system("ssh $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
+				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
 			}
 		}else{
-			system("ssh $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+			system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 		}
 	}else{
 		if( $mycuda == 1 ){
@@ -167,10 +168,14 @@ sub start_server{
 			foreach $thrd (@process){
 				$thrd->join();
 			}
-			system("scp -r $USER\@$myip:/Users/$USER/Out/* $DEST/");
-			print MYPROCFILE ">> Data retrieve from $myip";
-			#system("ssh $USER\@$myip 'rm *.tif; rm Out/*;'");
-			#print MYPROCFILE ">> Images and Data deleted from $myip";
+			
+			# Recuperar datos
+			if($myip ne $HOST){
+				system("scp -q -r $USER\@$myip:/Users/$USER/Out/* $DEST/");
+				print MYPROCFILE ">> Data retrieve from $myip \n";
+				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'rm *.tif; rm Out/*;'");
+				print MYPROCFILE ">> Images and Data deleted from $myip \n";
+			}
 			
 			# Chequear datos
 			checkPacket(@mypacket);
