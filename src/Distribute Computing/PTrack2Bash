@@ -108,7 +108,7 @@ sub runServer{
 	my $myoutfile="xysl".substr($img, -8, 4);
 	
 	# Ejecutar en Servidor o local
-	if($myip != $HOST){
+	if($myip ne $HOST){
 		system("scp $FOLDER/$myfile $USER\@$ip:/Users/$USER");
 		print MYPROCFILE ">> [$ip]: Data transfer complete";
 		if( $mycuda == 1 ){
@@ -167,7 +167,7 @@ sub start_server{
 			foreach $thrd (@process){
 				$thrd->join();
 			}
-			system("scp -r $USER\@$ip:/Users/$USER/Out/* $DEST/");
+			system("scp -r $USER\@$myip:/Users/$USER/Out/* $DEST/");
 			print MYPROCFILE ">> Data retrieve from $myip";
 			#system("ssh $USER\@$myip 'rm *.tif; rm Out/*;'");
 			#print MYPROCFILE ">> Images and Data deleted from $myip";
