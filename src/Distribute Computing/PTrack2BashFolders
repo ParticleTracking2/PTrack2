@@ -40,11 +40,15 @@ else
 fi
 
 FIX=3
-for (( i=$INIT_NUM; i<=$FINAL_NUM; ++i ))
-do
-	num="000"$i
-	folder=$SUB_FOLDER${num:${#num}-3:3}
-	echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST -> ${Data_D[$i]} -> ${Data_W[$i]}"
-	PTrack2Bash $folder/$IMG_FOLDER $folder/$DEST ${Data_D[$i]} ${Data_W[$i]}
-	echo ">> Processing $folder/$IMG_FOLDER complete"
-done
+function main {
+	for (( i=$INIT_NUM; i<=$FINAL_NUM; ++i ))
+	do
+		num="000"$i
+		folder=$SUB_FOLDER${num:${#num}-3:3}
+		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST -> ${Data_D[$i]} -> ${Data_W[$i]}"
+		PTrack2Bash $folder/$IMG_FOLDER $folder/$DEST ${Data_D[$i]} ${Data_W[$i]}
+		echo ">> Processing $folder/$IMG_FOLDER complete"
+	done
+}
+
+time main
