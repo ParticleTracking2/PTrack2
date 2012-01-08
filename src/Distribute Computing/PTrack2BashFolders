@@ -3,9 +3,9 @@
 if [[ "${#*}" -lt 3 ]]
 then
 	echo "--------------------------------------------------------------------------"
-	echo "Uso: PTrack2BashFolders [SuperCarpeta] [nInicial] [nFinal]"
+	echo "Uso: PTrack2BashFolders [Prefijo] [nInicial] [nFinal]"
 	echo "Ejemplo: ptrackingBashFolders Acquis"
-	echo "-SuperCarpeta: Carpeta general en la cual se encuentra la carpeta de imagenes ej: Acquis###"
+	echo "-Prefijo: Prefijo de las carpetas a ser procesadas, las carpetas deben terminar con 3 dijitos ej: Acquis###"
 	echo "-nInicial: Numero inicial de las carpeta a procesar"
 	echo "-nFinal: Numero final de las carpetas a procesar"
 	echo "--------------------------------------------------------------------------"

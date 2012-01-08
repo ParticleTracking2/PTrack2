@@ -68,12 +68,14 @@ install:
 	sudo cp PTrack2 /usr/bin
 	sudo cp ../src/Distribute\ Computing/PTrack2Bash /usr/bin
 	sudo cp ../src/Distribute\ Computing/PTrack2Folder /usr/bin
+	sudo cp ../src/Distribute\ Computing/PTrack2FolderCuda /usr/bin
 	sudo cp ../src/Distribute\ Computing/PTrack2BashFolders /usr/bin
 	cp ../src/Distribute\ Computing/PTrack2BashFolders.conf ~/PTrack2BashFolders.conf.example
 	cp ../src/Distribute\ Computing/.PTrack2Bash.conf ~/
 	sudo chmod +x /usr/bin/PTrack2
 	sudo chmod +x /usr/bin/PTrack2Bash
 	sudo chmod +x /usr/bin/PTrack2Folder
+	sudo chmod +x /usr/bin/PTrack2FolderCuda
 	sudo chmod +x /usr/bin/PTrack2BashFolders
 	
 uninstall:
@@ -81,6 +83,7 @@ uninstall:
 	sudo rm /usr/bin/PTrack2
 	sudo rm /usr/bin/PTrack2Bash
 	sudo rm /usr/bin/PTrack2Folder
+	sudo rm /usr/bin/PTrack2FolderCuda
 	sudo rm /usr/bin/PTrack2BashFolders
 
 .PHONY: all clean dependents
