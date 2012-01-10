@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_chi2_lib_high_density.html#ad1847532e760141e35390a649e7c1b7e" title="Chi2LibHighDensity::gaussianFit" alt="" coords="200,5,413,35"/>
-<area shape="rect" id="node5" href="$class_chi2_h_d_algorithm.html#a794f836de22e5eb430263c4f93015520" title="Chi2HDAlgorithm::run" alt="" coords="463,56,612,85"/>
-<area shape="rect" id="node7" href="$class_chi2_lib.html#a979fb7888bdca5f0cc987fd52e857717" title="Chi2Lib::getPeaks" alt="" coords="243,109,371,139"/>
-<area shape="rect" id="node10" href="$class_chi2_algorithm.html#a6402aba871c52574eac2b8f144711c43" title="Chi2Algorithm::run" alt="" coords="472,109,603,139"/>
-</map>

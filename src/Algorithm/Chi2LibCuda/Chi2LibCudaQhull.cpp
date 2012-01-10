@@ -4,7 +4,7 @@
  *  Created on: 15/12/2011
  *      Author: juanin
  */
-
+#ifdef CHI2CUDA
 #include "Chi2LibCudaQhull.h"
 
 void Chi2LibCudaQhull::trim(string& str){
@@ -196,3 +196,4 @@ void Chi2LibCudaQhull::addVoronoiAreas(cuMyPeakArray *peaks){
 	}
 	MyLogger::log()->debug("[Chi2LibCudaQhull][addVoronoiAreas] Adding Areas Complete!");
 }
+#endif

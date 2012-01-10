@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lfftw3 -lfftw3f -lcufft -lcudart -lChi2HD_Cuda -llog4cpp -lMagick++ -lMagickWand -lMagickCore
+LIBS := -lfftw3 -lChi2HD_Cuda -lfftw3f -lcufft -lcudart -llog4cpp -lMagick++ -lMagickWand -lMagickCore
 

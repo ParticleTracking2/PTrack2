@@ -14,7 +14,9 @@
 enum AlgorithmType{
 	Chi2_Algorithm,
 	Chi2HD_Algorithm,
+#ifdef CHI2CUDA
 	Chi2HDCuda_Algorithm,
+#endif
 	None_Algorithm
 };
 

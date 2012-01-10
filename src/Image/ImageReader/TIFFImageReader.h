@@ -17,6 +17,7 @@
 class TIFFImageReader : public ImageReader {
 private:
 
+#ifdef CHI2CUDA
 	/**
 	 * Estructura de particion para generar la imagen.
 	 */
@@ -36,6 +37,7 @@ private:
 	 * Puebla los datos de la imagen. ptr debe ser un puntero a la estructura TiffPartition.
 	 */
 	static void *populateCu(void *ptr);
+#endif
 public:
 	/**
 	 * Constructor Vacio
@@ -47,6 +49,7 @@ public:
 	 */
 	~TIFFImageReader();
 
+#ifdef CHI2CUDA
 	/**
 	 * Decodifica una Imagen a escala de grises.
 	 * @param file Ruta completa de la imagen.
@@ -60,6 +63,7 @@ public:
 	 * @return Imagen decodificada y almacenada como cuMyMatrix.
 	 */
 	cuMyMatrix decodeCuRawGray(string file);
+#endif
 };
 
 #endif

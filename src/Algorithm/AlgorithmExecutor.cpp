@@ -36,7 +36,10 @@ vector<ArgObj> AlgorithmExecutor::getAllArguments(){
 	vector<ArgObj> ret;
 	ret.push_back(Chi2Algorithm::myArgs());
 	ret.push_back(Chi2HDAlgorithm::myArgs());
+
+#ifdef CHI2CUDA
 	ret.push_back(Chi2HDCudaAlgorithm::myArgs());
+#endif
 
 	return ret;
 }
@@ -54,10 +57,13 @@ AlgorithmType AlgorithmExecutor::translate(string alg){
 		MyLogger::log()->debug("[AlgorithmExecutor][translate] Translated to: Chi2HD_Algorithm");
 		ret = Chi2HD_Algorithm;
 	}
+
+#ifdef CHI2CUDA
 	if(alg.compare("chi2hdcuda")==0){
 		MyLogger::log()->debug("[AlgorithmExecutor][translate] Translated to: Chi2HDCuda_Algorithm");
 		ret = Chi2HDCuda_Algorithm;
 	}
+#endif
 
 	return ret;
 }
@@ -75,10 +81,12 @@ void AlgorithmExecutor::select(AlgorithmType type){
 			MyLogger::log()->info("[AlgorithmExecutor][select] Chi2 High Density Algorithm selected");
 			selected = new Chi2HDAlgorithm();
 			break;
+#ifdef CHI2CUDA
 		case Chi2HDCuda_Algorithm:
 			MyLogger::log()->info("[AlgorithmExecutor][select] Chi2 High Density CUDA Algorithm selected");
 			selected = new Chi2HDCudaAlgorithm();
 			break;
+#endif
 		case None_Algorithm:
 			MyLogger::log()->info("[AlgorithmExecutor][select] No Algorithm selected");
 			selected = new Algorithm();

@@ -57,6 +57,7 @@ void FileUtils::writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, con
 	}
 }
 
+#ifdef CHI2CUDA
 void FileUtils::writeToFileM(cuMyMatrix *arr, const char* file){
 	if(MyLogger::logFileData()){
 		ofstream myfile;
@@ -90,6 +91,7 @@ void FileUtils::writeToFileM(cuMyMatrixi *arr, const char* file){
 		myfile.close();
 	}
 }
+#endif
 
 void FileUtils::writeToFileM(fftw_complex *arr, unsigned int size, const char* file){
 	if(MyLogger::logFileData()){

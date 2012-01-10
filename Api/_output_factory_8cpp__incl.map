@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$_output_factory_8h.html" title="OutputFactory.h" alt="" coords="688,83,803,112"/>
-<area shape="rect" id="node5" href="$_output_8h.html" title="Output.h" alt="" coords="385,160,457,189"/>
-<area shape="rect" id="node19" href="$_standar_output_8h.html" title="OutImpl/StandarOutput.h" alt="" coords="481,160,647,189"/>
-<area shape="rect" id="node23" href="$_plain_output_8h.html" title="OutImpl/PlainOutput.h" alt="" coords="671,160,820,189"/>
-<area shape="rect" id="node26" href="$_binary_output_8h.html" title="OutImpl/BinaryOutput.h" alt="" coords="844,160,1001,189"/>
-<area shape="rect" id="node29" href="$_connector_output_8h.html" title="OutImpl/ConnectorOutput.h" alt="" coords="1025,160,1207,189"/>
-</map>

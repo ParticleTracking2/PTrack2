@@ -1,8 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$_algorithm_factory_8h.html" title="AlgorithmFactory.h" alt="" coords="1304,83,1435,112"/>
-<area shape="rect" id="node9" href="$_algorithm_8h.html" title="Algorithm.h" alt="" coords="660,160,748,189"/>
-<area shape="rect" id="node22" href="$_chi2_algorithm_8h.html" title="Implementations/Chi2Algorithm.h" alt="" coords="2844,160,3057,189"/>
-<area shape="rect" id="node34" href="$_chi2_h_d_algorithm_8h.html" title="Implementations/Chi2HDAlgorithm.h" alt="" coords="3081,160,3316,189"/>
-<area shape="rect" id="node43" href="$_chi2_h_d_cuda_algorithm_8h.html" title="Implementations/Chi2HDCudaAlgorithm.h" alt="" coords="1815,160,2081,189"/>
-<area shape="rect" id="node18" href="$_my_peak_8h.html" title="MyPeak.h" alt="" coords="752,237,832,267"/>
-</map>

@@ -4,6 +4,8 @@
  *  Created on: 13/12/2011
  *      Author: juanin
  */
+
+#ifdef CHI2CUDA
 #include "Container/cuMyMatrix.h"
 #include "Chi2LibcuHighDensity.h"
 #include "../../Utils/MyLogger.h"
@@ -83,3 +85,4 @@ public:
 };
 
 #endif /* CHI2LIBCUDAHIGHDENSITY_H_ */
+#endif

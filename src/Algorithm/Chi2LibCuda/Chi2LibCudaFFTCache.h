@@ -4,7 +4,7 @@
  *  Created on: 22/11/2011
  *      Author: juanin
  */
-
+#ifdef CHI2CUDA
 #ifndef CHI2LIBCUDAFFTCACHE_H_
 #define CHI2LIBCUDAFFTCACHE_H_
 
@@ -102,3 +102,4 @@ public:
 };
 
 #endif /* CHI2LIBCUDAFFTCACHE_H_ */
+#endif

@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$_chi2_h_d_cuda_algorithm_8h.html" title="src/Algorithm/Implementations/Chi2HDCudaAlgorithm.h" alt="" coords="197,83,544,112"/>
-<area shape="rect" id="node13" href="$_chi2_lib_cuda_high_density_8cpp.html" title="src/Algorithm/Chi2LibCuda/Chi2LibCudaHighDensity.cpp" alt="" coords="568,83,923,112"/>
-<area shape="rect" id="node15" href="$_chi2_lib_cuda_qhull_8cpp.html" title="src/Algorithm/Chi2LibCuda/Chi2LibCudaQhull.cpp" alt="" coords="947,83,1259,112"/>
-<area shape="rect" id="node5" href="$_algorithm_factory_8h.html" title="src/Algorithm/AlgorithmFactory.h" alt="" coords="109,160,323,189"/>
-<area shape="rect" id="node11" href="$_chi2_h_d_cuda_algorithm_8cpp.html" title="src/Algorithm/Implementations/Chi2HDCudaAlgorithm.cpp" alt="" coords="347,160,707,189"/>
-<area shape="rect" id="node7" href="$_algorithm_factory_8cpp.html" title="src/Algorithm/AlgorithmFactory.cpp" alt="" coords="5,237,232,267"/>
-<area shape="rect" id="node9" href="$_ptrack2_8cpp.html" title="src/Ptrack2.cpp" alt="" coords="256,237,371,267"/>
-</map>

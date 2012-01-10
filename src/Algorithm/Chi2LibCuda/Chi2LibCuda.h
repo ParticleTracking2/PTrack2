@@ -4,7 +4,7 @@
  *  Created on: 18/11/2011
  *      Author: juanin
  */
-
+#ifdef CHI2CUDA
 #ifndef CHI2LIBCUDA_H_
 #define CHI2LIBCUDA_H_
 
@@ -134,3 +134,4 @@ public:
 };
 
 #endif /* CHI2LIBCUDA_H_ */
+#endif

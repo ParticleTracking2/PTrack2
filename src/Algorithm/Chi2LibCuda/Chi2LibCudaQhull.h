@@ -5,6 +5,7 @@
  *      Author: juanin
  */
 
+#ifdef CHI2CUDA
 #ifndef CHI2LIBCUDAQHULL
 #define CHI2LIBCUDAQHULL
 
@@ -66,4 +67,5 @@ public:
 	static void addVoronoiAreas(cuMyPeakArray *peaks);
 };
 
+#endif
 #endif

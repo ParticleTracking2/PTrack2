@@ -4,10 +4,13 @@
  *  Created on: 02/10/2011
  *      Author: ptrack
  */
+
 #include "../Container/MyMatrix.h"
 #include "../Algorithm/MyPeak.h"
 #include "MyLogger.h"
+#ifdef CHI2CUDA
 #include "Container/cuMyMatrix.h"
+#endif
 
 #include <fftw3.h>
 #include <vector>
@@ -30,8 +33,10 @@ public:
 
 	static void writeToFileM(double *arr, MyMatrix<double> *ref, int nwidth, const char* file);
 
+#ifdef CHI2CUDA
 	static void writeToFileM(cuMyMatrix *arr, const char* file);
 	static void writeToFileM(cuMyMatrixi *arr, const char* file);
+#endif
 	static void writeToFileM(fftw_complex *arr, unsigned int size, const char* file);
 	static void writeToFileM(double *arr, unsigned int width, unsigned int height, const char* file);
 

@@ -4,7 +4,7 @@
  *  Created on: 22/11/2011
  *      Author: juanin
  */
-
+#ifdef CHI2CUDA
 #include "Chi2LibCudaFFTCache.h"
 
 /**
@@ -125,3 +125,4 @@ void Chi2LibCudaFFTCache::cache(unsigned int slot, cuMyMatrix* data){
 //		Chi2LibcuMatrix::copy(data, instance->_cache[slot]);
 	}
 }
+#endif

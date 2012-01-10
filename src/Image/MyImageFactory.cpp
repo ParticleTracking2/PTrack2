@@ -133,6 +133,7 @@ MyMatrix<double> MyImageFactory::makeRawImgFromFile(string file, unsigned int cu
 	return ret;
 }
 
+#ifdef CHI2CUDA
 cuMyMatrix MyImageFactory::makeCuRawImgFromFile(string file){
 	ImageReader *reader;
 	cuMyMatrix ret;
@@ -194,6 +195,7 @@ cuMyMatrix MyImageFactory::makeCuRawImgFromFile(string file, unsigned int cut){
 	delete reader;
 	return ret;
 }
+#endif
 
 MyImageTypes MyImageFactory::recognizeType(string file){
 	MyLogger::log()->debug("[MyImageFactory] Finding Extension of image...");

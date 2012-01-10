@@ -4,7 +4,7 @@
  *  Created on: 13/12/2011
  *      Author: juanin
  */
-
+#ifdef CHI2CUDA
 #include "Chi2LibCudaHighDensity.h"
 #include "Chi2LibCudaQhull.h"
 
@@ -107,4 +107,4 @@ void Chi2LibCudaHighDensity::removeBadVoronoiPeaks(cuMyPeakArray *peaks, cuMyMat
 
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][removeBadVoronoiPeaks] Removing complete");
 }
-
+#endif

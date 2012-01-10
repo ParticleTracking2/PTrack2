@@ -5,6 +5,7 @@
  *      Author: ptrack
  */
 
+#ifdef CHI2CUDA
 #ifndef CHI2HDCUDAALGORITHM
 #define CHI2HDCUDAALGORITHM
 
@@ -65,4 +66,5 @@ public:
 	vector<MyPeak> run();
 };
 
+#endif
 #endif

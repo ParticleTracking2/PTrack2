@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_args_processor.html#a14aef2729a31cf7c87ac4027185db46c" title="ArgsProcessor::getArgAsInt" alt="" coords="289,5,473,35"/>
-<area shape="rect" id="node7" href="$class_chi2_h_d_cuda_algorithm.html#a60d6c46d691c6a1ea47f35b9c57c45e8" title="Chi2HDCudaAlgorithm::run" alt="" coords="291,59,472,88"/>
-<area shape="rect" id="node9" href="$class_chi2_h_d_algorithm.html#a794f836de22e5eb430263c4f93015520" title="Chi2HDAlgorithm::run" alt="" coords="307,112,456,141"/>
-<area shape="rect" id="node11" href="$class_chi2_algorithm.html#a6402aba871c52574eac2b8f144711c43" title="Chi2Algorithm::run" alt="" coords="316,165,447,195"/>
-<area shape="rect" id="node5" href="$_ptrack2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="523,5,573,35"/>
-</map>

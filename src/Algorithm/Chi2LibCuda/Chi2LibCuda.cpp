@@ -5,6 +5,7 @@
  *      Author: juanin
  */
 
+#ifdef CHI2CUDA
 #include "Chi2LibCuda.h"
 
 cuMyMatrix Chi2LibCuda::initializeData(MyMatrix<double>* data){
@@ -147,3 +148,4 @@ void Chi2LibCuda::addState(cuMyPeakArray *peaks, float vor_areaSL){
 	peaks->copyToDevice();
 	MyLogger::log()->info("[Chi2LibCuda][addState] Peaks transformed");
 }
+#endif

@@ -4,7 +4,10 @@
  *  Created on: 11-06-2011
  *      Author: juanin
  */
+
+#ifdef CHI2CUDA
 #include "Container/cuMyMatrix.h"
+#endif
 #include "../Algorithm/MyPeak.h"
 #include "../Container/MyMatrix.h"
 #include "../Utils/MyLogger.h"
@@ -51,11 +54,13 @@ public:
 	 */
 	MyImage(MyMatrix<double> *trx);
 
+#ifdef CHI2CUDA
 	/**
 	 * Constructor a base de una matriz de dos dimensiones de double.
 	 * @param trx Matriz de datos representativos de la imagen.
 	 */
 	MyImage(cuMyMatrix *trx);
+#endif
 
 	/**
 	 * Operador () que devuelve el contenido de la posicion X e Y de la imagen.

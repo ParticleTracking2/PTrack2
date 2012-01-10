@@ -53,12 +53,14 @@ public:
 	 */
 	static MyMatrix<double> makeRawImgFromFile(string file);
 
+#ifdef CHI2CUDA
 	/**
 	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
 	 * @param file Ruta completa de una imagen.
 	 * @return Imagen representada por la clase MyImage.
 	 */
 	static cuMyMatrix makeCuRawImgFromFile(string file);
+#endif
 
 	/**
 	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
@@ -78,6 +80,7 @@ public:
 	 */
 	static MyMatrix<double> makeRawImgFromFile(string file, unsigned int cut);
 
+#ifdef CHI2CUDA
 	/**
 	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
 	 * Además recorta la imagen en todos sus bordes segun cut.
@@ -86,6 +89,7 @@ public:
 	 * @return Imagen representada por la clase MyImage.
 	 */
 	static cuMyMatrix makeCuRawImgFromFile(string file, unsigned int cut);
+#endif
 };
 
 #endif

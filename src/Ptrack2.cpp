@@ -6,10 +6,10 @@
 // Description : Particle recognition software.
 //============================================================================
 
+#include <vector>
 #include "Arguments/ArgsProcessor.h"
 #include "Image/MyImageFactory.h"
 #include "Utils/MyLogger.h"
-#include "Algorithm/Algorithm.h"
 #include "Algorithm/AlgorithmExecutor.h"
 #include "Algorithm/MyPeak.h"
 #include "Output/Output.h"

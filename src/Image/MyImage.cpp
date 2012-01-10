@@ -27,6 +27,7 @@ MyImage::MyImage(MyMatrix<double> *trx){
 		}
 }
 
+#ifdef CHI2CUDA
 MyImage::MyImage(cuMyMatrix *trx){
 	trx->copyToHost();
 	mtrx.allocate(trx->sizeX(), trx->sizeY());
@@ -35,7 +36,7 @@ MyImage::MyImage(cuMyMatrix *trx){
 			mtrx.at(x,y) = trx->getValueHost(x,y);
 		}
 }
-
+#endif
 
 MyImage::~MyImage(){
 	mtrx.deallocate();

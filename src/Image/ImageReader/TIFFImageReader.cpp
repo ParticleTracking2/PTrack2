@@ -20,6 +20,7 @@ TIFFImageReader::~TIFFImageReader() { }
  * Metodos
  *******************************
  */
+#ifdef CHI2CUDA
 void *TIFFImageReader::populate(void *ptr){
 	TiffPartition* part = (TiffPartition*) ptr;
 
@@ -37,14 +38,14 @@ void *TIFFImageReader::populate(void *ptr){
 void *TIFFImageReader::populateCu(void *ptr){
 	TiffPartition* part = (TiffPartition*) ptr;
 
-	MyLogger::log()->debug("[TIFFImageReader][populate] Populating: X1=%i; X2=%i, Y1=%i, Y2=%i", part->x1, part->x2, part->y1 ,part->y2);
+	MyLogger::log()->debug("[TIFFImageReader][populateCu] Populating: X1=%i; X2=%i, Y1=%i, Y2=%i", part->x1, part->x2, part->y1 ,part->y2);
 	Magick::ColorRGB my_color;
 	for(int x = part->x1; x < part->x2; ++x)
 		for(int y = part->y1; y < part->y2; ++y){
 			my_color = part->mimg->pixelColor(x,y);
 			part->cuimg->atHost(x,y) = (float)my_color.green();
 		}
-	MyLogger::log()->debug("[TIFFImageReader][populate] Populated");
+	MyLogger::log()->debug("[TIFFImageReader][populateCu] Populated");
 	return 0;
 }
 
@@ -117,3 +118,4 @@ cuMyMatrix TIFFImageReader::decodeCuRawGray(string file){
 
 	return ret;
 }
+#endif

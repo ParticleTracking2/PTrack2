@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_chi2_lib_matrix.html#a99371999481f9c52783c3ec31edc889b" title="Chi2LibMatrix::copy" alt="" coords="237,61,376,91"/>
-<area shape="rect" id="node9" href="$class_my_matrix.html#a6f277712304e2b537a86f8555c3da142" title="MyMatrix::sX" alt="" coords="443,112,541,141"/>
-<area shape="rect" id="node11" href="$class_my_matrix.html#a10ee295cecf76cd0b6d8a65d04fe24bc" title="MyMatrix::sY" alt="" coords="443,165,541,195"/>
-<area shape="rect" id="node5" href="$class_my_matrix.html#ae4fb442c6eab12be86ccdfac16ffd9ba" title="MyMatrix::at" alt="" coords="445,5,539,35"/>
-<area shape="rect" id="node7" href="$class_my_matrix.html#a6aeb299826d84e4e83b0433b054a04c3" title="MyMatrix::getValue" alt="" coords="425,59,559,88"/>
-</map>

@@ -60,6 +60,7 @@ MyMatrix<double> ImageReader::decodeRawGray(string file){
 	return ret;
 }
 
+#ifdef CHI2CUDA
 cuMyMatrix ImageReader::decodeCuRawGray(string file){
 	MyLogger::log()->debug("[ImageReader] Decoding Generic Image: %s", file.c_str());
 	Magick::Image my_image;
@@ -83,6 +84,7 @@ cuMyMatrix ImageReader::decodeCuRawGray(string file){
 	MyLogger::log()->debug("[ImageReader] Generic Image Decoded");
 	return ret;
 }
+#endif
 
 MyImage ImageReader::decodeImageGray(string file, unsigned int cut){
 	MyLogger::log()->debug("[ImageReader] Decoding Generic Image: %s; Cut=%i", file.c_str(), cut);
@@ -126,6 +128,7 @@ MyMatrix<double> ImageReader::decodeRawGray(string file, unsigned int cut){
 	return ret;
 }
 
+#ifdef CHI2CUDA
 cuMyMatrix ImageReader::decodeCuRawGray(string file, unsigned int cut){
 	MyLogger::log()->debug("[ImageReader] Decoding Generic Image: %s", file.c_str());
 	Magick::Image my_image;
@@ -149,3 +152,4 @@ cuMyMatrix ImageReader::decodeCuRawGray(string file, unsigned int cut){
 	MyLogger::log()->debug("[ImageReader] Generic Image Decoded");
 	return ret;
 }
+#endif

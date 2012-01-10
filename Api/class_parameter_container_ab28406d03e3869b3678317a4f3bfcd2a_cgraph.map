@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_parameter_container.html#adb3df5112e12419386ae987d26c66521" title="ParameterContainer::addParam" alt="" coords="260,5,465,35"/>
-<area shape="rect" id="node5" href="$class_parameter_container.html#a27f3b783e3bfcc4ff028f8e2d8881029" title="ParameterContainer::existParam" alt="" coords="257,59,468,88"/>
-<area shape="rect" id="node7" href="$class_container.html#adc32d2fb4ba86c02f7c8d249f8fe6fc0" title="Container::getDescription" alt="" coords="277,112,448,141"/>
-<area shape="rect" id="node9" href="$class_parameter_container.html#abcc9cbc34b8ad55f7831521e759a39fc" title="ParameterContainer::popParam" alt="" coords="260,165,465,195"/>
-<area shape="rect" id="node11" href="$class_container.html#af02e94c915e2f8cde38de562cc5b0646" title="Container::setDescription" alt="" coords="277,219,448,248"/>
-</map>

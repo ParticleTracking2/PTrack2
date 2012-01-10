@@ -1,6 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$class_chi2_lib_cuda_f_f_t_cache.html#aa1e5df7db13758ff7e85cab225dbc1ff" title="Chi2LibCudaFFTCache::cache" alt="" coords="256,5,459,35"/>
-<area shape="rect" id="node5" href="$class_chi2_lib_cuda_f_f_t_cache.html#a522adb0fd2c54ed29470625b49a0ca53" title="Chi2LibCudaFFTCache::empty" alt="" coords="256,59,459,88"/>
-<area shape="rect" id="node7" href="$class_chi2_lib_cuda_f_f_t_cache.html#aa5139723960b39e8f343070d1a537447" title="Chi2LibCudaFFTCache::lock" alt="" coords="263,112,452,141"/>
-<area shape="rect" id="node9" href="$class_my_logger.html#ae254bfea96bac88247477d2be27be8c9" title="MyLogger::log" alt="" coords="305,165,409,195"/>
-</map>

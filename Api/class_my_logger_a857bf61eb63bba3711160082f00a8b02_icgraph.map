@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$_ptrack2_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97" title="main" alt="" coords="264,5,315,35"/>
-<area shape="rect" id="node5" href="$class_file_utils.html#a6724b339b9b75bdd812a82aea59362b4" title="FileUtils::writeToFile" alt="" coords="219,59,360,88"/>
-<area shape="rect" id="node7" href="$class_file_utils.html#a329dd68d700499066b23a320480e3462" title="FileUtils::writeToFileM" alt="" coords="213,112,365,141"/>
-<area shape="rect" id="node15" href="$class_file_utils.html#a318b6aa5af8ae6e4f88fa9bc56002345" title="FileUtils::writeToFileMA" alt="" coords="208,165,371,195"/>
-<area shape="rect" id="node9" href="$class_chi2_lib_cuda_f_f_t_cache.html#a04a5c03e7f10a86d63ad41168c42e5a5" title="Chi2LibCudaFFTCache::dump" alt="" coords="420,59,617,88"/>
-<area shape="rect" id="node11" href="$class_chi2_lib_f_f_t_w_cache.html#aacbd94e0a58fc6903ee177b4933e121b" title="Chi2LibFFTWCache::dump" alt="" coords="428,112,609,141"/>
-<area shape="rect" id="node13" href="$class_chi2_h_d_cuda_algorithm.html#a60d6c46d691c6a1ea47f35b9c57c45e8" title="Chi2HDCudaAlgorithm::run" alt="" coords="428,165,609,195"/>
-</map>

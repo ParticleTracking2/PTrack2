@@ -4,7 +4,7 @@
  *  Created on: 21-11-2011
  *      Author: ptrack
  */
-
+#ifdef CHI2CUDA
 #ifndef CHI2LIBCUDAFFT_H_
 #define CHI2LIBCUDAFFT_H_
 
@@ -48,3 +48,4 @@ public:
 };
 
 #endif /* CHI2LIBCUDAFFT_H_ */
+#endif

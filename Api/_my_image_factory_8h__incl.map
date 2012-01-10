@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$_my_image_8h.html" title="MyImage.h" alt="" coords="395,160,480,189"/>
-<area shape="rect" id="node17" href="$_image_reader_8h.html" title="ImageReader.h" alt="" coords="559,83,668,112"/>
-<area shape="rect" id="node24" href="$_j_p_g_image_reader_8h.html" title="ImageReader/JPGImageReader.h" alt="" coords="997,83,1216,112"/>
-<area shape="rect" id="node28" href="$_p_n_g_image_reader_8h.html" title="ImageReader/PNGImageReader.h" alt="" coords="752,83,973,112"/>
-<area shape="rect" id="node31" href="$_t_i_f_f_image_reader_8h.html" title="ImageReader/TIFFImageReader.h" alt="" coords="1240,83,1461,112"/>
-</map>

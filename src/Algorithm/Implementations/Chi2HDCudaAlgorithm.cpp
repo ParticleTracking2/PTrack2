@@ -4,7 +4,7 @@
  *  Created on: 15-11-2011
  *      Author: ptrack
  */
-
+#ifdef CHI2CUDA
 #include "Chi2HDCudaAlgorithm.h"
 
 ArgObj Chi2HDCudaAlgorithm::myArgs(){
@@ -319,3 +319,4 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
 	return ret;
 }
+#endif

@@ -4,7 +4,7 @@
  *  Created on: 21-11-2011
  *      Author: ptrack
  */
-
+#ifdef CHI2CUDA
 #include "Chi2LibCudaFFT.h"
 
 void Chi2LibCudaFFT::getChiImage(cuMyMatrix *kernel, cuMyMatrix *img, cuMyMatrix *out){
@@ -67,3 +67,5 @@ void Chi2LibCudaFFT::getChiImage(cuMyMatrix *kernel, cuMyMatrix *img, cuMyMatrix
 	Chi2LibcuFFT::fftresutl(Chi2LibCudaFFTCache::cache(cached_first_term), Chi2LibCudaFFTCache::cache(cached_second_term), Chi2LibCudaFFTCache::cache(cached_third_term), out);
 	MyLogger::log()->debug("[Chi2LibCudaFFT] Result Computed");
 }
+
+#endif
