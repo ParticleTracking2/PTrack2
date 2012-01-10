@@ -10,7 +10,7 @@
 #include "Image/MyImageFactory.h"
 #include "Utils/MyLogger.h"
 #include "Algorithm/Algorithm.h"
-#include "Algorithm/AlgorithmFactory.h"
+#include "Algorithm/AlgorithmExecutor.h"
 #include "Algorithm/MyPeak.h"
 #include "Output/Output.h"
 #include "Output/OutputFactory.h"
@@ -28,9 +28,17 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 	MyLogger *mylog = MyLogger::getInstance();
+
+	//****************************
+	// Procesa e interpreta los
+	// argumentos entregados
+	//****************************
 	ArgsProcessor *proc = ArgsProcessor::getInstance();
 	proc->setArgs(argc, argv);
 
+	//****************************
+	// Establece el nivel de log
+	//****************************
 	if(proc->hasKey("-debugwf")){
 		mylog->setPriority(log4cpp::Priority::DEBUG);
 		mylog->logFileData(true);
@@ -48,29 +56,31 @@ int main(int argc, char* argv[]) {
 	if(proc->getContainer()->existParam("-nothreads"))
 		use_threads = false;
 
-	MyImage img;
-	if(proc->hasKey("-cut"))
-		img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"), proc->getArgAsInt("-cut"));	// ~670 --> ~430 (2 threads) milisegundos
-	else
-		img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));
+	AlgorithmExecutor aExec;
+	aExec.select(proc->getAlgorithmType());
+	aExec.setParams(proc->getContainer());
+	aExec.setThreads(use_threads);
+	vector<MyPeak> peaks = aExec.execute();
 
-	Algorithm *alg = AlgorithmFactory::select(proc->getAlgorithmType());
-	alg->setData(img.matrix());
-	alg->setThreads(use_threads);
-	vector<MyPeak> peaks = alg->run(proc->getContainer());
-	delete alg;
-
+	//****************************
+	// Generar el archivo de salida
+	//****************************
 	Output *out = OutputFactory::makeOutputGenerator(proc->getOutputType());
-	if(proc->hasKey("-out"))
-		out->writeData(&peaks, proc->getArgAsString("-out"));
-	if(proc->hasKey("-outbin"))
-		out->writeData(&peaks, proc->getArgAsString("-outbin"));
-	if(!proc->hasKey("-out") && !proc->hasKey("-outbin"))
-		out->writeData(&peaks, "");
+	out->writeData(&peaks, proc->getOutputString());
 
 	delete out;
-	if(proc->hasKey("-display"))
+
+	//****************************
+	// Desplegar imagen si se desea
+	//****************************
+	if(proc->hasKey("-display")){
+		MyImage img;
+		if(proc->hasKey("-cut"))
+			img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"), proc->getArgAsInt("-cut"));	// ~670 --> ~430 (2 threads) milisegundos
+		else
+			img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));
 		img.display(&peaks);
+	}
 
 	mylog->log()->notice(">> Ptracking C++/CUDA Finished <<");
 	return EXIT_SUCCESS;

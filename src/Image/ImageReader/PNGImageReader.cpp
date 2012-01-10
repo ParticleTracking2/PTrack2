@@ -8,6 +8,15 @@
 
 /**
  *******************************
+ * Constructores
+ *******************************
+ */
+PNGImageReader::PNGImageReader() { }
+
+PNGImageReader::~PNGImageReader() { }
+
+/**
+ *******************************
  * Metodos
  *******************************
  */

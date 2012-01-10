@@ -21,35 +21,16 @@ Algorithm::~Algorithm(){ }
  * Funciones
  *******************************
  */
-AlgorithmType Algorithm::translate(string alg){
-	MyLogger::log()->debug("[Algorithm][translate] Translating string Algorithm type: %s", alg.c_str());
-	AlgorithmType ret = None_Algorithm;
-
-	if(alg.compare("chi2")==0){
-		MyLogger::log()->debug("[Algorithm][translate] Translated to: Chi2_Algorithm");
-		ret = Chi2_Algorithm;
-	}
-	if(alg.compare("chi2hd")==0){
-		MyLogger::log()->debug("[Algorithm][translate] Translated to: Chi2HD_Algorithm");
-		ret = Chi2HD_Algorithm;
-	}
-	if(alg.compare("chi2hdcuda")==0){
-		MyLogger::log()->debug("[Algorithm][translate] Translated to: Chi2HDCuda_Algorithm");
-		ret = Chi2HDCuda_Algorithm;
-	}
-
+ArgObj Algorithm::myArgs(){
+	ArgObj ret;
 	return ret;
 }
 
-void Algorithm::setData(MyMatrix<double>* data){
-	this->data = data;
+void Algorithm::setData(ParameterContainer *pc){
+
 }
 
-void Algorithm::setThreads(bool use){
-	this->use_threads = use;
-}
-
-vector<MyPeak> Algorithm::run(ParameterContainer *pc){
+vector<MyPeak> Algorithm::run(){
 	MyLogger::log()->debug("[Algorithm][run] Running nothing, please implement this class function.");
 	vector<MyPeak> ret;
 	return ret;

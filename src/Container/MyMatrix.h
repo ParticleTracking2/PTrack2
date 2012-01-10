@@ -159,6 +159,12 @@ public:
 	 * @return Contenido de la Matriz en la posicion indicada.
 	 */
 	myType & operator () (unsigned int x, unsigned int y);
+
+	/**
+	 * Operador = para copiar una Matriz
+	 * @param mtrx Matriz a copiar
+	 */
+	void operator = (MyMatrix<myType> mtrx);
 };
 
 /**
@@ -303,6 +309,15 @@ myType & MyMatrix<myType>::at(unsigned int x, unsigned int y){
 template <class myType>
 myType & MyMatrix<myType>::operator () (unsigned int x, unsigned int y){
 	return data[x][y];
+}
+
+template <class myType>
+void MyMatrix<myType>::operator = (MyMatrix<myType> mtrx){
+	allocate(mtrx.sX(), mtrx.sY());
+	for(unsigned int x=0; x < mtrx.sX(); ++x)
+		for(unsigned int y=0; y < mtrx.sY(); ++y){
+			data[x][y] = mtrx.getValue(x,y);
+		}
 }
 
 #endif

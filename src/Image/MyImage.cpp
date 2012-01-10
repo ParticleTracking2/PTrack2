@@ -27,6 +27,16 @@ MyImage::MyImage(MyMatrix<double> *trx){
 		}
 }
 
+MyImage::MyImage(cuMyMatrix *trx){
+	trx->copyToHost();
+	mtrx.allocate(trx->sizeX(), trx->sizeY());
+	for(unsigned int x=0; x < mtrx.sX(); ++x)
+		for(unsigned int y=0; y < mtrx.sY(); ++y){
+			mtrx.at(x,y) = trx->getValueHost(x,y);
+		}
+}
+
+
 MyImage::~MyImage(){
 	mtrx.deallocate();
 }
@@ -71,26 +81,25 @@ void MyImage::display(vector<MyPeak> *peaks){
 			my_image.pixelColor(x,y, my_color);
 		}
 	}
+	my_image.negate(true);
+
+	Magick::ColorRGB dotF(0.0, 0.0, 0.0);
+	dotF.alpha(1.0);
+	my_image.fillColor(dotF);
 
 	Magick::ColorRGB dotR(1.0, 0.0, 0.0);
+	dotR.alpha(0.25);
 	Magick::ColorRGB dotB(0.0, 0.0, 1.0);
-	int diameter = 1;
+	dotB.alpha(0.25);
 	for(unsigned int i=0; i< peaks->size(); ++i){
 		unsigned int px = (unsigned int)peaks->at(i).px;
 		unsigned int py = (unsigned int)peaks->at(i).py;
 		if(	px < mtrx.sX() && py < mtrx.sY()){
-			for(int subx = -diameter; subx <= diameter; ++subx){
-				for(int suby = -diameter; suby <= diameter; ++suby){
-					ssize_t sx = (ssize_t)(px+subx);
-					ssize_t sy = (ssize_t)(py+suby);
-					if(	0 <= sx && (unsigned int)sx < mtrx.sX() && 0 <= sy && (unsigned int)sy < mtrx.sY()){
-						if(peaks->at(i).solid)
-							my_image.pixelColor(sx, sy, dotR);
-						else
-							my_image.pixelColor(sx, sy, dotB);
-					}
-				}
-			}
+			if(peaks->at(i).solid)
+				my_image.strokeColor(dotR);
+			else
+				my_image.strokeColor(dotB);
+			my_image.draw(Magick::DrawableCircle(peaks->at(i).px, peaks->at(i).py, peaks->at(i).px+2.5, peaks->at(i).py+2.5));
 		}else{
 			MyLogger::log()->debug("[MyImage] Peak Excluded: X=%f; Y=%f",peaks->at(i).px, peaks->at(i).py );
 		}
@@ -98,7 +107,7 @@ void MyImage::display(vector<MyPeak> *peaks){
 
 	my_image.display();
 	MyLogger::log()->debug("[MyImage] Image Displayed");
-	my_image.write("tmp.tif");
+	my_image.write("tmp.png");
 }
 
 double & MyImage::operator ()(int x, int y){

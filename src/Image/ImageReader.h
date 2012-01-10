@@ -5,6 +5,7 @@
  *      Author: juanin
  */
 #include "MyImage.h"
+#include "Container/cuMyMatrix.h"
 #include "../Utils/MyLogger.h"
 #include <Magick++.h>
 #include <iostream>
@@ -22,6 +23,11 @@ class ImageReader {
 public:
 
 	/**
+	 * Constructor Vacio
+	 */
+	ImageReader();
+
+	/**
 	 * Destructor Virtual
 	 */
 	virtual ~ImageReader();
@@ -31,7 +37,21 @@ public:
 	 * @param file Ruta completa de la imagen.
 	 * @return Imagen decodificada y almacenada como MyImage.
 	 */
-	static MyImage decodeImageGray(string file);
+	virtual MyImage decodeImageGray(string file);
+
+	/**
+	 * Decodifica una Imagen a escala de grises.
+	 * @param file Ruta completa de la imagen.
+	 * @return Imagen decodificada y almacenada como MyMatrix<double>.
+	 */
+	virtual MyMatrix<double> decodeRawGray(string file);
+
+	/**
+	 * Decodifica una Imagen a escala de grises.
+	 * @param file Ruta completa de la imagen.
+	 * @return Imagen decodificada y almacenada como cuMyMatrix.
+	 */
+	virtual cuMyMatrix decodeCuRawGray(string file);
 
 	/**
 	 * Decodifica una Imagen a escala de grises. Además recorta la imagen en todos sus bordes segun cut.
@@ -39,7 +59,23 @@ public:
 	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
 	 * @return Imagen decodificada y almacenada como MyImage.
 	 */
-	static MyImage decodeImageGray(string file, unsigned int cut);
+	virtual MyImage decodeImageGray(string file, unsigned int cut);
+
+	/**
+	 * Decodifica una Imagen a escala de grises. Además recorta la imagen en todos sus bordes segun cut.
+	 * @param file Ruta completa de la imagen.
+	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
+	 * @return Imagen decodificada y almacenada como MyMatrix<double>.
+	 */
+	virtual MyMatrix<double> decodeRawGray(string file, unsigned int cut);
+
+	/**
+	 * Decodifica una Imagen a escala de grises. Además recorta la imagen en todos sus bordes segun cut.
+	 * @param file Ruta completa de la imagen.
+	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
+	 * @return Imagen decodificada y almacenada como cuMyMatrix.
+	 */
+	virtual cuMyMatrix decodeCuRawGray(string file, unsigned int cut);
 };
 
 #endif

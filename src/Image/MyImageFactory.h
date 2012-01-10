@@ -4,8 +4,7 @@
  *  Created on: 12-06-2011
  *      Author: juanin
  */
-#include "MyImage.h"
-#include "ImageReader.h"
+
 #include "ImageReader/JPGImageReader.h"
 #include "ImageReader/PNGImageReader.h"
 #include "ImageReader/TIFFImageReader.h"
@@ -49,12 +48,44 @@ public:
 
 	/**
 	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
+	 * @param file Ruta completa de una imagen.
+	 * @return Imagen representada por la clase MyImage.
+	 */
+	static MyMatrix<double> makeRawImgFromFile(string file);
+
+	/**
+	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
+	 * @param file Ruta completa de una imagen.
+	 * @return Imagen representada por la clase MyImage.
+	 */
+	static cuMyMatrix makeCuRawImgFromFile(string file);
+
+	/**
+	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
 	 * Además recorta la imagen en todos sus bordes segun cut.
 	 * @param file Ruta completa de una imagen.
 	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
 	 * @return Imagen representada por la clase MyImage.
 	 */
 	static MyImage makeImgFromFile(string file, unsigned int cut);
+
+	/**
+	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
+	 * Además recorta la imagen en todos sus bordes segun cut.
+	 * @param file Ruta completa de una imagen.
+	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
+	 * @return Imagen representada por la clase MyImage.
+	 */
+	static MyMatrix<double> makeRawImgFromFile(string file, unsigned int cut);
+
+	/**
+	 * Crea un objeto MyImage a partir de la ruta y nombre de la imagen.
+	 * Además recorta la imagen en todos sus bordes segun cut.
+	 * @param file Ruta completa de una imagen.
+	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
+	 * @return Imagen representada por la clase MyImage.
+	 */
+	static cuMyMatrix makeCuRawImgFromFile(string file, unsigned int cut);
 };
 
 #endif

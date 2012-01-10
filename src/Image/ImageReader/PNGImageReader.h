@@ -15,7 +15,15 @@
  */
 class PNGImageReader : public ImageReader {
 public:
+	/**
+	 * Constructor Vacio
+	 */
+	PNGImageReader();
 
+	/**
+	 * Destructor Vacio
+	 */
+	~PNGImageReader();
 };
 
 

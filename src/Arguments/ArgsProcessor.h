@@ -5,11 +5,11 @@
  *      Author: juanin
  */
 #include <stdlib.h>
-#include <sstream>
 #include <string>
 #include <vector>
-#include <cstring>
+#include <algorithm>
 #include "Obj/KeyTreat.h"
+#include "../Algorithm/AlgorithmExecutor.h"
 #include "../Output/Output.h"
 #include "../Container/ParameterContainer.h"
 #include "../Container/Container.h"
@@ -41,10 +41,24 @@ private:
 	vector <ArgObj> vParams;
 
 	/**
-	 * Algoritmo seleccionado a ejecutar segun los parametros recibidos
+	 * Vector de KeyTreat. Vector de parametros aceptables generales, para todos los arlgoritmos.
+	 */
+	vector <KeyTreat> gParams;
+
+	/**
+	 * Algoritmo seleccionado a ejecutar segun los parametros recibidos.
 	 */
 	AlgorithmType currentAlgorithmType;
+
+	/**
+	 * Metodo de salida de datos seleccionado.
+	 */
 	OutputType currentOutputType;
+
+	/**
+	 * Parametro siguiente al de salida. Generalmente un archivo.
+	 */
+	string currentOutputFile;
 
 	/**
 	 * Constructor privado. Aquí se establecen los parametros aceptables para cada algoritmo
@@ -99,6 +113,16 @@ public:
 	 * Imprime en pantalla la explicacion y el uso de cada algoritmo y sus argumentos.
 	 */
 	static void printHelp();
+
+	/**
+	 * Imprime en pantalla la explicacion y el uso de cada algoritmo y sus argumentos.
+	 */
+	static void printHelp(ArgObj currentArgs);
+
+	/**
+	 * Imprime en pantalla la explicacion y el uso de cada algoritmo y sus argumentos.
+	 */
+	static void printGeneralHelp();
 
 	/**
 	 * Establece, almacena e interpreta los argumentos de ejecucion a partir de los argumentos ingresados
@@ -159,6 +183,12 @@ public:
 	 * @return Tipo de salida de datos.
 	 */
 	OutputType getOutputType();
+
+	/**
+	 * Devuelve el string siguiente al tipo de salida, que generalemte es un archivo.
+	 * @return string con parametro de salida
+	 */
+	string getOutputString();
 };
 
 #endif

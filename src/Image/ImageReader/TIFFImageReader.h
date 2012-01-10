@@ -22,7 +22,8 @@ private:
 	 */
 	struct TiffPartition{
 		int x1, x2, y1, y2;
-		MyImage *img;
+		MyMatrix<double> *img;
+		cuMyMatrix *cuimg;
 		Magick::Image *mimg;
 	};
 
@@ -30,23 +31,35 @@ private:
 	 * Puebla los datos de la imagen. ptr debe ser un puntero a la estructura TiffPartition.
 	 */
 	static void *populate(void *ptr);
+
+	/**
+	 * Puebla los datos de la imagen. ptr debe ser un puntero a la estructura TiffPartition.
+	 */
+	static void *populateCu(void *ptr);
 public:
+	/**
+	 * Constructor Vacio
+	 */
+	TIFFImageReader();
 
 	/**
-	 * Decodifica una Imagen TIFF a escala de grises. La decodificacion pasa en 2 Threads.
-	 * @param file Ruta completa de la imagen.
-	 * @return Imagen decodificada y almacenada como MyImage.
+	 * Destructor Vacio
 	 */
-	static MyImage decodeImageGray(string file);
+	~TIFFImageReader();
 
 	/**
-	 * Decodifica una Imagen a escala de grises. La decodificacion pasa en 2 Threads.
-	 * Además recorta la imagen en todos sus bordes segun cut.
+	 * Decodifica una Imagen a escala de grises.
 	 * @param file Ruta completa de la imagen.
-	 * @param cut Tamaño del recorte de la imagen por todos los bordes.
-	 * @return Imagen decodificada y almacenada como MyImage.
+	 * @return Imagen decodificada y almacenada como MyMatrix<double>.
 	 */
-	static MyImage decodeImageGray(string file, unsigned int cut);
+	MyMatrix<double> decodeRawGray(string file);
+
+	/**
+	 * Decodifica una Imagen a escala de grises.
+	 * @param file Ruta completa de la imagen.
+	 * @return Imagen decodificada y almacenada como cuMyMatrix.
+	 */
+	cuMyMatrix decodeCuRawGray(string file);
 };
 
 #endif

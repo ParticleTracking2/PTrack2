@@ -26,7 +26,34 @@ using namespace std;
  * Esta variante se ejecuta usando GPU con tecnologia NVIDIA CUDA.
  */
 class Chi2HDCudaAlgorithm: public Algorithm {
+private:
+	bool _secondFilterI;
+	bool _secondFilterV;
+	bool _validateOnes;
+	bool _cuda;
+	int _cudaDev;
+	float _d;
+	float _w;
+	float _vor_thresh;
+	float _vor_areaSL;
+	float _FilterI;
+	float _FilterV;
+	unsigned int _maxIterations;
+	unsigned int _chi_cut;
+	cuMyMatrix cuImg;
 public:
+
+	/**
+	 * Devuelve los parametros que acepta este Algoritmo.
+	 * @return Todos los parametros que acepta este algoritmo para ejecutar.
+	 */
+	static ArgObj myArgs();
+
+	/**
+	 * Establece los datos para ser procesados.
+	 * @param pc Parametros que ocupa el algoritmo para correr.
+	 */
+	void setData(ParameterContainer *pc);
 
 	/**
 	 * Ejecuta el algoritmo de minimos cuadrados para detectar Peaks usando GPU.
@@ -35,7 +62,7 @@ public:
 	 * @param pc Parametros que ocupa el algoritmo para correr.
 	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
 	 */
-	vector<MyPeak> run(ParameterContainer *pc);
+	vector<MyPeak> run();
 };
 
 #endif

@@ -5,7 +5,7 @@
  *      Author: juanin
  */
 
-#include "../../Algorithm/Algorithm.h"
+#include "../../Algorithm/AlgorithmTypes.h"
 #include <vector>
 #include <string>
 

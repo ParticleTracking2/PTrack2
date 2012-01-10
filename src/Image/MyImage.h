@@ -4,6 +4,7 @@
  *  Created on: 11-06-2011
  *      Author: juanin
  */
+#include "Container/cuMyMatrix.h"
 #include "../Algorithm/MyPeak.h"
 #include "../Container/MyMatrix.h"
 #include "../Utils/MyLogger.h"
@@ -49,6 +50,12 @@ public:
 	 * @param trx Matriz de datos representativos de la imagen.
 	 */
 	MyImage(MyMatrix<double> *trx);
+
+	/**
+	 * Constructor a base de una matriz de dos dimensiones de double.
+	 * @param trx Matriz de datos representativos de la imagen.
+	 */
+	MyImage(cuMyMatrix *trx);
 
 	/**
 	 * Operador () que devuelve el contenido de la posicion X e Y de la imagen.

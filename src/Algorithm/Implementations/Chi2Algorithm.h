@@ -19,14 +19,30 @@ using namespace std;
  * Implementacion de algoritmo Chi Cuadrado.
  */
 class Chi2Algorithm: public Algorithm {
+private:
+	double _d;
+	double _w;
+	unsigned int _maxIterations;
+	MyMatrix<double> _data;
 public:
 
 	/**
-	 * Ejecuta el algoritmo de minimos cuadrados para detectar Peaks.
+	 * Devuelve los parametros que acepta este Algoritmo.
+	 * @return Todos los parametros que acepta este algoritmo para ejecutar.
+	 */
+	static ArgObj myArgs();
+
+	/**
+	 * Establece los datos para ser procesados.
 	 * @param pc Parametros que ocupa el algoritmo para correr.
+	 */
+	void setData(ParameterContainer *pc);
+
+	/**
+	 * Ejecuta el algoritmo de minimos cuadrados para detectar Peaks.
 	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
 	 */
-	vector<MyPeak> run(ParameterContainer *pc);
+	vector<MyPeak> run();
 };
 
 #endif

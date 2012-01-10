@@ -15,7 +15,15 @@
  */
 class JPGImageReader : public ImageReader {
 public:
+	/**
+	 * Constructor Vacio
+	 */
+	JPGImageReader();
 
+	/**
+	 * Destructor Vacio
+	 */
+	~JPGImageReader();
 };
 
 #endif

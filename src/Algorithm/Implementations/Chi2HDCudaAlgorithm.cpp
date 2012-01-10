@@ -7,56 +7,160 @@
 
 #include "Chi2HDCudaAlgorithm.h"
 
-vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
+ArgObj Chi2HDCudaAlgorithm::myArgs(){
+	ArgObj chi2hdcuda;
+	chi2hdcuda.type = Chi2HDCuda_Algorithm;
+	chi2hdcuda.argkey = "chi2hdcuda";
+	chi2hdcuda.description = "Convolution based least-squares fitting for High density particle systems. Using CUDA Technology.";
+	chi2hdcuda.example = "chi2hdcuda -i MyImage.tif -d 9.87 -w 1.84";
+
+	/* Parametros aceptables */
+	KeyTreat img; img.key = "-i"; img.description = "Image to read.";
+	img.treat.push_back(Require_Treat);
+	img.treat.push_back(Followed_String_Treat);
+	chi2hdcuda.keys_treats.push_back(img);
+
+	KeyTreat d; d.key = "-d"; d.description = "Diameter of an ideal particle. (Default = 9.87).";
+	d.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(d);
+
+	KeyTreat w; w.key = "-w"; w.description = "Value of how sharply the ideal particle is viewed (Focus). (Default = 1.84).";
+	w.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(w);
+
+	KeyTreat cut; cut.key = "-cut"; cut.description = "Crop image by each side (in pixels).";
+	cut.treat.push_back(Followed_Int_Treat);
+	chi2hdcuda.keys_treats.push_back(cut);
+
+	KeyTreat maxchi2miniter; maxchi2miniter.key = "-maxchi2miniter"; maxchi2miniter.description = "Limit the iteration for minimizing Chi2Error (Default = 5).";
+	maxchi2miniter.treat.push_back(Followed_Int_Treat);
+	chi2hdcuda.keys_treats.push_back(maxchi2miniter);
+
+	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
+	chi_cut.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(chi_cut);
+
+	KeyTreat vor_cut; vor_cut.key = "-vorcut"; vor_cut.description = "Minimal Voronoi area acceptable of peak to be considered as peak.";
+	vor_cut.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(vor_cut);
+
+	KeyTreat vor_sl; vor_sl.key = "-vorsl"; vor_sl.description = "Voronoi area value division of solid and liquid particle.";
+	vor_sl.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(vor_sl);
+
+	KeyTreat filter2i; filter2i.key = "-2filteri"; filter2i.description = "Second Filter of Bad particles using Image intensity Only.";
+	filter2i.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(filter2i);
+
+	KeyTreat filter2v; filter2v.key = "-2filterv"; filter2v.description = "Second Filter of Bad particles using Voronoi area Only.";
+	filter2v.treat.push_back(Followed_Double_Treat);
+	chi2hdcuda.keys_treats.push_back(filter2v);
+
+	KeyTreat one_validation; one_validation.key = "-validateones"; one_validation.description = "Validate peaks minimum distance only Ones.";
+	one_validation.treat.push_back(Exist_Treat);
+	chi2hdcuda.keys_treats.push_back(one_validation);
+	// -device
+	KeyTreat device; device.key = "-device"; device.description = "Stablish the CUDA device to use.";
+	device.treat.push_back(Followed_Int_Treat);
+	chi2hdcuda.keys_treats.push_back(device);
+
+	return chi2hdcuda;
+}
+
+void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
+	_d = 9.87;
+	if(pc->existParam("-d"))
+		_d = (float)pc->getParamAsDouble("-d");
+
+	_w = 1.84;
+	if(pc->existParam("-w"))
+		_w = (float)pc->getParamAsDouble("-w");
+
+	_maxIterations = 5;
+	if(pc->existParam("-maxchi2miniter"))
+		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
+
+	_chi_cut = 2;
+	if(pc->existParam("-chicut"))
+		_chi_cut = pc->getParamAsInt("-chicut");
+
+	_vor_thresh = 50.0;
+	if(pc->existParam("-vorcut"))
+		_vor_thresh = (float)pc->getParamAsDouble("-vorcut");
+
+	_vor_areaSL = 75.0;
+	if(pc->existParam("-vorsl"))
+		_vor_areaSL = (float)pc->getParamAsDouble("-vorsl");
+
+	_FilterI = 1.0;
+	if(pc->existParam("-2filteri")){
+		_secondFilterI = true;
+		_FilterI = pc->getParamAsDouble("-2filteri");
+	}
+
+	_FilterV = 50.0;
+	if(pc->existParam("-2filterv")){
+		_secondFilterV = true;
+		_FilterV = pc->getParamAsDouble("-2filterv");
+	}
+
+	_cudaDev = 0;
+	if(pc->existParam("-device")){
+		_cuda = true;
+		_cudaDev = pc->getParamAsInt("-device");
+	}
+
+	if(pc->existParam("-validateones"))
+		_validateOnes = true;
+	else
+		_validateOnes = false;
+
+	if(pc->existParam("-cut"))
+		cuImg = MyImageFactory::makeCuRawImgFromFile(pc->getParamAsString("-i"), pc->getParamAsInt("-cut"));
+	else
+		cuImg = MyImageFactory::makeCuRawImgFromFile(pc->getParamAsString("-i"));
+
+}
+
+vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2HD CUDA Algorithm");
 
-
-	if(pc->existParam("-device")){
-		int dev = pc->getParamAsInt("-device");
-		Chi2Libcu::setDevice(dev);
+	if(_cuda){
+		Chi2Libcu::setDevice(_cudaDev);
 	}
+
 	DeviceProps props = Chi2Libcu::getProps();
 	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->notice("[Chi2Algorithm] Setting CUDA Device %i = %s", props.device, props.name);
 
-	float d = 9.87;
-	if(pc->existParam("-d"))
-		d = (float)pc->getParamAsDouble("-d");
-
-	float w = 1.84;
-	if(pc->existParam("-w"))
-		w = (float)pc->getParamAsDouble("-w");
-
-	int ss = 2*floor(d/2 + 4*w/2)-1;
+	int ss = 2*floor(_d/2 + 4*_w/2)-1;
 	int os = (ss-1)/2;
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Initializing Device Data ");
-	cuMyMatrix cuImg = Chi2LibCuda::initializeData(data);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Normalize image ");
-	pair<double, double> hilo = Chi2Lib::getHighLow(data);
+	pair<float, float> hilo = Chi2LibCuda::getHighLow(&cuImg);
 	Chi2LibCuda::normalizeImage(&cuImg, hilo.first, hilo.second);
-	Chi2Lib::normalizeImage(data, hilo.first, hilo.second);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Chi2 image ");
-	cuMyMatrix cuKernel = Chi2LibCuda::generateKernel(ss,os,d,w);
+	cuMyMatrix cuKernel = Chi2LibCuda::generateKernel(ss, os, _d, _w);
 	cuMyMatrix cu_chi_img(cuImg.sizeX()+cuKernel.sizeX()-1, cuImg.sizeY()+cuKernel.sizeY()-1);
 	Chi2LibCudaFFT::getChiImage(&cuKernel, &cuImg, &cu_chi_img);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = 1, mindistance = 5;
-	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep, !pc->existParam("-validateones"));
+	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep, !_validateOnes);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Auxiliary Matrix ");
-	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocating %ix%i", data->sX(), data->sY());
-	cuMyMatrix grid_x(data->sX(), data->sY());
-	cuMyMatrix grid_y(data->sX(), data->sY());
-	cuMyMatrixi over(data->sX(), data->sY());
+	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocating %ix%i", cuImg.sizeX(), cuImg.sizeY());
+	cuMyMatrix grid_x(cuImg.sizeX(), cuImg.sizeY());
+	cuMyMatrix grid_y(cuImg.sizeX(), cuImg.sizeY());
+	cuMyMatrixi over(cuImg.sizeX(), cuImg.sizeY());
 	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocation Complete ");
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 	FileUtils::writeToFileM(&grid_x, "grid_x-cuda.txt");
@@ -65,19 +169,17 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Compute Chi2 Difference ");
-	cuMyMatrix chi2diff(data->sX(), data->sY());
-	float currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+	cuMyMatrix chi2diff(cuImg.sizeX(), cuImg.sizeY());
+	float currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Add missed points ");
-	unsigned int chi_cut = 2;
-	if(pc->existParam("-chicut"))
-		chi_cut = pc->getParamAsInt("-chicut");
-	unsigned int total_found = 0;
-	cuMyMatrix normaldata_chi(data->sX(), data->sY());
 
-	unsigned int _maxIterations = 10, iterations = 0;
-	while(iterations <= _maxIterations){
+	unsigned int total_found = 0;
+	cuMyMatrix normaldata_chi(cuImg.sizeX(), cuImg.sizeY());
+
+	unsigned int _maxFirstIterations = 10, iterations = 0;
+	while(iterations <= _maxFirstIterations){
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generating Scaled Image ");
 		Chi2LibCudaHighDensity::generateScaledImage(&chi2diff, &normaldata_chi);
 
@@ -85,7 +187,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		Chi2LibCudaFFT::getChiImage(&cuKernel, &normaldata_chi, &cu_chi_img);
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new Peaks ");
-		cuMyPeakArray new_peaks = Chi2LibCuda::getPeaks(&cu_chi_img, chi_cut, mindistance, minsep, !pc->existParam("-validateones"));
+		cuMyPeakArray new_peaks = Chi2LibCuda::getPeaks(&cu_chi_img, _chi_cut, mindistance, minsep, !_validateOnes);
 
 		unsigned int old_size = peaks.size();
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Checking inside image peaks ");
@@ -99,7 +201,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Computing Chi2 Difference ");
-		currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+		currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Original No of Points: %i, +%i; Total Found = %i", old_size, found, total_found);
 
@@ -115,7 +217,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
-	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
@@ -123,24 +225,21 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	iterations = 0;
 	double chi2Delta = currentChi2Error;
 
-	_maxIterations = 5;
-	if(pc->existParam("-maxchi2miniter"))
-		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
-		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0);
+		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, _d, _w, ss, 20.0);
 		peaks.includeDeltas();
 
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 		chi2diff.reset(0);
 
-		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
 		iterations++;
 	}
 
-	if(pc->existParam("-validateones")){
+	if(_validateOnes){
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] Validating Peaks obtained so far ");
 		unsigned int old_size = peaks.size();
@@ -162,25 +261,22 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	double par_thresh = mu-3.0*sigma;
-	double vor_thresh = 50.0;
-	if(pc->existParam("-vorcut"))
-		vor_thresh = pc->getParamAsDouble("-vorcut");
 
-	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", vor_thresh, par_thresh);
-	Chi2LibCudaHighDensity::removeBadPeaks(&peaks, &cuImg, vor_thresh, par_thresh, os);
+	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Filter 'Bad' Peaks using Voronoi Area: %f - Intensity: %f", _vor_thresh, par_thresh);
+	Chi2LibCudaHighDensity::removeBadPeaks(&peaks, &cuImg, _vor_thresh, par_thresh, os);
 
-	if(pc->existParam("-2filteri")){
+	if(_secondFilterI){
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Second Filter 'Bad' Peaks using intensity");
 		unsigned int old_total  = peaks.size();
-		Chi2LibCudaHighDensity::removeBadIntensityPeaks(&peaks, &cuImg, pc->getParamAsDouble("-2filteri"), os);
+		Chi2LibCudaHighDensity::removeBadIntensityPeaks(&peaks, &cuImg, _FilterI, os);
 		unsigned int new_total  = peaks.size();
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> New Number of peaks: %i, Filtered :%i", new_total, (old_total - new_total));
 	}
 
-	if(pc->existParam("-2filterv")){
+	if(_secondFilterV){
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Second Filter 'Bad' Peaks using Voronoi Area");
 		unsigned int old_total  = peaks.size();
-		Chi2LibCudaHighDensity::removeBadVoronoiPeaks(&peaks, &cuImg, pc->getParamAsDouble("-2filterv"), os);
+		Chi2LibCudaHighDensity::removeBadVoronoiPeaks(&peaks, &cuImg, _FilterV, os);
 		unsigned int new_total  = peaks.size();
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> New Number of peaks: %i, Filtered :%i", new_total, (old_total - new_total));
 	}
@@ -190,19 +286,19 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix");
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
-	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
 	chi2Delta = 1000000.0;
 	iterations = 0;
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
-		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, d, w, ss, 20.0);
+		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, _d, _w, ss, 20.0);
 		peaks.includeDeltas();
 
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
 		chi2diff.reset(0);
 
-		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, d, w, &chi2diff);
+		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
@@ -216,11 +312,8 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(ParameterContainer *pc){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Translating coordenates ");
 	Chi2LibCuda::translatePeaks(&peaks, os);
 
-	float vor_areaSL = 75.0;
-	if(pc->existParam("-vorsl"))
-		vor_areaSL = (float)pc->getParamAsDouble("-vorsl");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Adding State ");
-	Chi2LibCuda::addState(&peaks, vor_areaSL);
+	Chi2LibCuda::addState(&peaks, _vor_areaSL);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector : %i", peaks.size());
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
