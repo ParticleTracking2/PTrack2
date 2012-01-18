@@ -45,18 +45,6 @@ public:
 	MyMatrix();
 
 	/**
-	 * Constructor a base de un arreglo de 2 Dimensiones de punto flotante.
-	 * Los datos especificos de la Matriz deben ser al menos float o double.
-	 * Copia los datos del arreglo y los almacena en la Matriz, se puede especificar si copiar los datos de forma normal
-	 * o traspuesta.
-	 * @param data1d Arreglo de 1 dimension representando a una Matriz
-	 * @param x Dimension en X de la matriz representada por el arreglo.
-	 * @param y Dimension en Y de la matriz representada por el arreglo.
-	 * @param transpose Copiar en forma traspuesta o normal, por defecto se copia de manera normal.
-	 */
-	MyMatrix(float* data1d, unsigned int x, unsigned int y, bool transpose = false);
-
-	/**
 	 * Constructor en base a las dimensiones especificadas como X e Y.
 	 * Establece las dimensiones de la Matriz, reserva memoria y establece los valores de los datos en 0.s
 	 * @param x Dimension en X de la Matriz
@@ -113,29 +101,6 @@ public:
 	void reset(myType def = 0);
 
 	/**
-	 * Obtiene una copia de la Matriz como un arreglo unidimensional de floats.
-	 * Los datos contenidos en la Matriz deben ser Numericos.
-	 * @return Arreglo unidimensional representativo de la Matriz.
-	 */
-	float* getCopy();
-
-	/**
-	 * Copia los datos de un arreglo unidimensional representativo de una Matriz de forma Traspuesta.
-	 * @param data1d Arreglo de 1 dimension representando a una Matriz
-	 * @param sizex Dimension en X de la matriz representada por el arreglo.
-	 * @param sizey Dimension en Y de la matriz representada por el arreglo.
-	 */
-	void copyTranspose(float* data1d, unsigned int sizex, unsigned int sizey);
-
-	/**
-	 * Copia los datos de un arreglo unidimensional representativo de una Matriz.
-	 * @param data1d Arreglo de 1 dimension representando a una Matriz
-	 * @param sizex Dimension en X de la matriz representada por el arreglo.
-	 * @param sizey Dimension en Y de la matriz representada por el arreglo.
-	 */
-	void copy(float* data1d, unsigned int sizex, unsigned int sizey);
-
-	/**
 	 * Obtiene el valor de la celda de la Matriz segun los parametros X e Y.
 	 * @param x Posicion en X de la celda.
 	 * @param y Posicion en Y de la celda.
@@ -176,17 +141,6 @@ template <class myType>
 MyMatrix<myType>::MyMatrix() {
 	data = 0;
 	_sizeX = 0; _sizeY = 0;
-}
-
-template <class myType>
-MyMatrix<myType>::MyMatrix(float* data1d, unsigned int x, unsigned int y, bool transpose){
-	data = 0;
-	_sizeX = x; _sizeY = y;
-	allocate();
-	if(transpose)
-		copyTranspose(data1d, x, y);
-	else
-		copy(data1d, x, y);
 }
 
 template <class myType>
@@ -251,37 +205,6 @@ void MyMatrix<myType>::reset(myType def){
 	for(unsigned int x=0; x<_sizeX; ++x){
 		for(unsigned int y=0; y<_sizeY; ++y){
 			data[x][y]= def;
-		}
-	}
-}
-
-template <class myType>
-float* MyMatrix<myType>::getCopy(){
-	float* ret = (float *)malloc(_sizeX*_sizeY*sizeof(float));
-	for(unsigned int x=0; x<_sizeX; ++x){
-		for(unsigned int y=0; y<_sizeY; ++y){
-			ret[x+_sizeY*y] = (float)(data[x][y]);
-		}
-	}
-	return ret;
-}
-
-template <class myType>
-void MyMatrix<myType>::copyTranspose(float* data1d, unsigned int sizex, unsigned int sizey){
-	if(sizex <= _sizeX && sizey <= _sizeY)
-	for(unsigned int x=0; x < sizex; ++x){
-		for(unsigned int y=0; y < sizey; ++y){
-			data[x][y] = data1d[x*sizex+y];
-		}
-	}
-}
-
-template <class myType>
-void MyMatrix<myType>::copy(float* data1d, unsigned int sizex, unsigned int sizey){
-	if(sizex <= _sizeX && sizey <= _sizeY)
-	for(unsigned int x=0; x < sizex; ++x){
-		for(unsigned int y=0; y < sizey; ++y){
-			data[x][y] = data1d[x+sizey*y];
 		}
 	}
 }

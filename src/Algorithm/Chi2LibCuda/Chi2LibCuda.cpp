@@ -8,17 +8,6 @@
 #ifdef CHI2CUDA
 #include "Chi2LibCuda.h"
 
-cuMyMatrix Chi2LibCuda::initializeData(MyMatrix<double>* data){
-	MyLogger::log()->debug("[Chi2LibCuda][initializeData] Getting 1 Dimension Copy of MyMatrix");
-	float * copyedData = data->getCopy();
-	MyLogger::log()->debug("[Chi2LibCuda][initializeData] 1 Dimension copy aquired");
-	MyLogger::log()->debug("[Chi2LibCuda][initializeData] Creating cuMyMatrix");
-	cuMyMatrix ret(copyedData, data->sX(), data->sY());
-	MyLogger::log()->debug("[Chi2LibCuda][initializeData] cuMyMatrix successfully");
-	free(copyedData);
-	return ret;
-}
-
 pair<float, float> Chi2LibCuda::getHighLow(cuMyMatrix* arr){
 	MyLogger::log()->debug("[Chi2LibCuda][getHighLow] Finding Maximum and Minimum values");
 	pair<float, float> ret = Chi2Libcu::minMax(arr);

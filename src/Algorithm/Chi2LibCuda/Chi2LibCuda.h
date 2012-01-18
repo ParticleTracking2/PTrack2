@@ -35,12 +35,6 @@ private:
 public:
 
 	/**
-	 * Convierte una Matriz de datos de tipo MyMatrix a una cuMyMatrix en la cual se puede trabajar en GPU.
-	 * @param data Matriz de datos en CPU.
-	 */
-	static cuMyMatrix initializeData(MyMatrix<double>* data);
-
-	/**
 	 * Obtiene los valores maximos y minimos (en orden) de una matriz en GPU.
 	 * @param mtrx Matriz en la cual detectar Maximo y Minimo.
 	 * @return Par de valores Maximo y Minimo de la matriz, en orden.

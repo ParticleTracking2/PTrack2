@@ -115,6 +115,9 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 	else
 		_validateOnes = false;
 
+	if(_cuda){
+		Chi2Libcu::setDevice(_cudaDev);
+	}
 	if(pc->existParam("-cut"))
 		cuImg = MyImageFactory::makeCuRawImgFromFile(pc->getParamAsString("-i"), pc->getParamAsInt("-cut"));
 	else
@@ -124,10 +127,6 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 
 vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2HD CUDA Algorithm");
-
-	if(_cuda){
-		Chi2Libcu::setDevice(_cudaDev);
-	}
 
 	DeviceProps props = Chi2Libcu::getProps();
 	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] ***************************** ");

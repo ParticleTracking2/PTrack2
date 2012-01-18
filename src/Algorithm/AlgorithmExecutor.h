@@ -1,5 +1,5 @@
 /*
- * AlgorithmFactory.h
+ * AlgorithmExecutor.h
  *
  *  Created on: 11/10/2011
  *      Author: juanin
@@ -23,7 +23,7 @@
 using namespace std;
 
 /**
- * Clase Factory para construir algoritmos segun su tipo.
+ * Clase para construir algoritmos segun su tipo. Parte del Strategy.
  */
 class AlgorithmExecutor {
 private:

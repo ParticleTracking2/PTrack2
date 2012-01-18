@@ -68,7 +68,7 @@ public:
 	 * @param y Posicion en Y
 	 * @return Valor de la imagen en la posicion X e Y
 	 */
-	double & operator ()(int x, int y);
+	double & operator ()(unsigned int x, unsigned int y);
 
 	/**
 	 * Operador = para copiar una imagen

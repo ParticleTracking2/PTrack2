@@ -111,7 +111,7 @@ void MyImage::display(vector<MyPeak> *peaks){
 	my_image.write("tmp.png");
 }
 
-double & MyImage::operator ()(int x, int y){
+double & MyImage::operator ()(unsigned int x, unsigned int y){
 	return mtrx.at(x,y);
 }
 
