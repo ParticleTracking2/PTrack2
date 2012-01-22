@@ -124,6 +124,7 @@ vector<MyPeak> Chi2Algorithm::run(){
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Computing Voronoi areas ");
 	Chi2LibQhull::addVoronoiAreas(&peaks);
+	Chi2Lib::addState(&peaks);
 	Chi2Lib::translatePeaks(&peaks, os);
 
 	return peaks;

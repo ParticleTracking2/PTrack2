@@ -92,17 +92,19 @@ void MyImage::display(vector<MyPeak> *peaks){
 	dotR.alpha(0.25);
 	Magick::ColorRGB dotB(0.0, 0.0, 1.0);
 	dotB.alpha(0.25);
+	MyPeak peak;
 	for(unsigned int i=0; i< peaks->size(); ++i){
-		unsigned int px = (unsigned int)peaks->at(i).px;
-		unsigned int py = (unsigned int)peaks->at(i).py;
-		if(	px < mtrx.sX() && py < mtrx.sY()){
-			if(peaks->at(i).solid)
+		peak = peaks->at(i);
+		if(	peak.px < mtrx.sX() && peak.py < mtrx.sY()){
+			if(peak.solid)
 				my_image.strokeColor(dotR);
 			else
 				my_image.strokeColor(dotB);
-			my_image.draw(Magick::DrawableCircle(peaks->at(i).px, peaks->at(i).py, peaks->at(i).px+2.5, peaks->at(i).py+2.5));
+			peak.px -=1;
+			peak.py -=1;
+			my_image.draw(Magick::DrawableCircle(peak.px, peak.py, peak.px+4, peak.py));
 		}else{
-			MyLogger::log()->debug("[MyImage] Peak Excluded: X=%f; Y=%f",peaks->at(i).px, peaks->at(i).py );
+			MyLogger::log()->debug("[MyImage] Peak Excluded: X=%f; Y=%f",peak.px, peak.py );
 		}
 	}
 

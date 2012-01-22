@@ -1,0 +1,123 @@
+.Dd $Mdocdate: January 22 2012 $
+.Dt PTrack2 1
+.Os
+.Sh NAME
+.Nm PTrack2
+.Nd Particle Tracking software (Particle recognition)
+.Sh SYNOPSIS
+.Nm PTrack2
+.Bk -words
+chi2
+.Op Fl i Ar image_path
+.Op Fl d Ar diameter
+.Op Fl w Ar weight
+.Op Fl cut Ar cut_dimension
+.Op Fl maxchi2miniter Ar iterations
+.Op Ar options
+.Nm
+chi2hd
+.Op Fl i Ar image_path
+.Op Fl d Ar diameter
+.Op Fl w Ar weight
+.Op Fl cut Ar cut_dimension
+.Op Fl maxchi2miniter Ar iterations
+.Op Fl chicut Ar chi_cut
+.Op Fl vorcut Ar voronoi_cut
+.Op Fl vorsl Ar voronoi_edge
+.Op Fl 2filteri Ar intensity
+.Op Fl 2filterv Ar voronoi_area
+.Op Ar options
+.Nm
+chi2hdcuda
+.Op Fl i Ar image_path
+.Op Fl d Ar diameter
+.Op Fl w Ar weight
+.Op Fl cut Ar cut_dimension
+.Op Fl maxchi2miniter Ar iterations
+.Op Fl chicut Ar chi_cut
+.Op Fl vorcut Ar voronoi_cut
+.Op Fl vorsl Ar voronoi_edge
+.Op Fl 2filteri Ar intensity
+.Op Fl 2filterv Ar voronoi_area
+.Op Fl device Ar device_num
+.Op Fl validateones
+.Op Ar options
+.Ek
+.Sh DESCRIPTION
+.Nm
+Es la segunda versión de software de reconocimiento de particulas basado en ptracking. Este se encuentra escrito en C++ y puede ejecutarse ayudado de tecnología cuda.
+Los argumentos que acepta .Nm son los siguientes:
+.Pp
+.Bl -tag -width Ds
+.It chi2
+Se ejecuta el algoritmo chi2 para reconocimiento de particulas.
+.It chi2hd
+Se ejecuta el algoritmo chi2 para reconocimiento de particulas en alta densidad.
+.It chi2hdcuda
+Se ejecuta el algoritmo chi2 para reconocimiento de particulas en alta densidad usando CUDA.
+.It Fl i Ar image_path
+Parámetro Requerido que indica la imagen a ser procesada. Debe estar seguido de la ruta relativa o ruta absoluta de la imagen.
+.It Fl d Ar diameter
+Parámetro que representa el diámetro de la partícula ideal a buscar dentro de la imagen. Debe estar seguido un valor numérico de tipo decimal. Si este parámetro no se encuentra, por defecto se establece como 9.87.
+.It Fl w Ar weight
+Parámetro que representa que tan enfocada se encuentra la partícula ideal a buscar dentro de la imagen, también es parte del peso de la formula matemática para generar la partícula ideal. Debe estar seguido un valor numérico de tipo decimal. Si este parámetro no se encuentra, por defecto se establece como 1.84.
+.It Fl cut Ar cut_dimension
+Este parámetro establece el corte sobre los bordes de la Imagen en pixeles. Esto sirve para eliminar bordes o centrar la detección en una región. Debe estar seguido por un valor numérico de tipo entero positivo.
+.It Fl maxchi2miniter Ar iterations
+Este parámetro establece el limite de iteraciones para la minimización del error Chi cuadrado, el aumento de este valor puede demorar el procesamiento de la imagen y no asegura mejores resultados. Debe estar seguido de un valor numérico de tipo entero positivo.
+.It Fl chicut Ar chi_cut
+Este parámetro establece el mínimo de intensidad de la imagen chi2 generada para ser reconocido como peak.Debe estar seguido de un valor numérico entero positivo. Si este parámetro no se encuentra, por defecto se establece como 2.
+.It Fl vorcut Ar voronoi_cut
+Este parámetro establece el valor mínimo de área de Voronoi de un peak para ser aceptado como tal. Este es el primer filtro para eliminar peaks falsos positivos en conjunto con intensidad de imagen calculada. Debe estar seguido de un valor numérico decimal. Si este parámetro no se encuentra, por defecto se establece como 50.0.
+.It Fl vorsl Ar voronoi_edge
+Este parámetro establece el valor de transición de área de Voronoi de un peak para establecer su tipo de estado solido o liquido. Debe estar seguido de un valor numérico decimal. Si este parámetro no se encuentra, por defecto se establece como 75.0.
+.It Fl 2filteri Ar intensity
+Este parámetro establece un segundo filtro de partículas por intensidad de imagen. Debe estar seguido de un valor numérico decimal entre 0 y 1.
+.It Fl 2filterv Ar voronoi_area
+Este parámetro establece un segundo filtro de partículas por área de Voronoi del peak. Debe estar seguido de un valor numérico decimal entre 0 y 1.
+.It Fl device Ar device_num
+Si existe más de una tarjeta de video o si esta posee más de una GPU, device permite la selección de donde se efectuaran los cálculos a lo largo del procesamiento de datos. Si el parámetro device no se encuentra el procesamiento de datos se efectuará en el dispositivo con identificador 0.
+.It Fl validateones
+Este parámetro desplaza la validación de peaks por distancia entre si una vez encontrados todos los peaks posibles.
+.El
+.Pp
+------------------------------------------------------------------------------
+.Pp
+Los siguientes argumentos son generales independiente del algoritmo utilizado:
+.Bl -tag -width Ds
+.It Fl silent
+Si existe este parámetro, no se desplegará ningún mensaje en pantalla a menos que sea el resultado del procesamiento.
+.It Fl debug
+Si existe este parámetro, se desplegaran todos los mensajes del procesamiento de los datos. Este es útil para reconocer anomalias o fallas durante el procesamiento.
+.It Fl debugwf
+ Si existe este parámetro, se desplegaran todos los mensajes del procesamiento de los datos y además si en el código se escribe algún archivo mediante la clase FileUtil, este se escribirá en disco, de lo contrario se saltará la generación del archivo. Este es útil para reconocer anomalias o fallas durante el procesamiento o bien para guardar estados de ejecución.
+.It Fl chrono
+Si existe este parámetro, se desplegarán solo mensajes importantes como el de inicio del software y el termino de este, para poder obtener una referencia del tiempo que se demoró en procesar.
+.It Fl display
+Si existe este parámetro, se desplegará en pantalla la imagen procesada incluyendo los peaks detectados dentro de esta. En rojo aparecen los peaks en estado solido y en azul los peaks en estado liquido. La imagen generada se guarda de manera temporal en el directorio desde donde se ejecuto PTrack2 y tiene el nombre tmp.tif.
+.It Fl nothreads
+Si existe este parámetro, des habilita la ejecución de threads dejando los cálculos completamente secuenciales. Esto puede ser útil en ciertos computadores sin tecnología HT o en ejecución de múltiples instancias.
+.El
+.Pp
+------------------------------------------------------------------------------
+.Pp
+Los siguientes parametros establecen el tipo de salida de datos que se requiere, si no se encuentran entonces se ocupa la salida estandanr para desplegar los resultados.
+.Bl -tag -width Ds
+.It Fl out Ar file
+Especifica la salida de resultados a un archivo en formato de texto plano o legible. Debe estar acompañado del nombre o ruta completa del archivo.
+.It Fl outbin Ar file
+Especifica la salida de resultados a un archivo en formato binario. El formato de salida de un peak es un trio de float32 indicando el punto en x del peak, el punto en y del peak y el estado sólido = 1 o liquido = 0 del peak, luego sigue el siguiente trio y así sucesivamente. Debe estar acompañado del nombre o ruta completa del archivo.
+.El
+.Pp
+.Sh SEE ALSO
+Algoritmo de reconocimiento de particulas mediante convolucion de imagen real e imagen de particula ideal.
+\fBhttp://gibbs.engr.ccny.cuny.edu/technical/Tracking/ChiTrack.php\fR
+.Pp
+Desarrollo de ptracking por Mauricio Cerda, modificado por Scott Waitukaitis para obtener mejor rendimiento en imagenes con particulas en alta densidad y finalmente modificado por Juan Silva para funcionar en sistemas x64 y desplegar el estado de materia de las particulas.
+\fBhttp://myatom.dyndns-server.com/trac/ptrack/\fR
+.Pp
+Wiki y SVN de PTrack2.
+\fBhttps://trac.assembla.com/particle-tracking-2/wiki\fR
+.Pp
+.Sh AUTHORS
+Este software se basa en el trabajo en C de \fBMauricio Cerda\fR y la variante para imágenes de partículas en alta densidad de \fBScott Waitukaitis\fR para el \fBDepartamento de Física de la Universidad de Chile\fR. El algoritmo utilizado se basa en el algoritmo de reconocimiento de partículas en base a convolucion de mínimos cuadrados del \fBProfessor Mark D. Shattuck\fR implementado en Matlab. El desarrollador del programa es \fBJuan Silva\fR, Alumno memorista de \fBIngeniería Civil en Computación de la Universidad de Chile\fR.

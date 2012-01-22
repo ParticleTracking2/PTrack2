@@ -39,6 +39,27 @@ my @MYCUDA;
 my @MYCUDA_DEV;
 
 #----------------------------------------------
+# Chequea un servidor
+# Parametro $1: IP del servidor
+#---------------------------------------------- 
+sub CheckServer{
+	($myip) = @_;
+	system "ping -t 5 -c 3 $myip >> /tmp/pingtest.txt";
+	my $alive=$?;
+	if($alive == 0){
+		system "ssh -q -o 'BatchMode=yes' $USER\@$SERVER[$i] 'echo 2>&1'";
+		my $sshalive=$?;
+		if($sshalive == 0){
+			return 0;
+		}else{
+			return 2;
+		}
+	}else{
+		return 1;
+	}
+}
+
+#----------------------------------------------
 # Chequea e integra los datos de configuracion
 #---------------------------------------------- 
 sub CheckConfigFile{
@@ -46,7 +67,7 @@ sub CheckConfigFile{
 	do "$ENV{HOME}/.PTrack2Bash.conf"
 		or die ">> No configuration file found, please create a new one.";
 	
-	$limit=scalar(@SERVER);
+	my $limit=scalar(@SERVER);
 	for($i = 0; $i < $limit; $i++){
 		print ">> Checking Server: @SERVER[$i] -> @PARALLEL_LIMIT[$i]";
 		if( @CUDA[$i] >= 1 ){
@@ -55,24 +76,19 @@ sub CheckConfigFile{
 		print "\n";
 		
 		if( @SERVER[$i] != $HOST ){
-			system "ping -t 5 -c 5 @SERVER[$i] >> /tmp/pingtest.txt";
-			$alive=$?;
-			if($alive == 0){
-				print ">> Server @SERVER[$i] is Alive.";
-				
-				system "ssh -q -o 'BatchMode=yes' $USER\@$SERVER[$i] 'echo 2>&1'";
-				$sshalive=$?;
-				if($sshalive == 0){
-					print " SSH is responding. Server OK!\n";
-					push(@MYSERVERS,@SERVER[$i]);
-					push(@MYPARALLEL_LIMIT,@PARALLEL_LIMIT[$i]);
-					push(@MYCUDA,@CUDA[$i]);
-					push(@MYCUDA_DEV, @CUDA_DEV[$i]);
-				}else{
-					print " SSH is not responding or is not properly configured, discarding server.\n"
-				}
-			}else{
+			my $ret = CheckServer(@SERVER[$i]);
+			if($ret == 0){
+				print ">> Server @SERVER[$i] is Alive. SSH is responding. Server OK!\n";
+				push(@MYSERVERS,@SERVER[$i]);
+				push(@MYPARALLEL_LIMIT,@PARALLEL_LIMIT[$i]);
+				push(@MYCUDA,@CUDA[$i]);
+				push(@MYCUDA_DEV, @CUDA_DEV[$i]);
+			}
+			if($ret == 1){
 				print ">> Server @SERVER[$i] is not responding, discarding server.\n";
+			}
+			if($ret == 2){
+				print ">> Server @SERVER[$i] is Alive. But SSH is not responding or is not properly configured, discarding server.\n";
 			}
 		}else{
 			push(@MYSERVERS,@SERVER[$i]);
@@ -83,7 +99,6 @@ sub CheckConfigFile{
 	}
 
 	print ">> Host: $HOST\n";
-	print ">> Time Out: $TIME_OUT\n";
 	print ">> Try Limit: $TRY_LIMIT\n";
 	print ">> User: $USER\n";	
 }
@@ -178,7 +193,7 @@ sub start_server{
 			}
 			
 			# Chequear datos
-			checkPacket(@mypacket);
+			checkPacket($myip, @mypacket);
 		}else{
 			print MYPROCFILE "[$myip-$myprocess] => No Packets Available. Good Bye!\n";
 			threads->exit();
@@ -207,13 +222,17 @@ sub getPacket{
 #--------------------------------------------------
 # Chequea la existencia de los archivos de salida
 # con la forma xysl####
-# Parametro $1: Arreglo de imagenes
+# Parametro $1: IP del servidor para chequear si esta vivo
+# Parametro $2: Arreglo de imagenes
 #--------------------------------------------------
 sub checkPacket{
-	(@images) = @_;
+	($myip, @images) = @_;
+	print "My IP: $myip\n";
+	my $fcount = 0;
 	foreach $img (@images){
 		my $xysl = $DEST."/xysl".substr($img, -8, 4);
 		if(! -e $xysl ){
+			$fcount += 1;
 			lock(@IMG_STACK);
 			lock(@RETRY_HISTORY_STACK);
 			
@@ -232,6 +251,24 @@ sub checkPacket{
 				print MYPROCFILE ">> Try limit to process $img reached, discarding image\n";
 				print MYERRFILE ">> Failed to process $img\n";
 			}
+		}
+	}
+	
+	# Chequear que siga vivo el servidor
+	my $total = scalar(@images);
+	if($fcount == $total and $myip ne $HOST){
+		my $ret = CheckServer($myip);
+		if($ret == 1){
+			print ">> Server $myip is down, stoping server process\n";
+			print MYPROCFILE ">> Server $myip is down, stoping server process\n";
+			print MYERRFILE ">> Server $myip is down, stoping server process\n";
+			threads->exit();
+		}
+		if($ret == 2){
+			print ">> Server SSH $myip is down, stoping server process\n";
+			print MYPROCFILE ">> Server SSH $myip is down, stoping server process\n";
+			print MYERRFILE ">> Server SSH $myip is down, stoping server process\n";
+			threads->exit();
 		}
 	}
 }
