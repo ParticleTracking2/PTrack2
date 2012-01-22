@@ -77,6 +77,10 @@ install:
 	sudo chmod +x /usr/bin/PTrack2Folder
 	sudo chmod +x /usr/bin/PTrack2FolderCuda
 	sudo chmod +x /usr/bin/PTrack2BashFolders
+	# Autocompletacion y Manual
+	sudo cp ../src/PTrack2_autocomplete.sh /etc/bash_completion.d/PTrack2
+	gzip -c ../src/PTrack2.1 > ../src/PTrack2.1.gz
+	sudo mv ../src/PTrack2.1.gz /usr/share/man/man1/PTrack2.1.gz
 	
 uninstall:
 	rm ~/.PTrack2Bash.conf
@@ -85,6 +89,9 @@ uninstall:
 	sudo rm /usr/bin/PTrack2Folder
 	sudo rm /usr/bin/PTrack2FolderCuda
 	sudo rm /usr/bin/PTrack2BashFolders
+	# Autocompletacion y Manual
+	sudo rm /etc/bash_completion.d/PTrack2
+	sudo rm /usr/share/man/man1/PTrack2.1.gz
 
 .PHONY: all clean dependents
 .SECONDARY:

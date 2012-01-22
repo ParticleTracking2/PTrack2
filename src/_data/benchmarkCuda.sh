@@ -28,15 +28,15 @@ function doit {
 	then
 		if [[ $4 -eq 0 ]]
 		then
-			time ./PTrack2 chi2hdcuda -i ImgA00000$3.tif -out ./Out/data-$2-$3.txt -silent
+			time PTrack2 chi2hdcuda -i ImgA00000$3.tif -out ./Out/data-$2-$3.txt -silent
 		else
-			time ./PTrack2 chi2hdcuda -i ImgA00000$3.tif -device $4 -out ./Out/data-$2-$3.txt -silent
+			time PTrack2 chi2hdcuda -i ImgA00000$3.tif -device $4 -out ./Out/data-$2-$3.txt -silent
 		fi
 	fi
 	
 	if [ $1 = $PARALLELCPU ]
 	then
-		time ./PTrack2 chi2hd -i ImgA00000$3.tif -out ./Out/data-cpu$2-$3.txt -silent
+		time PTrack2 chi2hd -i ImgA00000$3.tif -out ./Out/data-cpu$2-$3.txt -silent
 	fi
 }
 
@@ -107,8 +107,6 @@ function launch {
 		done
 	fi
 
-	#echo ">> Verifing Data"
-	#verify "7060604e898d35b5aa19b09d262b6162"
 	rm -r Out
 }
 

@@ -33,12 +33,12 @@ function doit {
 	## Imagen 0 ##
 	if [ $1 = $SINGLE -o $1 = $PARALLEL ]
 	then
-		time ./PTrack2 chi2hd -i ImgA00000$3.tif -out ./Out/data-$2-$3.txt -silent
+		time PTrack2 chi2hd -i ImgA00000$3.tif -out ./Out/data-$2-$3.txt -silent
 	fi
 
 	if [ $1 = $SINGLENT -o $1 = $PARALLELNT ]
 	then
-		time ./PTrack2 chi2hd -i ImgA00000$3.tif -out ./Out/data-$2-$3.txt -silent -nothreads
+		time PTrack2 chi2hd -i ImgA00000$3.tif -out ./Out/data-$2-$3.txt -silent -nothreads
 	fi
 }
 
