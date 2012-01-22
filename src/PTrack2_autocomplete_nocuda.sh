@@ -10,9 +10,6 @@ PTRACK2_CHI2_ARR=("-i" "-d" "-w" "-cut" "-maxchi2miniter")
 PTRACK2_CHI2HD="-i -d -w -cut -maxchi2miniter -chicut -vorcut -vorsl -2filteri -2filterv"
 PTRACK2_CHI2HD_ARR=("-i" "-d" "-w" "-cut" "-maxchi2miniter" "-chicut" "-vorcut" "-vorsl" "-2filteri" "-2filterv")
 
-PTRACK2_CHI2HDCUDA="-i -d -w -cut -maxchi2miniter -chicut -vorcut -vorsl -2filteri -2filterv -validateones -device"
-PTRACK2_CHI2HDCUDA_ARR=("-i" "-d" "-w" "-cut" "-maxchi2miniter" "-chicut" "-vorcut" "-vorsl" "-2filteri" "-2filterv" "-validateones" "-device")
-
 PTRACK2_AVAILABLE=""
 
 #------------------------------------------
@@ -27,7 +24,7 @@ _PTrack2()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     prev0="${COMP_WORDS[1]}"
     
-    opts="chi2 chi2hd chi2hdcuda"
+    opts="chi2 chi2hd"
     
     if [[ "${prev}" == "PTrack2" ]]
     then
@@ -39,7 +36,6 @@ _PTrack2()
     
 	_chi2hd
 	
-	_chi2hdcuda
 }
 
 #------------------------------------------
@@ -107,48 +103,6 @@ _chi2hd()
 		case "${prev}" in
 			"-i" | "-out" | "-outbin")
 				_chi2x
-				return 0
-				;;
-			"-d" | "-w" | "-cut" | "-chicut" | "-vorcut" | "-vorsl" | "-2filteri" | "-2filterv" | "-maxchi2miniter")
-				return 0
-				;;
-		esac
-		COMPREPLY=( $(compgen -W "${PTRACK2_AVAILABLE}" -- ${cur}) )
-		return 0
-    fi
-}
-
-#------------------------------------------
-# Como tratar los parametros si se ha
-# selecionado chi2hdcuda
-#------------------------------------------
-_chi2hdcuda()
-{
-	local cur="${COMP_WORDS[COMP_CWORD]}"
-	local prev="${COMP_WORDS[COMP_CWORD-1]}"
-	local prev0="${COMP_WORDS[1]}"
-    
-	if [[ "${prev}" == "chi2hdcuda" ]]
-    then
-		COMPREPLY=( $(compgen -W "${PTRACK2_CHI2HDCUDA} ${PTRACK2_G_OPTS}" -- ${cur}) )
-		return 0
-    fi
-    
-	PTRACK2_AVAILABLE=""
-    
-    _addNE2Available ${PTRACK2_CHI2HDCUDA_ARR[@]}
-    
-    _addGeneralOpts
-    
-    if [[ "${prev0}" == "chi2hdcuda" ]]
-    then
-		case "${prev}" in
-			"-i" | "-out" | "-outbin")
-				_chi2x
-				return 0
-				;;
-			"-device")
-				COMPREPLY=( $(compgen -W "1 2 3 4 5 6 7" ${cur}) )
 				return 0
 				;;
 			"-d" | "-w" | "-cut" | "-chicut" | "-vorcut" | "-vorsl" | "-2filteri" | "-2filterv" | "-maxchi2miniter")

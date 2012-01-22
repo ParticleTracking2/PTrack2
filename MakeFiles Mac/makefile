@@ -75,7 +75,7 @@ install:
 	sudo chmod +x /usr/bin/PTrack2Folder
 	sudo chmod +x /usr/bin/PTrack2BashFolders
 	# Autocompletacion y Manual
-	sudo cp ../src/PTrack2_autocomplete.sh /opt/local/etc/bash_completion.d/PTrack2
+	sudo cp ../src/PTrack2_autocomplete_nocuda.sh /opt/local/etc/bash_completion.d/PTrack2
 	gzip -c ../src/PTrack2.1 > ../src/PTrack2.1.gz
 	sudo mv ../src/PTrack2.1.gz /usr/share/man/man1/PTrack2.1.gz
 	
