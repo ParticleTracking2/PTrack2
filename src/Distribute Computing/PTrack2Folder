@@ -27,7 +27,6 @@ DE=$3
 WU=$4
 PARALLEL_LIMIT=$5
 
-TIME_OUT=30
 mkdir $DEST
 
 #-------------------------------------
@@ -35,45 +34,13 @@ mkdir $DEST
 # Parametro $1: Imagen a procesar con nombre de archivo completo
 #-------------------------------------
 function doServer {
-	echo ">> Processing Image: $1"
 	local myfile=$1
 	local OUTFILE='xysl'${myfile:6:4}
 	
 	PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -out $DEST/$OUTFILE &
-	local my_pid=$!
-
-	timeToKill $TIME_OUT $my_pid $myfile &
-	local killer_id=$!
-
-	wait $my_pid
-	disown $killer_id
-	kill $killer_id
+	wait
 
 	echo ">> $1 Data Processing Complete"
-}
-
-#-------------------------------------
-# Genera el tiempo de espera para que
-#  se complete el proceso
-# Parametro $1: Tiempo de espera
-# Parametro $2: Proceso a esperar
-# Parametro $3: Imagen a procesar
-#-------------------------------------
-function timeToKill {
-	local mytime=$1
-	local mypid=$2
-	local myimage=$3
-
-	sleep $mytime
-	kill -0 $mypid
-	local ret=$?
-
-	if [[ $ret -eq 0 ]]
-	then
-		kill $mypid
-		echo "Error: Killed task ID $mypid [$myimage] due to timeout $mytime exceeded, returned $ret"
-		echo "Error: Killed task ID $mypid [$myimage] due to timeout $mytime exceeded, returned $ret" >> $DEST/proc-log.txt
-	fi
 }
 
 #-------------------------------------
@@ -83,6 +50,7 @@ function timeToKill {
 function iterateServer {
 	for file in ${*:1}
 	do
+		echo ">> Processing Image: $1"
 		doServer $file &
 	done
 	echo ">> Waiting Iteration"
@@ -115,7 +83,7 @@ function main {
 			min=0
 		fi
 
-		iterateServer ${STACK[@]:$min:$STACK_SIZE} &
+		iterateServer ${STACK[@]:$min:$STACK_SIZE}
 
 		for img in ${STACK[@]:$min:$STACK_SIZE}
 		do
@@ -127,8 +95,6 @@ function main {
 			unset STACK[${#STACK[@]}-1]
 			STACK_SIZE=${#STACK[@]}
 		done
-		echo ">> Waiting Iterations"
-		wait
 	
 		#----------------------------------------------
 		# Chequear que se hayan procesado correctamente
@@ -194,7 +160,5 @@ function main {
 # Medir el tiempo y ejecutar
 #-------------------------------------
 (time main > $DEST/process-log.txt) 2> $DEST/time-log.txt
-#time main
-
 echo "------- All jobs done! -------"
 
