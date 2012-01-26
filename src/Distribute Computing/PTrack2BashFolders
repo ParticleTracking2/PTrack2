@@ -33,6 +33,7 @@ then
 	for (( i=$INIT_NUM; i<$FINAL_NUM; ++i ))
 	do
 		echo ">> Data for $i: D=${Data_D[$i]}, W=${Data_W[$i]};"
+		echo ">> Data for $i: D=${Data_D[$i]}, W=${Data_W[$i]};" >> session-log.txt
 	done
 else
 	echo ">> No configuration file found, please create a new one."
@@ -44,12 +45,15 @@ function main {
 	for (( i=$INIT_NUM; i<=$FINAL_NUM; ++i ))
 	do
 		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" >> session-log.txt
 		num="000"$i
 		folder=$SUB_FOLDER${num:${#num}-3:3}
 		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST -> ${Data_D[$i]} -> ${Data_W[$i]}"
-		PTrack2Bash $folder/$IMG_FOLDER/ $folder/$DEST ${Data_D[$i]} ${Data_W[$i]}
+		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST -> ${Data_D[$i]} -> ${Data_W[$i]}" >> session-log.txt
+		( time PTrack2Bash $folder/$IMG_FOLDER/ $folder/$DEST ${Data_D[$i]} ${Data_W[$i]} ) 2> session-log.txt
 		echo ">> Processing $folder/$IMG_FOLDER complete"
+		echo ">> Processing $folder/$IMG_FOLDER complete" >> session-log.txt
 	done
 }
 
-time main
+( time main ) 2> session-time-log.txt

@@ -47,7 +47,7 @@ sub CheckServer{
 	system "ping -t 5 -c 3 $myip >> /tmp/pingtest.txt";
 	my $alive=$?;
 	if($alive == 0){
-		system "ssh -q -o 'BatchMode=yes' $USER\@$SERVER[$i] 'echo 2>&1'";
+		system "ssh -q -o 'BatchMode=yes' $USER\@$SERVER[$i] 'rm *.tif; rm Out/*;'";
 		my $sshalive=$?;
 		if($sshalive == 0){
 			return 0;
