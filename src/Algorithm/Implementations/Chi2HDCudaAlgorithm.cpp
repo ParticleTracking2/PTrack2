@@ -93,18 +93,21 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 		_vor_areaSL = (float)pc->getParamAsDouble("-vorsl");
 
 	_FilterI = 1.0;
+	_secondFilterI = false;
 	if(pc->existParam("-2filteri")){
 		_secondFilterI = true;
 		_FilterI = pc->getParamAsDouble("-2filteri");
 	}
 
 	_FilterV = 50.0;
+	_secondFilterV = false;
 	if(pc->existParam("-2filterv")){
 		_secondFilterV = true;
 		_FilterV = pc->getParamAsDouble("-2filterv");
 	}
 
 	_cudaDev = 0;
+	_cuda = false;
 	if(pc->existParam("-device")){
 		_cuda = true;
 		_cudaDev = pc->getParamAsInt("-device");

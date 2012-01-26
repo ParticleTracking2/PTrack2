@@ -85,12 +85,14 @@ void Chi2HDAlgorithm::setData(ParameterContainer *pc){
 		_vor_areaSL = pc->getParamAsDouble("-vorsl");
 
 	_FilterI = 1.0;
+	_secondFilterI = false;
 	if(pc->existParam("-2filteri")){
 		_secondFilterI = true;
 		_FilterI = pc->getParamAsDouble("-2filteri");
 	}
 
 	_FilterV = 1.0;
+	_secondFilterV = false;
 	if(pc->existParam("-2filterv")){
 		_secondFilterV = true;
 		_FilterV = pc->getParamAsDouble("-2filterv");
