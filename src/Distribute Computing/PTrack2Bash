@@ -37,6 +37,10 @@ my @MYSERVERS;
 my @MYPARALLEL_LIMIT;
 my @MYCUDA;
 my @MYCUDA_DEV;
+#-------------------------------------
+# Direccion del HOST
+#-------------------------------------
+$HOST="LocalHost";
 
 #----------------------------------------------
 # Chequea un servidor
@@ -209,6 +213,7 @@ my @RETRY_HISTORY_STACK:shared;
 #-------------------------------
 sub getPacket{
 	($maxPacket) = @_;
+	
 	my @packet;
 	lock(@IMG_STACK);
 		my $img_stack_size = @IMG_STACK;
@@ -227,7 +232,7 @@ sub getPacket{
 #--------------------------------------------------
 sub checkPacket{
 	($myip, @images) = @_;
-	print "My IP: $myip\n";
+	
 	my $fcount = 0;
 	foreach $img (@images){
 		my $xysl = $DEST."/xysl".substr($img, -8, 4);
