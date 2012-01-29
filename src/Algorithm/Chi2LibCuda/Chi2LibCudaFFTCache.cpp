@@ -40,6 +40,7 @@ void Chi2LibCudaFFTCache::erase(unsigned int slot){
 		if(instance->_cache[slot]){
 			instance->_cache[slot]->~cuMyMatrix();
 		}
+		instance->locked[slot] = false;
 	}
 }
 
@@ -52,6 +53,7 @@ void Chi2LibCudaFFTCache::eraseAll(){
 			instance->_cache[slot]->~cuMyMatrix();
 			instance->_cache[slot] = 0;
 		}
+		instance->locked[slot] = false;
 	}
 }
 

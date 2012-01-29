@@ -13,34 +13,36 @@
  *******************************
  */
 Container::Container() {
-	// Do nothing
+	clear();
 }
 Container::Container(int integer){
+	clear();
 	myint = integer;
 }
 
 Container::Container(double dou){
+	clear();
 	mydouble = dou;
 }
 
 Container::Container(string str){
+	clear();
 	mystring = str;
 }
 
 Container::Container(char* str){
+	clear();
 	mystring = str;
 }
 
-Container::Container(void* data){
-	mydata = data;
-}
-
-Container::Container(void** data){
-	mydata2 = data;
-}
-
 Container::~Container() {
-	// Do Nothing
+	clear();
+}
+
+void Container::clear() {
+	myint = -1;
+	mydouble = -1;
+	mystring = "";
 }
 
 /**
@@ -60,24 +62,8 @@ void Container::setData(string str){
 	mystring = str;
 }
 
-void Container::setData(void* data){
-	mydata = data;
-}
-
-void Container::setData(void** data){
-	mydata2 = data;
-}
-
-void Container::setDescription(string desc){
-	_description = desc;
-}
-
-void* Container::getData(){
-	return mydata;
-}
-
-void** Container::getData2(){
-	return mydata2;
+void Container::setData(char *str){
+	mystring = str;
 }
 
 int Container::getDataInt(){
@@ -90,6 +76,10 @@ double Container::getDataDouble(){
 
 string Container::getDataString(){
 	return mystring;
+}
+
+void Container::setDescription(string desc){
+	_description = desc;
 }
 
 string Container::getDescription(){

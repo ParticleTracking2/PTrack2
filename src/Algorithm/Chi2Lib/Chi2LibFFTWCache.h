@@ -23,7 +23,7 @@ private:
 	/**
 	 * Maxima Capacidad de datos.
 	 */
-	static const unsigned int capacity = 7;
+	static const unsigned int capacity = 5;
 
 	/**
 	 * Punteros a las Matrices almacenadas en Cache.

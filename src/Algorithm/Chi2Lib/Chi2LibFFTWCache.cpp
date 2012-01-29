@@ -41,6 +41,7 @@ void Chi2LibFFTWCache::erase(unsigned int slot){
 			delete instance->_cache[slot];
 			instance->_cache[slot] = 0;
 		}
+		instance->locked[slot] = false;
 	}
 }
 
@@ -51,6 +52,7 @@ void Chi2LibFFTWCache::eraseAll(){
 	for( unsigned int slot = 0; slot < instance->capacity; ++slot){
 		if(instance->_cache[slot])
 			delete instance->_cache[slot];
+		instance->locked[slot] = false;
 	}
 }
 

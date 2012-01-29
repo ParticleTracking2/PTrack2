@@ -30,11 +30,9 @@ private:
 	enum cached{
 		cached_kernel = 0,
 		cached_kernel2 = 1,
-		cached_kernel3 = 2,
-		cached_blank = 3,
-		cached_first_term = 4,
-		cached_second_term = 5,
-		cached_third_term = 6
+		cached_first_term = 2,
+		cached_second_term = 3,
+		cached_third_term = 4
 	};
 public:
 

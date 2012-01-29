@@ -23,18 +23,6 @@ void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, M
 		Chi2LibFFTWCache::cache(cached_kernel2, kernel_img2);
 		MyLogger::log()->debug("[Chi2LibFFTW][getChiImage] Kernel^2 Cached");
 	}
-	if(Chi2LibFFTWCache::empty(cached_kernel3)){ //Kernel3
-		MyMatrix<double> *kernel_img3 = new MyMatrix<double>(kernel->sX(), kernel->sY());
-		Chi2LibMatrix::copy(kernel, kernel_img3);
-		Chi2LibMatrix::cubeIt(kernel_img3);
-		Chi2LibFFTWCache::cache(cached_kernel3, kernel_img3);
-		MyLogger::log()->debug("[Chi2LibFFTW][getChiImage] Kernel^3 Cached");
-	}
-	if(Chi2LibFFTWCache::empty(cached_blank)){ //Blank
-		MyMatrix<double> *blank = new MyMatrix<double>(img->sX(), img->sY(), 1.0);
-		Chi2LibFFTWCache::cache(cached_blank, blank);
-		MyLogger::log()->debug("[Chi2LibFFTW][getChiImage] Blank Cached");
-	}
 	if(Chi2LibFFTWCache::empty(cached_first_term)){ //First Term -> conv2d_fft( normaldata, ipf*ipf )
 		MyMatrix<double> *first_term = new MyMatrix<double>(img->sX()+kernel->sX()-1, img->sY()+kernel->sY()-1);
 		Chi2LibFFTWCache::cache(cached_first_term, first_term);
@@ -73,14 +61,23 @@ void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, M
 
 		if(!Chi2LibFFTWCache::lock(cached_third_term)){
 			PartitionFFT p3;
-			p3.img = Chi2LibFFTWCache::cache(cached_blank);
-			p3.kernel_img = Chi2LibFFTWCache::cache(cached_kernel3);
+			
+			MyMatrix<double> *blank = new MyMatrix<double>(img->sX(), img->sY(), 1.0);
+			p3.img = blank;
+			
+			MyMatrix<double> *kernel_img3 = new MyMatrix<double>(kernel->sX(), kernel->sY());
+			Chi2LibMatrix::copy(kernel, kernel_img3);
+			Chi2LibMatrix::cubeIt(kernel_img3);
+			p3.kernel_img = kernel_img3;
 			p3.output = Chi2LibFFTWCache::cache(cached_third_term);
 
 			MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
 			pthread_create(&thread3, NULL, conv2d_fftThread, (void *)&p3);
 
 			pthread_join(thread3, NULL);
+			
+			delete blank;
+			delete kernel_img3;
 			Chi2LibFFTWCache::lock(cached_third_term, true);
 		}
 
@@ -99,7 +96,15 @@ void Chi2LibFFTW::getChiImage(MyMatrix<double> *kernel, MyMatrix<double> *img, M
 
 		if(!Chi2LibFFTWCache::lock(cached_third_term)){
 			MyLogger::log()->debug("[Chi2LibFFTW] Generating Third Convolution");
-			conv2d_fft(Chi2LibFFTWCache::cache(cached_blank), Chi2LibFFTWCache::cache(cached_kernel3), Chi2LibFFTWCache::cache(cached_third_term)); // ~170 Milisegundos
+			MyMatrix<double> *blank = new MyMatrix<double>(img->sX(), img->sY(), 1.0);
+			MyMatrix<double> *kernel_img3 = new MyMatrix<double>(kernel->sX(), kernel->sY());
+			Chi2LibMatrix::copy(kernel, kernel_img3);
+			Chi2LibMatrix::cubeIt(kernel_img3);
+			
+			conv2d_fft(blank, kernel_img3, Chi2LibFFTWCache::cache(cached_third_term)); // ~170 Milisegundos
+			
+			delete blank;
+			delete kernel_img3;
 			Chi2LibFFTWCache::lock(cached_third_term, true);
 		}
 	}

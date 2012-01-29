@@ -59,6 +59,15 @@ void ParameterContainer::setParam(string key, Container* data, string descriptio
  * Funciones
  *******************************
  */
+vector <string> ParameterContainer::getKeys(){
+	vector<string> my_keys;
+	map<string, Container*>::iterator it;
+	for(it = my_data.begin(); it != my_data.end(); ++it){
+		my_keys.push_back(it->first);
+	}
+	return my_keys;
+}
+
 Container* ParameterContainer::popParam(string key){
 	map<string, Container*>::const_iterator iter;
 	iter = my_data.find(key);
@@ -114,36 +123,17 @@ bool ParameterContainer::existParam(string key){
 		return false;
 }
 
-vector <string> ParameterContainer::getKeys(){
-	vector<string> my_keys;
-	map<string, Container*>::iterator it;
-	for(it = my_data.begin(); it != my_data.end(); ++it){
-		my_keys.push_back(it->first);
-	}
-	return my_keys;
-}
-
-void* ParameterContainer::getData(string key){
-	if(getParam(key))
-		return getParam(key)->getData();
-	else
-		return NULL;
-}
-
-void** ParameterContainer::getData2(string key){
-	if(getParam(key))
-		return getParam(key)->getData2();
-	else
-		return NULL;
-}
-
 void ParameterContainer::printInformation(){
 	cout << "**********************************" << endl;
 	cout << "ParameterContainer Information:" << endl;
 	map<string, Container*>::iterator it;
 	for(it = my_data.begin(); it != my_data.end(); ++it){
 		cout << "Key: " << "'" << it->first << "'\t\t";
-		//cout << " Type: " << "'" << typeid(getData(keys[i])).name() << "'\t\t";
+		cout << " Content: ";
+		cout << "i:" << it->second->getDataInt();
+		cout << "d:" << it->second->getDataDouble();
+		cout << "s:" << it->second->getDataString();
+		cout << "\t\t";
 		cout << " Description: " << "'" << it->second->getDescription() << "'" << endl;
 	}
 	cout << "**********************************" << endl;

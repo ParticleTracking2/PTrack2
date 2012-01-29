@@ -24,7 +24,7 @@ private:
 	/**
 	 * Capacidad Maxima de este contenedor (Numero arbitrario).
 	 */
-	static const unsigned int capacity = 7;
+	static const unsigned int capacity = 5;
 
 	/**
 	 * Punteros a las Matrices almacenadas en Cache.
