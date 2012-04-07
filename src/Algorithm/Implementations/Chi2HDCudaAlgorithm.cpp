@@ -129,11 +129,11 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 }
 
 vector<MyPeak> Chi2HDCudaAlgorithm::run(){
-	MyLogger::log()->notice("[Chi2Algorithm] Running Chi2HD CUDA Algorithm");
+	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] Running Chi2HD CUDA Algorithm");
 
 	DeviceProps props = Chi2Libcu::getProps();
 	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] ***************************** ");
-	MyLogger::log()->notice("[Chi2Algorithm] Setting CUDA Device %i = %s", props.device, props.name);
+	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] Setting CUDA Device %i = %s", props.device, props.name);
 
 	int ss = 2*floor(_d/2 + 4*_w/2)-1;
 	int os = (ss-1)/2;

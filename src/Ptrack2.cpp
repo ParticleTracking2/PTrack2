@@ -71,15 +71,27 @@ int main(int argc, char* argv[]) {
 	delete out;
 
 	//****************************
-	// Desplegar imagen si se desea
+	// Desplegar y Guardar imagen si se desea
 	//****************************
-	if(proc->hasKey("-display")){
+	if(proc->hasKey("-display") || proc->hasKey("-savedisplay")){
 		MyImage img;
 		if(proc->hasKey("-cut"))
 			img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"), proc->getArgAsInt("-cut"));	// ~670 --> ~430 (2 threads) milisegundos
 		else
 			img = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));
-		img.display(&peaks);
+
+		if(proc->hasKey("-d")){
+			double diameter = proc->getArgAsDouble("-d")/2;
+			if(proc->hasKey("-display"))
+				img.display(&peaks, diameter);
+			if(proc->hasKey("-savedisplay"))
+				img.saveDisplayableToDisk(proc->getArgAsString("-savedisplay"), &peaks, diameter);
+		}else{
+			if(proc->hasKey("-display"))
+				img.display(&peaks);
+			if(proc->hasKey("-savedisplay"))
+				img.saveDisplayableToDisk(proc->getArgAsString("-savedisplay"), &peaks);
+		}
 	}
 
 	mylog->log()->notice(">> Ptracking C++/CUDA Finished <<");

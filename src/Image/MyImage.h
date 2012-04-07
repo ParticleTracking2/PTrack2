@@ -12,6 +12,7 @@
 #include "../Container/MyMatrix.h"
 #include "../Utils/MyLogger.h"
 #include <vector>
+#include <string>
 #include <stdlib.h>
 #include <Magick++.h>
 
@@ -29,12 +30,22 @@ private:
 	 * Contenedor de datos.
 	 */
 	MyMatrix<double> mtrx;
+
+	/**
+	 * Imagen temporal a desplegar.
+	 */
+	Magick::Image my_image;
+
+	/**
+	 * Establece si ya se generó una imagen con peaks.
+	 */
+	bool is_generated;
 public:
 
 	/**
 	 * Constructor Vacio.
 	 */
-	MyImage() { }
+	MyImage();
 
 	/**
 	 * Destructor
@@ -88,12 +99,30 @@ public:
 	void display();
 
 	/**
-	 * Despliega en pantalla la imagen representada. Además agrega puntos representados por el vector de MyPeak,
+	 * Genera y Despliega en pantalla la imagen representada. Además agrega puntos representados por el vector de MyPeak,
 	 * los cuales pueden ser solidos o liquidos y el color de estos es azul o rojo respectivamente.
-	 * Los puntos son representados como cuadrados de 3x3 pixeles.
+	 * Los puntos son representados como circulos centrados en el peak con un diametro igual al entregado.
 	 * @param peaks Vector de MyPeak a desplegar en la imagen.
+	 * @param diameter Diametro de las particulas a desplegar, si no se entrega, el valor por defecto es 4.
 	 */
-	void display(vector<MyPeak> *peaks);
+	void display(vector<MyPeak> *peaks, double diameter = 4);
+
+	/**
+	 * Genera la imagen procesada con los peaks encontrados los cuales pueden ser solidos o liquidos y el color de estos es azul o rojo respectivamente.
+	 * Los puntos son representados como circulos centrados en el peak con un diametro igual al entregado.
+	 * @param peaks Vector de MyPeak a desplegar en la imagen.
+	 * @param diameter Diametro de las particulas a desplegar, si no se entrega, el valor por defecto es 4.
+	 */
+	void generateDisplayable(vector<MyPeak> *peaks, double diameter = 4);
+
+	/**
+	 * Genera y Guarda la imagen procesada con los peaks encontradosos cuales pueden ser solidos o liquidos y el color de estos es azul o rojo respectivamente.
+	 * Los puntos son representados como circulos centrados en el peak con un diametro igual al entregado.
+	 * @param path String de la ubicacion a donde guardar la imagen.
+	 * @param peaks Vector de MyPeak a desplegar en la imagen.
+	 * @param diameter Diametro de las particulas a desplegar, si no se entrega, el valor por defecto es 4.
+	 */
+	void saveDisplayableToDisk(string path, vector<MyPeak> *peaks,  double diameter = 4);
 };
 
 #endif
