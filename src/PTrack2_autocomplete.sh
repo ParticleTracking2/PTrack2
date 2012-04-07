@@ -1,6 +1,6 @@
 
-PTRACK2_G_OPTS="-silent -debug -debugwf -chrono -display -nothreads -out -outbin"
-PTRACK2_G_OPTS_ARR=("-display" "-nothreads")
+PTRACK2_G_OPTS="-silent -debug -debugwf -chrono -display -savedisplay -nothreads -out -outbin"
+PTRACK2_G_OPTS_ARR=("-display" "-savedisplay" "-nothreads")
 PTRACK2_G_OPTS_ARREX=("-silent" "-debug" "-debugwf" "-chrono")
 PTRACK2_G_OPTS_ARROUT=("-out" "-outbin")
 
@@ -67,7 +67,7 @@ _chi2()
     if [[ "${prev0}" == "chi2" ]]
     then
 		case "${prev}" in
-			"-i" | "-out" | "-outbin")
+			"-i" | "-out" | "-outbin" | "-savedisplay")
 				_chi2x
 				return 0
 				;;
@@ -105,7 +105,7 @@ _chi2hd()
     if [[ "${prev0}" == "chi2hd" ]]
     then
 		case "${prev}" in
-			"-i" | "-out" | "-outbin")
+			"-i" | "-out" | "-outbin" | "-savedisplay")
 				_chi2x
 				return 0
 				;;
@@ -143,7 +143,7 @@ _chi2hdcuda()
     if [[ "${prev0}" == "chi2hdcuda" ]]
     then
 		case "${prev}" in
-			"-i" | "-out" | "-outbin")
+			"-i" | "-out" | "-outbin" | "-savedisplay")
 				_chi2x
 				return 0
 				;;
@@ -171,6 +171,10 @@ _chi2x()
 	
 	case "${prev}" in
 		"-i")
+			COMPREPLY=( $(compgen -f ${cur}) )
+			return 0
+			;;
+		"-savedisplay")
 			COMPREPLY=( $(compgen -f ${cur}) )
 			return 0
 			;;
