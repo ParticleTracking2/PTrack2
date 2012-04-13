@@ -1,4 +1,4 @@
-.Dd $Mdocdate: January 22 2012 $
+.Dd $Mdocdate: April 12 2012 $
 .Dt PTrack2 1
 .Os
 .Sh NAME
@@ -94,7 +94,9 @@ Si existe este parámetro, se desplegaran todos los mensajes del procesamiento d
 .It Fl chrono
 Si existe este parámetro, se desplegarán solo mensajes importantes como el de inicio del software y el termino de este, para poder obtener una referencia del tiempo que se demoró en procesar.
 .It Fl display
-Si existe este parámetro, se desplegará en pantalla la imagen procesada incluyendo los peaks detectados dentro de esta. En rojo aparecen los peaks en estado solido y en azul los peaks en estado liquido. La imagen generada se guarda de manera temporal en el directorio desde donde se ejecuto PTrack2 y tiene el nombre tmp.tif.
+Si existe este parámetro, se desplegará en pantalla la imagen procesada incluyendo los peaks detectados dentro de esta. En rojo aparecen los peaks en estado solido y en azul los peaks en estado liquido.
+.It Fl savedisplay Ar save_path
+Si existe este parámetro, Guardará en la ruta indicada una imagen compuesta de la imagen prosesada incluyendo los peaks detectados dentro de esta. En rojo aparecen los peaks en estado solido y en azul los peaks en estado liquido.
 .It Fl nothreads
 Si existe este parámetro, des habilita la ejecución de threads dejando los cálculos completamente secuenciales. Esto puede ser útil en ciertos computadores sin tecnología HT o en ejecución de múltiples instancias.
 .El
@@ -118,6 +120,9 @@ Desarrollo de ptracking por Mauricio Cerda, modificado por Scott Waitukaitis par
 .Pp
 Wiki y SVN de PTrack2.
 \fBhttps://trac.assembla.com/particle-tracking-2/wiki\fR
+.Pp
+Sitio principal de PTrack2 con API en linea (Puede estar desactualizada).
+\fBhttp://www.dfi.uchile.cl/~hdphysics/particle-tracking/\fR
 .Pp
 .Sh AUTHORS
 Este software se basa en el trabajo en C de \fBMauricio Cerda\fR y la variante para imágenes de partículas en alta densidad de \fBScott Waitukaitis\fR para el \fBDepartamento de Física de la Universidad de Chile\fR. El algoritmo utilizado se basa en el algoritmo de reconocimiento de partículas en base a convolucion de mínimos cuadrados del \fBProfessor Mark D. Shattuck\fR implementado en Matlab. El desarrollador del programa es \fBJuan Silva\fR, Alumno memorista de \fBIngeniería Civil en Computación de la Universidad de Chile\fR.

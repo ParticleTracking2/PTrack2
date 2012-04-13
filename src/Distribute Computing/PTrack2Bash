@@ -53,7 +53,7 @@ sub CheckServer{
 	if($alive == 0){
 		system "ssh -q -o 'BatchMode=yes' $USER\@$SERVER[$i] 'rm *.tif; rm Out/*;'";
 		my $sshalive=$?;
-		if($sshalive == 0){
+		if($sshalive != 255){
 			return 0;
 		}else{
 			return 2;

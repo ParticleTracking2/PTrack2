@@ -37,7 +37,7 @@ function doServer {
 	local myfile=$1
 	local OUTFILE='xysl'${myfile:6:4}
 	
-	PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -out $DEST/$OUTFILE &
+	PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$OUTFILE &
 	wait
 
 	echo ">> $1 Data Processing Complete"
