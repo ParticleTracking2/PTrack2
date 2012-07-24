@@ -31,6 +31,10 @@ ArgObj Chi2Algorithm::myArgs(){
 	KeyTreat cut; cut.key = "-cut"; cut.description = "Crop image by each side (in pixels).";
 	cut.treat.push_back(Followed_Int_Treat);
 	chi2.keys_treats.push_back(cut);
+	
+	KeyTreat minsep; minsep.key = "-minsep"; minsep.description = "Minimal Separations between peaks. (Default 1)";
+	minsep.treat.push_back(Followed_Int_Treat);
+	chi2.keys_treats.push_back(minsep);
 
 	KeyTreat maxchi2miniter; maxchi2miniter.key = "-maxchi2miniter"; maxchi2miniter.description = "Limit the iteration for minimizing Chi2Error (Default = 5).";
 	maxchi2miniter.treat.push_back(Followed_Int_Treat);
@@ -48,6 +52,10 @@ void Chi2Algorithm::setData(ParameterContainer *pc){
 	if(pc->existParam("-w"))
 		_w = pc->getParamAsDouble("-w");
 
+	_minsep = 1;
+	if(pc->existParam("-minsep"))
+		_minsep = pc->getParamAsInt("-minsep");
+		
 	_maxIterations = 5;
 	if(pc->existParam("-maxchi2miniter"))
 		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
@@ -81,7 +89,7 @@ vector<MyPeak> Chi2Algorithm::run(){
 
 	MyLogger::log()->info("[Chi2Algorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2Algorithm] >> Obtain peaks of Chi2 Image ");
-	unsigned int threshold = 5, minsep = 1, mindistance = 5;
+	unsigned int threshold = 5, minsep = _minsep, mindistance = 5;
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads);
 
 	MyLogger::log()->info("[Chi2Algorithm] ***************************** ");

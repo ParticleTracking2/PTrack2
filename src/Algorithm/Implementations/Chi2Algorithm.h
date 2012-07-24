@@ -22,6 +22,7 @@ class Chi2Algorithm: public Algorithm {
 private:
 	double _d;
 	double _w;
+	int _minsep;
 	unsigned int _maxIterations;
 	MyMatrix<double> _data;
 public:
