@@ -28,6 +28,10 @@ ArgObj Chi2HDCudaAlgorithm::myArgs(){
 	w.treat.push_back(Followed_Double_Treat);
 	chi2hdcuda.keys_treats.push_back(w);
 
+	KeyTreat minsep; minsep.key = "-minsep"; minsep.description = "Minimal Separations between peaks. (Default 1)";
+	minsep.treat.push_back(Followed_Int_Treat);
+	chi2hdcuda.keys_treats.push_back(minsep);
+	
 	KeyTreat cut; cut.key = "-cut"; cut.description = "Crop image by each side (in pixels).";
 	cut.treat.push_back(Followed_Int_Treat);
 	chi2hdcuda.keys_treats.push_back(cut);
@@ -76,6 +80,10 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 	if(pc->existParam("-w"))
 		_w = (float)pc->getParamAsDouble("-w");
 
+	_minsep = 1;
+	if(pc->existParam("-minsep"))
+		_minsep = pc->getParamAsInt("-minsep");
+		
 	_maxIterations = 5;
 	if(pc->existParam("-maxchi2miniter"))
 		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
@@ -154,7 +162,7 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtain peaks of Chi2 Image ");
-	unsigned int threshold = 5, minsep = 1, mindistance = 5;
+	unsigned int threshold = 5, minsep = _minsep, mindistance = 5;
 	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep, !_validateOnes);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");

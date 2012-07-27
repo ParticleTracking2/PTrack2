@@ -39,6 +39,7 @@ private:
 	float _vor_areaSL;
 	float _FilterI;
 	float _FilterV;
+	unsigned int _minsep;
 	unsigned int _maxIterations;
 	unsigned int _chi_cut;
 	cuMyMatrix cuImg;

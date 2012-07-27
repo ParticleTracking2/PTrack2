@@ -36,6 +36,10 @@ ArgObj Chi2HDAlgorithm::myArgs(){
 	maxchi2miniter.treat.push_back(Followed_Int_Treat);
 	chi2hd.keys_treats.push_back(maxchi2miniter);
 
+	KeyTreat minsep; minsep.key = "-minsep"; minsep.description = "Minimal Separations between peaks. (Default 1)";
+	minsep.treat.push_back(Followed_Int_Treat);
+	chi2hd.keys_treats.push_back(minsep);
+	
 	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
 	chi_cut.treat.push_back(Followed_Double_Treat);
 	chi2hd.keys_treats.push_back(chi_cut);
@@ -68,6 +72,10 @@ void Chi2HDAlgorithm::setData(ParameterContainer *pc){
 	if(pc->existParam("-w"))
 		_w = pc->getParamAsDouble("-w");
 
+	_minsep = 1;
+	if(pc->existParam("-minsep"))
+		_minsep = pc->getParamAsInt("-minsep");
+		
 	_maxIterations = 5;
 	if(pc->existParam("-maxchi2miniter"))
 		_maxIterations = pc->getParamAsInt("-maxchi2miniter");
@@ -127,7 +135,7 @@ vector<MyPeak> Chi2HDAlgorithm::run(){
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDAlgorithm] >> Obtain peaks of Chi2 Image ");
-	unsigned int threshold = 5, minsep = 1, mindistance = 5;
+	unsigned int threshold = 5, minsep = _minsep, mindistance = 5;
 	vector<MyPeak> peaks = Chi2Lib::getPeaks(&chi_img, threshold, mindistance, minsep, use_threads); // ~120|150 -> |125 Milisegundos
 
 	MyLogger::log()->info("[Chi2HDAlgorithm] ***************************** ");
