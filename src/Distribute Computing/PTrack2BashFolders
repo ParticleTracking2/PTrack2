@@ -30,6 +30,7 @@ then
 
 	echo ">> Image Folder: $IMG_FOLDER"
 	echo ">> Destination Folder: $DEST"
+	echo ">> Aditional Parameters: ${Data[*]}"
 	for (( i=$INIT_NUM; i<$FINAL_NUM; ++i ))
 	do
 		echo ">> Data for $i: D=${Data_D[$i]}, W=${Data_W[$i]};"
@@ -48,9 +49,9 @@ function main {
 		echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" >> session-log.txt
 		num="000"$i
 		folder=$SUB_FOLDER${num:${#num}-3:3}
-		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST -> ${Data_D[$i]} -> ${Data_W[$i]}"
-		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST -> ${Data_D[$i]} -> ${Data_W[$i]}" >> session-log.txt
-		( time PTrack2Bash $folder/$IMG_FOLDER/ $folder/$DEST ${Data_D[$i]} ${Data_W[$i]} ) 2> session-log.txt
+		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST:: -d ${Data_D[$i]} -w ${Data_W[$i]} ${Data[*]}"
+		echo ">> Processing $folder/$IMG_FOLDER -> $folder/$DEST:: -w ${Data_D[$i]} -w ${Data_W[$i]} ${Data[*]}" >> session-log.txt
+		( time PTrack2Bash $folder/$IMG_FOLDER/ $folder/$DEST -d ${Data_D[$i]} -w ${Data_W[$i]} ${Data[*]}) 2> session-log.txt
 		echo ">> Processing $folder/$IMG_FOLDER complete"
 		echo ">> Processing $folder/$IMG_FOLDER complete" >> session-log.txt
 	done

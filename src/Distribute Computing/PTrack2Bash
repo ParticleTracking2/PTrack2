@@ -4,13 +4,12 @@ use threads;
 use threads::shared;
 use Time::HiRes;
 
-if ($#ARGV < 3){
+if ($#ARGV < 2){
 	print "--------------------------------------------------------\n";
-	print "Uso: PTrack2Bash [Carpeta] [Carpeta Destino] [D] [W]\n";
+	print "Uso: PTrack2Bash [Carpeta] [Carpeta Destino] [Params]\n";
 	print "-Carpeta: Carpeta donde ubicar las imagenes\n";
 	print "-Carpeta Destino: Carpeta de destino de los datos\n";
-	print "-D: Parametro de diametro de PTrack\n";
-	print "-W: Parametro de peso de PTrack\n";
+	print "-Params: Parametros de ejecucion de PTrack\n";
 	print "--------------------------------------------------------\n";
 	exit;
 }
@@ -21,10 +20,11 @@ if ($#ARGV < 3){
 # - Diametro para PTrack
 # - Peso para PTrack
 #-------------------------------------
-my $FOLDER=$ARGV[0];
-my $DEST=$ARGV[1];
-my $DE=$ARGV[2];
-my $WU=$ARGV[3];
+my ($FOLDER, $DEST, @OTHERS) = @ARGV;
+
+print "FOLDER:\t$FOLDER\n";
+print "DEST:\t$DEST\n";
+print "PARAMS:\t@OTHERS\n";
 
 #-------------------------------------
 # Datos de servidores
@@ -133,22 +133,22 @@ sub runServer{
 		print MYPROCFILE ">> [$myip]: Data transfer complete\n";
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
-				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hdcuda @OTHERS -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 			}else{
-				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
+				system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hdcuda @OTHERS -silent -i $myfile -device $mycudadev -outbin ./Out/$myoutfile; exit;'");
 			}
 		}else{
-			system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hd -d $DE -w $WU -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
+			system("ssh -q -o 'BatchMode=yes' $USER\@$myip 'PTrack2 chi2hd @OTHERS -silent -i $myfile -outbin ./Out/$myoutfile; exit;'");
 		}
 	}else{
 		if( $mycuda == 1 ){
 			if( $mycudadev == 0 ){
-				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
+				system("PTrack2 chi2hdcuda @OTHERS -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 			}else{
-				system("PTrack2 chi2hdcuda -d $DE -w $WU -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile");
+				system("PTrack2 chi2hdcuda @OTHERS -silent -i $FOLDER/$myfile -device $mycudadev -outbin $DEST/$myoutfile");
 			}
 		}else{
-			system("PTrack2 chi2hd -d $DE -w $WU -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
+			system("PTrack2 chi2hd @OTHERS -silent -i $FOLDER/$myfile -outbin $DEST/$myoutfile");
 		}
 	}
 }
