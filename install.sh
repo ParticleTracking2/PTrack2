@@ -91,6 +91,8 @@ InstallPTrack2()
 
 TestPTrack2()
 {
+	echo "========================"
+	echo " Testing PTrack2"
 	cd src/_data
 	PTrack2 chi2hd -i ImgA000000.tif -out data.txt -savedisplay ImgResult.png
 	PTrack2 chi2hdcuda -i ImgA000000.tif -out data_cuda.txt -savedisplay ImgResult_cuda.png
@@ -114,6 +116,7 @@ Main()
 	SwitchTo48
 	AddRepositories
 	InstallDependingLibraries
+	SwitchTo44
 	InstallPTrack2
 	TestPTrack2
 }
