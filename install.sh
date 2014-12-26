@@ -84,6 +84,7 @@ InstallPTrack2()
 	echo "========================"
 	echo " Installing PTrack2"
 	cd MakeFiles
+	make clean
 	make
 	sudo make install
 	cd ..
