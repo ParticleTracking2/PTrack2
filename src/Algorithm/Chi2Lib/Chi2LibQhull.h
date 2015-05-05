@@ -8,6 +8,7 @@
 #ifndef CHI2LIBQHULL
 #define CHI2LIBQHULL
 
+#include <unistd.h>
 #include <string>
 #include <sstream>
 #include <vector>
