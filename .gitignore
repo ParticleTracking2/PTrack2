@@ -1,1 +1,11 @@
+# Ignoring OSX DS_Store
 .DS_Store
+
+# Ignoring Compilation Files
+*.a
+*.d
+*.o
+
+# Ignoring Compiled Executable
+MakeFiles\ Mac/PTrack2
+MakeFiles/PTrack2
