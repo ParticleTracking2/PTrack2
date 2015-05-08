@@ -7,7 +7,7 @@ sudo apt-get install g++
 ```
 
 ## Instalation
- 1. Install Library ***!ImageMagick***
+ 1. Install Library ***ImageMagick***
 ```sh
 sudo apt-get install imagemagick libmagick++3 libmagick++-dev
 ```
@@ -33,7 +33,7 @@ sudo apt-get install liblog4cpp-dev liblog4cpp5
 ```
  5. ***Obtain the source code of PTrack2 and install***
    Obtain the last [stable version](../../../../releases) of the code and follow the next steps in a terminal:
-   ```sh
+```sh
 cd MakeFiles
 make
 sudo make install
