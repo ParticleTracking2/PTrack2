@@ -1,7 +1,7 @@
 #Instalation Guide
 
 ##CUDA Version
-Before compiling is necessary to install a special library called ***[wiki:en/install/chi2hdlib Chi2HD_Cuda]***.
+Before compiling is necessary to install a special library called ***[Chi2HD_Cuda](https://github.com/ParticleTracking2/Chi2HDLibCuda)***.
 
 ##Version with/without CUDA
 Here is a guide to install PTrack2 for [Mac OSX](install_mac.md) and [Ubuntu Linux](install_ubuntu.md).
