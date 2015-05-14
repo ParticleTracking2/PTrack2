@@ -41,7 +41,7 @@ ArgObj Chi2HDCudaAlgorithm::myArgs(){
 	chi2hdcuda.keys_treats.push_back(maxchi2miniter);
 
 	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
-	chi_cut.treat.push_back(Followed_Double_Treat);
+	chi_cut.treat.push_back(Followed_Int_Treat);
 	chi2hdcuda.keys_treats.push_back(chi_cut);
 
 	KeyTreat vor_cut; vor_cut.key = "-vorcut"; vor_cut.description = "Minimal Voronoi area acceptable of peak to be considered as peak.";
