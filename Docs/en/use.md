@@ -57,6 +57,11 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -cut 100
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -maxchi2miniter 10
 ```
+   6. ***-minsep***: This parameter establish the minimum distance of separation between peacks. Must be followed by a numerical positive integer value. if this parameter is not assigned, by default is establiched as ***1***.
+    Example:
+```sh
+juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -minsep 10
+```
 
 ### 2. ***chi2hd***
  Convolution based least-squares fitting particle detection algorithm for images with high density particle systems. The specific parameters that are accepted are the follows:
@@ -120,6 +125,12 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2filteri 0.85
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2filterv 48.9
+```
+
+    11. ***-minsep***: This parameter establish the minimum distance of separation between peacks. Must be followed by a numerical positive integer value. if this parameter is not assigned, by default is establiched as ***1***.
+    Example:
+```sh
+juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -minsep 10
 ```
 
 ----
@@ -200,6 +211,11 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -validateones
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -device 1
+```
+    13. ***-minsep***: This parameter establish the minimum distance of separation between peacks. Must be followed by a numerical positive integer value. if this parameter is not assigned, by default is establiched as ***1***.
+    Example:
+```sh
+juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -minsep 10
 ```
 
 ###General Parameters
