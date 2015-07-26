@@ -106,7 +106,7 @@ public:
 	 * @param use_threads ejecucion de la funcion usando Threads.
 	 * @return Vector de MyPeaks detectados.
 	 */
-	static vector<MyPeak> getPeaks(MyMatrix<double> *img, int threshold, int mindistance, int minsep, bool use_threads = true);
+	static vector<MyPeak> getPeaks(MyMatrix<double> *img, double threshold, int mindistance, int minsep, bool use_threads = true);
 
 	/**
 	 * Genera las matrices auxiliares con valores iguales a las distancias en X e Y al centro de los peaks detectados.

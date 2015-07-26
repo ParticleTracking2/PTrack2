@@ -74,6 +74,24 @@ void MyImage::display(){
 	MyLogger::log()->debug("[MyImage] Image Displayed");
 }
 
+void MyImage::save(string path) {
+	MyLogger::log()->debug("[MyImage] Saving Image: Size = %ix%i",mtrx.sX(), mtrx.sY());
+	my_image = Magick::Image(Magick::Geometry(mtrx.sX(), mtrx.sY()), Magick::ColorRGB(0,0,0));
+	Magick::ColorRGB my_color;
+	for(unsigned int x = 0; x < mtrx.sX(); ++x){
+		for(unsigned int y = 0; y < mtrx.sY(); ++y){
+			my_color.blue(mtrx.at(x,y));
+			my_color.red(mtrx.at(x,y));
+			my_color.green(mtrx.at(x,y));
+			my_image.pixelColor(x,y, my_color);
+		}
+	}
+	my_image.negate(true);
+	my_image.write(path.c_str());
+
+	MyLogger::log()->debug("[MyImage] Image Saved");
+}
+
 void MyImage::display(vector<MyPeak> *peaks,  double diameter){
 	generateDisplayable(peaks, diameter);
 

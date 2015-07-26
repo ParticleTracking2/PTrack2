@@ -99,6 +99,11 @@ public:
 	void display();
 
 	/**
+	 * Save this image to disk
+	 */
+	void save(string path);
+
+	/**
 	 * Genera y Despliega en pantalla la imagen representada. Además agrega puntos representados por el vector de MyPeak,
 	 * los cuales pueden ser solidos o liquidos y el color de estos es azul o rojo respectivamente.
 	 * Los puntos son representados como circulos centrados en el peak con un diametro igual al entregado.

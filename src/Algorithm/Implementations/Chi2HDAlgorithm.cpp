@@ -41,7 +41,7 @@ ArgObj Chi2HDAlgorithm::myArgs(){
 	chi2hd.keys_treats.push_back(minsep);
 	
 	KeyTreat chi_cut; chi_cut.key = "-chicut"; chi_cut.description = "Minimal intensity of the convolution peaks to be detected.";
-	chi_cut.treat.push_back(Followed_Int_Treat);
+	chi_cut.treat.push_back(Followed_Double_Treat);
 	chi2hd.keys_treats.push_back(chi_cut);
 
 	KeyTreat vor_cut; vor_cut.key = "-vorcut"; vor_cut.description = "Minimal Voronoi area acceptable of peak to be considered as peak.";
@@ -82,7 +82,7 @@ void Chi2HDAlgorithm::setData(ParameterContainer *pc){
 
 	_chi_cut = 2;
 	if(pc->existParam("-chicut"))
-		_chi_cut = pc->getParamAsInt("-chicut");
+		_chi_cut = pc->getParamAsDouble("-chicut");
 
 	_vor_thresh = 50.0;
 	if(pc->existParam("-vorcut"))
