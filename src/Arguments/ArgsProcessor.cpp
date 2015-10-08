@@ -63,6 +63,10 @@ ArgsProcessor::ArgsProcessor() {
 	KeyTreat sdspl; sdspl.key = "-savedisplay"; sdspl.description = "Save Image an Obtained Peaks to Disk.";
 	sdspl.treat.push_back(Followed_String_Treat);
 	gParams.push_back(sdspl);
+
+	KeyTreat sread; sread.key = "-saveread"; sread.description = "Save the image read.";
+	sread.treat.push_back(Exist_Treat);
+	gParams.push_back(sread);
 }
 
 ArgsProcessor::~ArgsProcessor() {

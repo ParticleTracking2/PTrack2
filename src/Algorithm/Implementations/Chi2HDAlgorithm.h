@@ -30,9 +30,9 @@ private:
 	double _vor_areaSL;
 	double _FilterI;
 	double _FilterV;
+	double _chi_cut;
 	unsigned int _minsep;
 	unsigned int _maxIterations;
-	unsigned int _chi_cut;
 	MyMatrix<double> _data;
 public:
 

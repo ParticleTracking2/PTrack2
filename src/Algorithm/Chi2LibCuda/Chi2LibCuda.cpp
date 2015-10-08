@@ -62,7 +62,7 @@ cuMyPeakArray Chi2LibCuda::convertPeaks(vector<MyPeak>* peaks){
 	return ret;
 }
 
-cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep, bool validate){
+cuMyPeakArray Chi2LibCuda::getPeaks(cuMyMatrix* arr, float threshold, int mindistance, int minsep, bool validate){
 	MyLogger::log()->debug("[Chi2LibCuda][getPeaks] Getting Image peaks");
 	cuMyPeakArray ret = Chi2Libcu::getPeaks(arr, threshold, mindistance, minsep);
 	if(validate){

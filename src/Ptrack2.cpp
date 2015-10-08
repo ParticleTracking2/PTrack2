@@ -7,6 +7,7 @@
 //============================================================================
 
 #include <vector>
+#include <Magick++.h> 
 #include "Arguments/ArgsProcessor.h"
 #include "Image/MyImageFactory.h"
 #include "Utils/MyLogger.h"
@@ -27,6 +28,7 @@ using namespace std;
  */
 
 int main(int argc, char* argv[]) {
+	Magick::InitializeMagick(*argv);
 	MyLogger *mylog = MyLogger::getInstance();
 
 	//****************************
@@ -55,6 +57,12 @@ int main(int argc, char* argv[]) {
 	bool use_threads = true;
 	if(proc->getContainer()->existParam("-nothreads"))
 		use_threads = false;
+
+	// Display if needed
+	if(proc->hasKey("-saveread")){
+		MyImage firstImage = MyImageFactory::makeImgFromFile(proc->getArgAsString("-i"));
+		firstImage.save("read_"+proc->getArgAsString("-i")+".png");
+	}
 
 	AlgorithmExecutor aExec;
 	aExec.select(proc->getAlgorithmType());

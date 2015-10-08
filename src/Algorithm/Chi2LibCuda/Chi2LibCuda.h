@@ -68,7 +68,7 @@ public:
 	 * @param validate Ejecuta la validacion de los Peaks en el momento(True) o se dejan para despues (False).
 	 * @return Contenedor de cuMyPeaks detectados en GPU.
 	 */
-	static cuMyPeakArray getPeaks(cuMyMatrix* arr, int threshold, int mindistance, int minsep, bool validate = true);
+	static cuMyPeakArray getPeaks(cuMyMatrix* arr, float threshold, int mindistance, int minsep, bool validate = true);
 
 	/**
 	 * Copia los Peaks en CUDA y los pasa a vector de MyPeaks.

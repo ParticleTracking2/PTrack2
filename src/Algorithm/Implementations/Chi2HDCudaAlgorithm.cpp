@@ -90,7 +90,7 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 
 	_chi_cut = 2;
 	if(pc->existParam("-chicut"))
-		_chi_cut = pc->getParamAsInt("-chicut");
+		_chi_cut = (float)pc->getParamAsDouble("-chicut");
 
 	_vor_thresh = 50.0;
 	if(pc->existParam("-vorcut"))

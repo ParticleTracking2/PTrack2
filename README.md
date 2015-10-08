@@ -10,3 +10,13 @@ PTrack2 is a particle recognition software implemented in C++, using some well k
 * [Configuration](Docs/en/config.md)
 * [Use](Docs/en/use.md)
 * [Frequent Errors](Docs/en/faq.md)
+
+# Notes
+2015-10-06
+It is very important when working with OSX (Latest versions ex El Capitan) to properly install Xcode and the commands tools.
+This should be done by executing `xcode-select --install` in a terminal. Not doing so may present issues when installing and executing.
+
+2015-10-07
+Due to changes in ImageMagick some image are now treated as sRGB generating some errors when reading.
+Please change the color space of those images to RGB if present problems.
+http://www.imagemagick.org/discourse-server/viewtopic.php?f=4&t=21269

@@ -30,11 +30,12 @@ MyImage ImageReader::decodeImageGray(string file){
 
 	MyImage ret(max_x, max_y);
 	Magick::ColorGray my_color;
-	for(unsigned int x = 0; x < max_x; ++x)
+	for(unsigned int x = 0; x < max_x; ++x){
 		for(unsigned int y = 0; y < max_y; ++y){
 			my_color = my_image.pixelColor(x,y);
 			ret(x,y) = my_color.shade();
 		}
+	}
 
 	MyLogger::log()->debug("[ImageReader] Generic Image Decoded");
 	return ret;

@@ -65,7 +65,7 @@ MyMatrix<double> Chi2Lib::generateKernel(unsigned int ss, unsigned int os, doubl
 	return kernel;
 }
 
-vector<MyPeak> Chi2Lib::getPeaks(MyMatrix<double> *img, int threshold, int mindistance, int minsep, bool use_threads){
+vector<MyPeak> Chi2Lib::getPeaks(MyMatrix<double> *img, double threshold, int mindistance, int minsep, bool use_threads){
 	MyLogger::log()->debug("[Chi2Lib][getPeaks] Obtaining peaks threshold=%i; mindistance=%i; minsep=%i",threshold, mindistance, minsep);
 
 	vector<MyPeak> peaks;

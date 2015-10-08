@@ -52,10 +52,15 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -w 1.245681
 // Cut the image 100 pixeles at the Top, Bottom, Left and Right.
 juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -cut 100
 ```
-   5. ***-maxchi2miniter***: This parameter establish the limit of the number of iterations that minimize the Chi squared error, The greater the value the longer it will take to process the image and do not ensure a better result. Must be followed by a numerical positive integer value.
+   5. ***-maxchi2miniter***: This parameter establish the limit of the number of iterations that minimize the Chi squared error, The greater the value the longer it will take to process the image and do not ensure a better result. Te default value is 5. Must be followed by a numerical positive integer value.
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -maxchi2miniter 10
+```
+   6. ***-minsep***: This parameter establish the minimum distance of separation between peacks. Must be followed by a numerical positive integer value. if this parameter is not assigned, by default is establiched as ***1***.
+    Example:
+```sh
+juanin@Ubuntu-i5:~$ PTrack2 chi2 -i ImgA000000.tif -minsep 10
 ```
 
 ### 2. ***chi2hd***
@@ -86,7 +91,7 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2 1.245681
 juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -cut 100
 ```
 
-   5. ***-maxchi2miniter***: This parameter establish the limit of the number of iterations that minimize the Chi squared error, The greater the value the longer it will take to process the image and do not ensure a better result. Must be followed by a numerical positive integer value.
+   5. ***-maxchi2miniter***: This parameter establish the limit of the number of iterations that minimize the Chi squared error, The greater the value the longer it will take to process the image and do not ensure a better result. The Default Value is 5. Must be followed by a numerical positive integer value.
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -maxchi2miniter 10
@@ -122,6 +127,12 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2filteri 0.85
 juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2filterv 48.9
 ```
 
+    11. ***-minsep***: This parameter establish the minimum distance of separation between peacks. Must be followed by a numerical positive integer value. if this parameter is not assigned, by default is establiched as ***1***.
+    Example:
+```sh
+juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -minsep 10
+```
+
 ----
 
 The CUDA version of PTrack2 has the same algorithms and arguments previously exposed plus an implementation that uses the GPU to process the data of chi2hd as follow:
@@ -154,7 +165,7 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -2 1.245681
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -cut 100
 ```
 
-   5. ***-maxchi2miniter***: This parameter establish the limit of the number of iterations that minimize the Chi squared error, The greater the value the longer it will take to process the image and do not ensure a better result. Must be followed by a numerical positive integer value.
+   5. ***-maxchi2miniter***: This parameter establish the limit of the number of iterations that minimize the Chi squared error, The greater the value the longer it will take to process the image and do not ensure a better result. Te default value is 5. Must be followed by a numerical positive integer value.
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -maxchi2miniter 10
@@ -190,7 +201,7 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -2filteri 0.85
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -2filterv 48.9
 ```
 
-   11. ***-validateones***: This parameter moves the validation of peaks by distance between them once all the possible peaks are found.
+   11. ***-validateones***: Every time during the process of detecting peaks, each peak is filtered by distance between each oder. This parameter moves the validation once all the possible peaks are found.
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -validateones
@@ -200,6 +211,11 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -validateones
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -device 1
+```
+    13. ***-minsep***: This parameter establish the minimum distance of separation between peacks. Must be followed by a numerical positive integer value. if this parameter is not assigned, by default is establiched as ***1***.
+    Example:
+```sh
+juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -minsep 10
 ```
 
 ###General Parameters
