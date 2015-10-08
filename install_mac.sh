@@ -22,7 +22,7 @@ InstallLibrary()
 	./configure
 	make
 	sudo make install
-	
+
 	cd ..
 	rm -rf $directory
 	cd ../..
@@ -33,7 +33,7 @@ InstallLibraries()
 	#Mac Ports
 	InstallLibrary $MAC_PORTS MacPorts
 	touch ~/.profile
-	echo "PATH=\$PATH:/opt/local/bin" >> ~/.profile	
+	echo "PATH=\$PATH:/opt/local/bin" >> ~/.profile
 	. ~/.profile
 	sudo port -v selfupdate
 
@@ -56,7 +56,7 @@ InstallLibraries()
 	sudo ln -s /usr/local/lib/libMagickCore-6.Q16.a /usr/local/lib/libMagickCore.a
 	sudo ln -s /usr/local/lib/libMagickCore-6.Q16.dylib /usr/local/lib/libMagickCore.dylib
 	sudo ln -s /usr/local/lib/libMagickWand-6.Q16.a /usr/local/lib/libMagickWand.a
-	sudo ln -s /usr/local/lib/libMagickWand-6.Q16.dylib /usr/local/lib/libMagickWand.dylib 
+	sudo ln -s /usr/local/lib/libMagickWand-6.Q16.dylib /usr/local/lib/libMagickWand.dylib
 
 	#Log 4 CPP
 	sudo port install log4cpp
