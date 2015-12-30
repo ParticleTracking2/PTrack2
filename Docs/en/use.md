@@ -121,7 +121,7 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -vorsl 74.5
 juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2filteri 0.85
 ```
 
-   10. ***-2filterv***: This parameter establish a second filter by Voronoi area of a peak. Must be followed by a numerical decimal value between 0 and 1.
+   10. ***-2filterv***: This parameter establish a second filter by Voronoi area of a peak. Must be followed by a numerical decimal value.
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hd -i ImgA000000.tif -2filterv 48.9
@@ -195,7 +195,7 @@ juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -vorsl 74.5
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -2filteri 0.85
 ```
 
-   10. ***-2filterv***: This parameter establish a second filter by Voronoi area of a peak. Must be followed by a numerical decimal value between 0 and 1.
+   10. ***-2filterv***: This parameter establish a second filter by Voronoi area of a peak. Must be followed by a numerical decimal value.
     Example:
 ```sh
 juanin@Ubuntu-i5:~$ PTrack2 chi2hdcuda -i ImgA000000.tif -2filterv 48.9
