@@ -1,12 +1,16 @@
 function [xcheck,ycheck,Nfinal]=cleanCloseObjectCluster(x,y, cx, cy, D, L, M)
-%cleanCloseObjectCluster verifiy a set of 2D points (x,y) to be at least at
-%distance D, grouped in a set of clusters (cx,cy)
+%cleanCloseObjectCluster verifiy a set of 2D points (x,yto be at least at
+%distance D
+%   Use the READTABLE function to create a table by reading column-oriented data
+%   from a file. READTABLE can automatically determine the file format from its
+%   extension as described below.
 %
-%   [xcheck,ycheck,Nfinal]=cleanCloseObjectCluster(x,y, cx, cy, D, L, M)
-%   the input set of 2D points is defined in arrays (x,y), cluster set
-%   is defined in arrays (cx,cy), min distance in D, size of the image is
-%   defined in L, M is the size of the margin where no points should be
-%   present
+%   T = READTABLE(FILENAME) creates a table by reading from the file FILENAME,
+%   and determines the file format from its extension. The extension must be
+%   one of those listed below.
+%
+%   T = READTABLE(FILENAME,'FileType',FILETYPE) specifies the file type, where
+%   FILETYPE is one of 'text' or 'spreadsheet'.
 
 r=round(D/2.0);
 checkInd=true(length(x),1);

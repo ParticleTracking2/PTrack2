@@ -1,3 +1,4 @@
+#!/bin/sh
 C=$#
 if [ $C -ne 11 ] 
 then
