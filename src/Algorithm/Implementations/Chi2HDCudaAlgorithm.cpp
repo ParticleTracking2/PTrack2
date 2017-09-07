@@ -6,6 +6,7 @@
  */
 #ifdef CHI2CUDA
 #include "Chi2HDCudaAlgorithm.h"
+#include <omp.h>
 
 ArgObj Chi2HDCudaAlgorithm::myArgs(){
 	ArgObj chi2hdcuda;
@@ -134,9 +135,20 @@ void Chi2HDCudaAlgorithm::setData(ParameterContainer *pc){
 	else
 		cuImg = MyImageFactory::makeCuRawImgFromFile(pc->getParamAsString("-i"));
 
+
+
+    printf("scanning string: %s\n", pc->getParamAsString("-i").c_str());
+    sscanf(pc->getParamAsString("-i").c_str(), "%[^_]_fD%f_A%i_B%i_L%i_N%i_NC%i_d%f.tif", prefix, &fD, &A, &B, &L, &Nreal, &Nc, &density);
+    printf("parsed:\nprefix:%s\nfD:%f\nA:%i\nB:%i\nL:%i\nN:%i\nNC:%i\nd:%f\n", prefix, fD, A, B, L, Nreal, Nc, density);
+
 }
 
 vector<MyPeak> Chi2HDCudaAlgorithm::run(){
+    double t1, t2, rt1, rt2;
+    FILE *fw_times = fopen("chi2HDCuda_times.dat", "a");
+    float time_chi2 = 0.0f, time_getpeaks = 0.0f, time_newtoncenter = 0.0f, time_normalize = 0.0f, time_fft = 0.0f, time_qhull = 0.0f, time_gengrid = 0.0f, time_functions = 0.0f, time_rest = 0.0f, time_run = 0.0f;
+    rt1 = omp_get_wtime();
+
 	MyLogger::log()->notice("[Chi2HDCudaAlgorithm] Running Chi2HD CUDA Algorithm");
 
 	DeviceProps props = Chi2Libcu::getProps();
@@ -152,18 +164,29 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Normalize image ");
 	pair<float, float> hilo = Chi2LibCuda::getHighLow(&cuImg);
+    // MEASURE
+    t1 = omp_get_wtime();
 	Chi2LibCuda::normalizeImage(&cuImg, hilo.first, hilo.second);
+    t2 = omp_get_wtime();
+    time_normalize += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Chi2 image ");
 	cuMyMatrix cuKernel = Chi2LibCuda::generateKernel(ss, os, _d, _w);
 	cuMyMatrix cu_chi_img(cuImg.sizeX()+cuKernel.sizeX()-1, cuImg.sizeY()+cuKernel.sizeY()-1);
+    t1 = omp_get_wtime();
 	Chi2LibCudaFFT::getChiImage(&cuKernel, &cuImg, &cu_chi_img);
+    t2 = omp_get_wtime();
+    time_fft += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtain peaks of Chi2 Image ");
 	unsigned int threshold = 5, minsep = _minsep, mindistance = 5;
+    // MEASURE
+    t1 = omp_get_wtime();
 	cuMyPeakArray peaks = Chi2LibCuda::getPeaks(&cu_chi_img, threshold, mindistance, minsep, !_validateOnes);
+    t2 = omp_get_wtime();
+    time_getpeaks += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generate Auxiliary Matrix ");
@@ -172,7 +195,10 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	cuMyMatrix grid_y(cuImg.sizeX(), cuImg.sizeY());
 	cuMyMatrixi over(cuImg.sizeX(), cuImg.sizeY());
 	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Allocation Complete ");
+    t1 = omp_get_wtime();
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+    t2 = omp_get_wtime();
+    time_gengrid += (t2-t1);
 	FileUtils::writeToFileM(&grid_x, "grid_x-cuda.txt");
 	FileUtils::writeToFileM(&grid_y, "grid_y-cuda.txt");
 	FileUtils::writeToFileM(&over, "over-cuda.txt");
@@ -180,7 +206,11 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Compute Chi2 Difference ");
 	cuMyMatrix chi2diff(cuImg.sizeX(), cuImg.sizeY());
+    // MEASURE
+    t1 = omp_get_wtime();
 	float currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
+    t2 = omp_get_wtime();
+    time_chi2 += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Add missed points ");
@@ -191,13 +221,21 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	unsigned int _maxFirstIterations = 10, iterations = 0;
 	while(iterations <= _maxFirstIterations){
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generating Scaled Image ");
-		Chi2LibCudaHighDensity::generateScaledImage(&chi2diff, &normaldata_chi);
+        // MEASURE
+		time_normalize += Chi2LibCudaHighDensity::generateScaledImage(&chi2diff, &normaldata_chi);
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new CHi2 Image ");
+        t1 = omp_get_wtime();
 		Chi2LibCudaFFT::getChiImage(&cuKernel, &normaldata_chi, &cu_chi_img);
+        t2 = omp_get_wtime();
+        time_fft += (t2-t1);
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Obtaining new Peaks ");
+        // MEASURE
+        t1 = omp_get_wtime();
 		cuMyPeakArray new_peaks = Chi2LibCuda::getPeaks(&cu_chi_img, _chi_cut, mindistance, minsep, !_validateOnes);
+        t2 = omp_get_wtime();
+        time_getpeaks += (t2-t1);
 
 		unsigned int old_size = peaks.size();
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Checking inside image peaks ");
@@ -208,26 +246,43 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 			break;
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Generating Auxiliary Matrix ");
+        t1 = omp_get_wtime();
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+        t2 = omp_get_wtime();
+        time_gengrid += (t2-t1);
 
 		MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Computing Chi2 Difference ");
+        // MEASURE
+        t1 = omp_get_wtime();
 		currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
+        t2 = omp_get_wtime();
+        time_chi2 += (t2-t1);
 
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Original No of Points: %i, +%i; Total Found = %i", old_size, found, total_found);
 
 		iterations++;
 	}
 	peaks.sortByChiIntensity();
+    t1 = omp_get_wtime();
 	Chi2LibCudaFFTCache::eraseAll();
+    t2 = omp_get_wtime();
+    time_fft += (t2-t1);
 	normaldata_chi.deallocate();
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix and Chi2 Difference ");
 	MyLogger::log()->debug("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix");
+    t1 = omp_get_wtime();
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+    t2 = omp_get_wtime();
+    time_gengrid += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
+    // MEASURE
+    t1 = omp_get_wtime();
 	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
+    t2 = omp_get_wtime();
+    time_chi2 += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
@@ -236,13 +291,24 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	double chi2Delta = currentChi2Error;
 
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
+        // MEASURE
+        t1 = omp_get_wtime();
 		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, _d, _w, ss, 20.0);
+        t2 = omp_get_wtime();
+        time_newtoncenter += (t2-t1);
 		peaks.includeDeltas();
 
+        t1 = omp_get_wtime();
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+        t2 = omp_get_wtime();
+        time_gengrid += (t2-t1);
 		chi2diff.reset(0);
 
+        // MEASURE
+        t1 = omp_get_wtime();
 		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
+        t2 = omp_get_wtime();
+        time_chi2 += (t2-t1);
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
@@ -264,7 +330,10 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	Chi2LibCudaHighDensity::filterPeaksOutside(&peaks, &cuImg, os);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Apply Gaussian Fit ");
+    //t1 = omp_get_wtime();
 	pair<double,double> mypair = Chi2LibCudaHighDensity::gaussianFit(&peaks,&cuImg, os);
+    //t2 = omp_get_wtime();
+    //printf("gaussian = %f\n", t2-t1);
 	double mu = mypair.first;
 	double sigma = mypair.second;
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Total peaks: %i; MU=%f; SIGMA=%f", peaks.size(), mu, sigma);
@@ -294,21 +363,39 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix and Chi2 Difference");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Auxiliary matrix");
+    t1 = omp_get_wtime();
 	Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+    t2 = omp_get_wtime();
+    time_gengrid += (t2-t1);
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recompute Chi2 Difference");
+    // MEASURE
+    t1 = omp_get_wtime();
 	currentChi2Error = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
+    t2 = omp_get_wtime();
+    time_chi2 += (t2-t1);
 	chi2Delta = 1000000.0;
 	iterations = 0;
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Minimizing Chi2 Error ");
 	while( fabs(chi2Delta) > _minChi2Delta &&  iterations < _maxIterations){
+        // MEASURE
+        t1 = omp_get_wtime();
 		Chi2LibCuda::newtonCenter(&over, &chi2diff, &peaks, os, _d, _w, ss, 20.0);
+        t2 = omp_get_wtime();
+        time_newtoncenter += (t2-t1);
 		peaks.includeDeltas();
 
+        t1 = omp_get_wtime();
 		Chi2LibCuda::generateGrid(&peaks, os, &grid_x, &grid_y, &over);
+        t2 = omp_get_wtime();
+        time_gengrid += (t2-t1);
 		chi2diff.reset(0);
 
+        // MEASURE
+        t1 = omp_get_wtime();
 		double newChi2Err = Chi2LibCuda::computeDifference(&cuImg, &grid_x, &grid_y, _d, _w, &chi2diff);
+        t2 = omp_get_wtime();
+        time_chi2 += (t2-t1);
 		MyLogger::log()->info("[Chi2HDAlgorithm] >> Chi2Error: %f", newChi2Err);
 		chi2Delta = currentChi2Error - newChi2Err;
 		currentChi2Error = currentChi2Error-chi2Delta;
@@ -317,7 +404,10 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] ***************************** ");
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Recomputing Voronoi areas ");
+    t1 = omp_get_wtime();
 	Chi2LibCudaQhull::addVoronoiAreas(&peaks);
+    t2 = omp_get_wtime();
+    time_qhull += (t2-t1);
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Translating coordenates ");
 	Chi2LibCuda::translatePeaks(&peaks, os);
@@ -327,6 +417,28 @@ vector<MyPeak> Chi2HDCudaAlgorithm::run(){
 
 	MyLogger::log()->info("[Chi2HDCudaAlgorithm] >> Converting Peaks to original vector : %i", peaks.size());
 	vector<MyPeak> ret = Chi2LibCuda::convert(&peaks);
+
+    // MEASURE
+    rt2 = omp_get_wtime();
+    time_run = rt2 - rt1;
+    time_functions = time_chi2 + time_getpeaks + time_newtoncenter + time_normalize + time_fft + time_qhull + time_gengrid;
+    time_rest = time_run - time_functions;
+
+    Ntrack = peaks.size();
+    // write performance values
+    fprintf(fw_times, "%4i    %4i    %8i       %8lu    %4lu    %f    %f    %f    %f    %f    %f    %f    %f     %f      %f\n", cuImg.sizeX(), cuImg.sizeY(), Nreal, Ntrack, Nc,  time_chi2, time_getpeaks, time_newtoncenter, time_normalize, time_fft, time_qhull, time_gengrid, time_functions, time_rest, time_run);
+    fclose(fw_times);
+    printf("\n\nchi2HDCuda L%i   Detected: %i:\nchi2(): %f seconds\n", cuImg.sizeX(), peaks.size(), time_chi2);
+    printf("getpeaks(): %f s (%f%%)\n", time_getpeaks, 100.0f*time_getpeaks/time_run);
+    printf("newtoncenter(): %f s (%f%%)\n", time_newtoncenter, 100.0f*time_newtoncenter/time_run);
+    printf("normalize(): %f s (%f%%)\n", time_normalize, 100.0f*time_normalize/time_run);
+    printf("time_fft(): %f s (%f%%)\n", time_fft, 100.0f*time_fft/time_run);
+    printf("qhull(): %f s (%f%%)\n", time_qhull, 100.0f*time_qhull/time_run);
+    printf("gengrid(): %f s (%f%%)\n\n", time_gengrid, 100.0f*time_gengrid/time_run);
+    printf("functions: %f s (%f%%)\n", time_functions, 100.0f*time_functions/time_run);
+    printf("rest(): %f s (%f%%)\n", time_rest, 100.0f*time_rest/time_run);
+    printf("run(): %f s (%f%%)\n\n", time_run, 100.0f*time_run/time_run);
+    printf("Track: %f%%\n\n", 100.0f*(float)Ntrack/(float)Nreal);
 	return ret;
 }
 #endif
