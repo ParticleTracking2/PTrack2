@@ -9,6 +9,7 @@
 #ifndef CHI2LIBCUDAQHULL
 #define CHI2LIBCUDAQHULL
 
+#include <unistd.h>
 #include <string>
 #include <sstream>
 #include <algorithm>
