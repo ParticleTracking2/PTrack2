@@ -1,14 +1,46 @@
-/*
- * Chi2Lib.cpp
+/* * Chi2Lib.cpp
  *
  *  Created on: 02/10/2011
  *      Author: juanin
  */
 
 #include "Chi2Lib.h"
+#include <omp.h>
+
+int hminmax=0;
+int hnormalize=0;
+int hgenkernel=0;
+int hgetpeaks=0;
+int hgetpeaks_localminimum=0;
+int hgetpeaks_fillpeakarray=0;
+int hgenerategrid=0;
+int hchi2difference=0;
+int hnewtoncenter=0;
+int hvalidatepeaks=0;
+int hnewtoncenter_impl=0;
+int hgenerategrid_impl=0;
+
+void cmbegin(double *t1){
+    *t1 = omp_get_wtime();
+}
+void cmend(int *count, double t1, char *filename, double x1, double x2, double x3, double n){
+    double secs = omp_get_wtime() - t1;
+    //printf("%s: %f secs\n", filename, secs);
+    FILE *fw;
+    fw = fopen(filename,"a");
+    if(!fw){
+        fprintf(stderr,"error opening file %s\n", filename);
+        exit(1);
+    }
+    fprintf(fw, "%i    %g    %g    %g    %g\n", (*count)++, x1, x2, x3, secs/n);
+    fclose(fw);
+}
+
 
 pair<double, double> Chi2Lib::getHighLow(MyMatrix<double> *mtrx){
 	MyLogger::log()->debug("[Chi2Lib][getHighLow] Finding Maximum and Minimum values");
+	pair<double, double> ret;
+
 	// Obtener Maximos y Minimos
 	double max = mtrx->at(0,0);
 	double min = mtrx->at(0,0);
@@ -22,14 +54,16 @@ pair<double, double> Chi2Lib::getHighLow(MyMatrix<double> *mtrx){
 		}
 	}
 	MyLogger::log()->debug("[Chi2Lib][getHighLow] Maximum and Minimum values Found: %f and %f", max, min);
-	pair<double, double> ret;
 	ret.first = max;
 	ret.second = min;
+
+
 	return ret;
 }
 
 void Chi2Lib::normalizeImage(MyMatrix<double> *mtrx, double maximum, double minimum){
-	MyLogger::log()->debug("[Chi2Lib][normalizeImage] Normalizing data");
+    MyLogger::log()->debug("[Chi2Lib][normalizeImage] Normalizing data");
+	MyLogger::log()->debug("[Chi2Lib][normalizeImage] MCERDA ");
 	double max, min, dif;
 	if(maximum == -1 && minimum == -1){
 		pair<double, double> maxMin = getHighLow(mtrx);
@@ -52,8 +86,8 @@ void Chi2Lib::normalizeImage(MyMatrix<double> *mtrx, double maximum, double mini
 
 MyMatrix<double> Chi2Lib::generateKernel(unsigned int ss, unsigned int os, double d, double w){
 	MyLogger::log()->debug("[Chi2Lib][generateKernel] Building kernel with ss=%i; os=%i; d=%f; w=%f",ss,os,d,w);
-
 	MyMatrix<double> kernel(ss,ss);
+
 	for(unsigned int x=0; x < ss; ++x)
 		for(unsigned int y=0; y < ss; ++y){
 			double absolute = abs(sqrt((x-os)*(x-os) + (y-os)*(y-os)));
@@ -67,6 +101,7 @@ MyMatrix<double> Chi2Lib::generateKernel(unsigned int ss, unsigned int os, doubl
 
 vector<MyPeak> Chi2Lib::getPeaks(MyMatrix<double> *img, double threshold, int mindistance, int minsep, bool use_threads){
 	MyLogger::log()->debug("[Chi2Lib][getPeaks] Obtaining peaks threshold=%i; mindistance=%i; minsep=%i",threshold, mindistance, minsep);
+	vector<MyPeak> valids;
 
 	vector<MyPeak> peaks;
 	for(unsigned int x=0; x < img->sX(); ++x){
@@ -84,7 +119,6 @@ vector<MyPeak> Chi2Lib::getPeaks(MyMatrix<double> *img, double threshold, int mi
 	unsigned int detected = peaks.size();
 	MyLogger::log()->info("[Chi2Lib][getPeaks] Peaks detected: %i of %i", detected, img->sX()*img->sY());
 	sort(peaks.begin(), peaks.end(), MyPeak::compareMe);
-	vector<MyPeak> valids;
 
 	if(use_threads){
 		PartitionPeaks p1;
@@ -173,12 +207,14 @@ void *Chi2Lib::validatePeaksThread( void* ptr){
 }
 
 void Chi2Lib::generateGridImpl(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, int x1, int x2, int y1, int y2, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over){
+
 	unsigned int half=(shift+2);
 	MyLogger::log()->debug("[Chi2Lib][generateGridImpl] Half=%i, SS=%i", half, shift);
 	unsigned int counter = 0;
 	int currentX, currentY;
 	double currentDistance = 0.0;
 	double currentDistanceAux = 0.0;
+
 
 	if(!peaks->empty())
 	for(int npks = peaks->size()-1; npks >= 0; npks--){
@@ -207,11 +243,13 @@ void Chi2Lib::generateGridImpl(vector<MyPeak> *peaks, unsigned int shift, MyMatr
 
 			}
 	}
+
 	MyLogger::log()->debug("[Chi2Lib][generateGridImpl] Auxiliary Matrix Generation Complete");
 	MyLogger::log()->debug("[Chi2Lib][generateGridImpl] Total pgrid= %f; Counter= %i", 1.0*counter/peaks->size(), counter);
 }
 
 void Chi2Lib::generateGrid(vector<MyPeak> *peaks, unsigned int shift, MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, MyMatrix<int> *over, bool use_threads){
+
 	MyLogger::log()->debug("[Chi2Lib][generateGrid] Generating Auxiliary Matrix");
 	unsigned int maxDimension = img->sX() > img->sY() ? img->sX() : img->sY();
 	MyLogger::log()->debug("[Chi2Lib][generateGrid] Grid Size: %ix%i", grid_x->sX(), grid_x->sY());
@@ -251,6 +289,7 @@ void *Chi2Lib::generateGridThread( void* ptr){
 }
 
 double Chi2Lib::computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_x, MyMatrix<double> *grid_y, double d, double w, MyMatrix<double> *diffout, bool use_threads){
+
 	if(use_threads){
 		PartitionDiff p1;
 		p1.x1 = 0; p1.x2 = img->sX()/2;
@@ -291,6 +330,7 @@ double Chi2Lib::computeDifference(MyMatrix<double> *img, MyMatrix<double> *grid_
 		MyLogger::log()->info("[Chi2Lib][computeDifference] Chi2 Error: %f", chi2err);
 		return chi2err;
 	}
+
 }
 
 void * Chi2Lib::computeDifferenceThread( void* ptr){
@@ -327,6 +367,7 @@ void Chi2Lib::newtonCenterImpl(MyMatrix<int> *over, MyMatrix<double> *diff, vect
 	double statchix = 0.0, statchiy= 0.0, statchixx=0.0, statchiyy=0.0, statchixy=0.0;
 	double detproblem = 0;
 	int total = 0;
+
 
 	for(int npks = end-1; npks >= init; npks--){
 		double chix, chiy, chixx, chiyy, chixy;
@@ -398,6 +439,7 @@ void Chi2Lib::newtonCenterImpl(MyMatrix<int> *over, MyMatrix<double> *diff, vect
 			}
 		}
 	}
+
 	MyLogger::log()->debug("[Chi2Lib][newtonCenter] Newton Minimization Finished");
 
 	MyLogger::log()->debug("[Chi2Lib][newtonCenter] Total cidp2 : %f", 1.0*total/peaks->size());
@@ -406,6 +448,7 @@ void Chi2Lib::newtonCenterImpl(MyMatrix<int> *over, MyMatrix<double> *diff, vect
 }
 
 void Chi2Lib::newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<MyPeak> *peaks, int shift, double D, double w, double dp, double maxdr, bool use_threads){
+    
 	if(use_threads){
 		PartitionNC p1;
 		p1.diff = diff; p1.over = over;
@@ -431,6 +474,7 @@ void Chi2Lib::newtonCenter(MyMatrix<int> *over, MyMatrix<double> *diff, vector<M
 	}else{
 		newtonCenterImpl(over, diff, peaks, 0, peaks->size(), shift, D, w, dp, maxdr);
 	}
+
 }
 
 void *Chi2Lib::newtonCenterThread( void* ptr){
@@ -467,3 +511,4 @@ void Chi2Lib::addIntensityFromImage(MyMatrix<double> *img, vector<MyPeak> *peaks
 		peaks->at(i).img_intensity = img->getValue(xx,yy);
 	}
 }
+

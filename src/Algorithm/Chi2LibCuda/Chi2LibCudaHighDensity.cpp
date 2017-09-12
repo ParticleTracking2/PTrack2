@@ -7,8 +7,9 @@
 #ifdef CHI2CUDA
 #include "Chi2LibCudaHighDensity.h"
 #include "Chi2LibCudaQhull.h"
+#include <omp.h>
 
-void Chi2LibCudaHighDensity::generateScaledImage(cuMyMatrix *diff, cuMyMatrix *out){
+double Chi2LibCudaHighDensity::generateScaledImage(cuMyMatrix *diff, cuMyMatrix *out){
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][generateScaledImage] Scaling ");
 	Chi2LibcuHighDensity::scaleImage(diff, out);
 
@@ -20,9 +21,12 @@ void Chi2LibCudaHighDensity::generateScaledImage(cuMyMatrix *diff, cuMyMatrix *o
 	Chi2LibcuHighDensity::invertImage(out, maxval);
 
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][generateScaledImage] Normalizing ");
+    double t1 = omp_get_wtime();
 	Chi2LibCuda::normalizeImage(out, maxMin.first, maxMin.second);
+    double t2 = omp_get_wtime();
 
 	MyLogger::log()->debug("[Chi2LibCudaHighDensity][generateScaledImage] Generation complete ");
+    return (t2-t1);
 }
 
 unsigned int Chi2LibCudaHighDensity::checkInsidePeaks(cuMyPeakArray *old_peaks, cuMyPeakArray *new_peaks, cuMyMatrix *img, unsigned int os){

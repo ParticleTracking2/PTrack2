@@ -9,7 +9,7 @@ CUDAPATH	= /usr/local/cuda
 
 
 LPATHS          = -L/usr/local/lib -L/usr/lib
-LIBRARIES       = -llog4cpp -lm -lpthread $(shell pkg-config --libs fftw3) $(shell pkg-config --libs fftw3f) $(shell pkg-config --libs Magick++)
+LIBRARIES       = -llog4cpp -lm -lpthread $(shell pkg-config --libs fftw3) $(shell pkg-config --libs fftw3f) $(shell pkg-config --libs Magick++) -fopenmp
 INCLUDES        = -I/usr/local/include -I/usr/include $(shell pkg-config --cflags-only-I ImageMagick)
 
 ifeq ($(CUDAPATH), )
@@ -23,9 +23,9 @@ endif
 
 CFLAGS		= $(CUDAFLAG) -O3 -march=native -mfpmath=sse -ftree-vectorize -funroll-loops -ffast-math -Wall -fmessage-length=0 -MMD -MP $(shell pkg-config --cflags-only-other ImageMagick)
 
-all: ptrack2
+all: Ptrack2
 
-ptrack2: $(obj)
+Ptrack2: $(obj)
 	@echo 'Starting PTRACK2 compilation'
 	$(CXX) $(LPATHS) -o $@ $^ $(LIBRARIES)
 
@@ -33,7 +33,7 @@ ptrack2: $(obj)
 	$(CXX) $(INCLUDES) $(CFLAGS) -c -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 
 clean:
-	rm -f $(obj) ptrack2
+	rm -f $(obj) $(dep) Ptrack2
 
 cleandep:
 	rm -f $(dep)

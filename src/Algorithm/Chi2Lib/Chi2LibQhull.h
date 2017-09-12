@@ -64,6 +64,11 @@ public:
 	 * @param peaks Vector de peaks encontrados a los cuales se le agregaran las areas de voronoi respectivas.
 	 */
 	static void addVoronoiAreas(vector<MyPeak> *peaks);
+
+    /**
+     * parsea un string " num1   num2 "  y captura los dos floats.
+     */
+    static void parse_pair(const char *str, float *a, float *b);
 };
 
 #endif

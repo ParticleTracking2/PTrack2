@@ -22,6 +22,10 @@ void Chi2LibQhull::stringSplit(string str, string delim, vector<string> *out){
 	}
 }
 
+void Chi2LibQhull::parse_pair(const char *str, float *a, float *b){
+    sscanf(str, "%f %f", a, b);
+}
+
 string Chi2LibQhull::prepareData(vector<MyPeak> *peaks){
 	stringstream ret;
 	MyLogger::log()->debug("[Chi2LibQhull][prepareData] Preparing data");
@@ -50,13 +54,21 @@ void Chi2LibQhull::interpretData(string *data, vector< pair<double,double> > *ve
 
 	MyLogger::log()->debug("[Chi2LibQhull][interpretData] Vertex reserved Size");
 	vector<string> splited;
+    float a,b;
 	for(unsigned int i = 0; i < vSize; ++i){
 		getline(ss, stmp);
 		// Vertex
-		stringSplit(stmp, " ", &splited);
+        //printf("processing %s -->", stmp.c_str()); fflush(stdout);
+        parse_pair(stmp.c_str(), &a, &b);
+        //printf("%f    %f\n", a,b); fflush(stdout);
+
+		//stringSplit(stmp, " ", &splited);
+		//pair<double,double> v_xy;
+		//v_xy.first = atof(splited.at(0).c_str());
+		//v_xy.second = atof(splited.at(1).c_str());
 		pair<double,double> v_xy;
-		v_xy.first = atof(splited.at(0).c_str());
-		v_xy.second = atof(splited.at(1).c_str());
+		v_xy.first = a; 
+		v_xy.second = b; 
 		vertex->push_back(v_xy);
 	}
 	getline(ss, stmp);
@@ -145,6 +157,7 @@ void Chi2LibQhull::addVoronoiAreas(vector<MyPeak> *peaks){
 	MyLogger::log()->debug("[Chi2LibQhull][addVoronoiAreas] Adding Voronoi Areas to peaks. Size=%i", peaks->size());
 	string prep = prepareData(peaks);
 	string rawData = execQhull(prep, "v Qbb p FN");	// v = Voronoi; Qbb = Qbb-scale-last; p = points; FN = FNeigh-vertex;
+    //printf("rawdata\n%s\n", rawData.c_str()); fflush(stdout);
 
 	vector< pair<double,double> > vertex;
 	vector< vector<int> > cells;

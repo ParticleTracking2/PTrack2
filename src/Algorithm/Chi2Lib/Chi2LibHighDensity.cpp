@@ -6,8 +6,9 @@
  */
 
 #include "Chi2LibHighDensity.h"
+#include <omp.h>
 
-void Chi2LibHighDensity::generateScaledImage(MyMatrix<double> *diff, MyMatrix<double> *out){
+double Chi2LibHighDensity::generateScaledImage(MyMatrix<double> *diff, MyMatrix<double> *out){
 	MyLogger::log()->debug("[Chi2LibHighDensity][generateScaledImage] Scaling ");
 	//scalematrix
 	for(unsigned int x=0; x < diff->sX(); ++x){
@@ -30,7 +31,10 @@ void Chi2LibHighDensity::generateScaledImage(MyMatrix<double> *diff, MyMatrix<do
 
 	MyLogger::log()->debug("[Chi2LibHighDensity][generateScaledImage] Normalizing ");
 	//normalize data
+    double t1 = omp_get_wtime();
 	Chi2Lib::normalizeImage(out, maxMin.first, maxMin.second);
+    double t2 = omp_get_wtime();
+    return t2-t1;
 }
 
 unsigned int Chi2LibHighDensity::checkInsidePeaks(vector<MyPeak> *old_peaks, vector<MyPeak> *new_peaks, MyMatrix<double> *img, unsigned int os){
@@ -126,7 +130,9 @@ pair<double,double> Chi2LibHighDensity::gaussianFit(vector<MyPeak> *peaks, MyMat
 
 void Chi2LibHighDensity::removeBadPeaks(vector<MyPeak> *peaks, MyMatrix<double> *img, double vor_threshold, double par_threshold, unsigned int ss){
 	MyLogger::log()->debug("[Chi2LibHighDensity][removeBadPeaks] Starting removing peaks by Area < %f and Intensity < %f", vor_threshold, par_threshold);
+    //printf("removeBadPeaks1\n"); fflush(stdout);
 	Chi2LibQhull::addVoronoiAreas(peaks);
+    //printf("removeBadPeaks2\n"); fflush(stdout);
 
 	int xx = 0, yy = 0;
 	for(unsigned int i=0; i < peaks->size(); ++i){

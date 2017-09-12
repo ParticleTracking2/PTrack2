@@ -42,7 +42,6 @@ private:
 	float _chi_cut;
 	unsigned int _minsep;
 	unsigned int _maxIterations;
-	cuMyMatrix cuImg;
 public:
 
 	/**
@@ -65,6 +64,7 @@ public:
 	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
 	 */
 	vector<MyPeak> run();
+	cuMyMatrix cuImg;
 };
 
 #endif
