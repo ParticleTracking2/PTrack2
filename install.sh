@@ -5,7 +5,7 @@ InstallDependingLibraries()
 {
 	echo "========================"
 	echo " Installing required libraries (Ubuntu 16.04)"
-	sudo apt-get install imagemagick libmagick++5 libmagick++-dev
+	sudo apt-get install gcc g++ imagemagick libmagick++-dev libmagickwand-dev libfftw3-dev liblog4cpp5v5 liblog4cpp5-dev libxmu-dev libxi-dev freeglut3 freeglut3-dev libqhull-dev
 
 }
 
