@@ -12,6 +12,8 @@ PTrack2 is a particle recognition software implemented in C++, using some well k
 * [Frequent Errors](Docs/en/faq.md)
 
 # Notes
+2017-09-12
+Tested on Ubuntu 16.04
 2015-10-06
 It is very important when working with OSX (Latest versions ex El Capitan) to properly install Xcode and the commands tools.
 This should be done by executing `xcode-select --install` in a terminal. Not doing so may present issues when installing and executing.
