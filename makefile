@@ -23,17 +23,35 @@ endif
 
 CFLAGS		= $(CUDAFLAG) -O3 -march=native -mfpmath=sse -ftree-vectorize -funroll-loops -ffast-math -Wall -fmessage-length=0 -MMD -MP $(shell pkg-config --cflags-only-other ImageMagick)
 
-all: Ptrack2
+all: PTrack2
 
-Ptrack2: $(obj)
+PTrack2: $(obj)
 	@echo 'Starting PTRACK2 compilation'
 	$(CXX) $(LPATHS) -o $@ $^ $(LIBRARIES)
 
 %.o: %.cpp
 	$(CXX) $(INCLUDES) $(CFLAGS) -c -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 
+install:
+	sudo cp PTrack2 /usr/bin
+	sudo cp src/Distribute\ Computing/PTrack2Bash /usr/bin
+	sudo cp src/Distribute\ Computing/PTrack2Folder /usr/bin
+	sudo cp src/Distribute\ Computing/PTrack2FolderCuda /usr/bin
+	sudo cp src/Distribute\ Computing/PTrack2BashFolders /usr/bin
+	cp src/Distribute\ Computing/PTrack2BashFolders.conf ~/PTrack2BashFolders.conf.example
+	cp src/Distribute\ Computing/.PTrack2Bash.conf ~/
+	sudo chmod +x /usr/bin/PTrack2
+	sudo chmod +x /usr/bin/PTrack2Bash
+	sudo chmod +x /usr/bin/PTrack2Folder
+	sudo chmod +x /usr/bin/PTrack2FolderCuda
+	sudo chmod +x /usr/bin/PTrack2BashFolders
+	# Autocompletacion y Manual
+	sudo cp src/PTrack2_autocomplete.sh /etc/bash_completion.d/PTrack2
+	gzip -c src/PTrack2.1 > src/PTrack2.1.gz
+	sudo mv src/PTrack2.1.gz /usr/share/man/man1/PTrack2.1.gz
+
 clean:
-	rm -f $(obj) $(dep) Ptrack2
+	rm -f $(obj) $(dep) PTrack2
 
 cleandep:
 	rm -f $(dep)
