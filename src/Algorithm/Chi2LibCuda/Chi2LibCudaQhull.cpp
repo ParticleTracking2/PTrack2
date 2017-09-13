@@ -6,6 +6,7 @@
  */
 #ifdef CHI2CUDA
 #include "Chi2LibCudaQhull.h"
+#include <unistd.h>
 
 void Chi2LibCudaQhull::trim(string& str){
   string::size_type pos = str.find_last_not_of(' ');

@@ -24,7 +24,6 @@ private:
 	double _w;
 	unsigned int _minsep;
 	unsigned int _maxIterations;
-	MyMatrix<double> _data;
 public:
 
 	/**
@@ -44,6 +43,7 @@ public:
 	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
 	 */
 	vector<MyPeak> run();
+	MyMatrix<double> _data;
 };
 
 #endif

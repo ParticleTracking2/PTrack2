@@ -26,7 +26,7 @@ public:
 	 * @param diff Imagen base.
 	 * @param out Matriz de imagen de salida.
 	 */
-	static void generateScaledImage(cuMyMatrix *diff, cuMyMatrix *out);
+	static double generateScaledImage(cuMyMatrix *diff, cuMyMatrix *out);
 
 	/**
 	 * Chequea si los Peaks encontrados se ubican en el interior de la imagen y los agrega al antiguo contenedor.

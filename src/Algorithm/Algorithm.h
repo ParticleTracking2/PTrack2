@@ -58,6 +58,11 @@ public:
 	 * @return Vector de MyPeak representando los peaks encontrados dentro de los datos entregados.
 	 */
 	virtual vector<MyPeak> run();
+
+    // valores para 11benchmark
+    float fD, density;
+    int A, B, L, Nreal, Ntrack, Nc;
+    char prefix[128];
 };
 
 #endif
