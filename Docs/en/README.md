@@ -10,3 +10,4 @@ PTrack2 is a particle recognition software implemented in C++, using some well k
 * [Configuration](config.md)
 * [Use](use.md)
 * [Frequent Errors](faq.md)
+* [Benchmarking](benchmarking.md)
